@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="es-PE">
+<head>
+<meta charset="utf-8">
+<title>Maru · Kit de video</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;800&family=Zen+Kaku+Gothic+New:wght@500;700&family=Tenor+Sans&display=swap">
+<style>
+  /* Cada pieza del kit vive en su propia caja; generar-kit.mjs las captura una por una con fondo transparente. */
+  :root { --washi: #F3EDE2; --sumi: #2B2724; --shu: #C8452C; --mikan: #DE9A5A; --sakura: #F4DDD3; --kin: #D7B98C; --crema: #FFF6EE; }
+  html, body { margin: 0; background: transparent; }
+  .piece { position: absolute; left: 0; top: 0; }
+  .grain::after { content: ""; position: absolute; inset: 0; background-image: var(--grain); mix-blend-mode: multiply; opacity: .6; pointer-events: none; }
+  .bg { width: 1080px; height: 1920px; }
+  #fondo-washi { background: var(--washi); }
+  #fondo-sakura { background: #F4E4DA; }
+  #fondo-sumi { background: var(--sumi); }
+  #fondo-noche { background: #111726; }
+
+  /* Sello 丸 */
+  .seal { display: grid; place-items: center; background: var(--shu); color: var(--crema); font-family: "Shippori Mincho", serif; font-weight: 800; }
+  #sello { width: 600px; height: 600px; padding: 40px; box-sizing: border-box; }
+  #sello .seal { width: 520px; height: 520px; border-radius: 76px; font-size: 360px; transform: rotate(-6deg); }
+
+  /* Firma vertical: マル + sello, como en el logo */
+  #firma { width: 220px; height: 440px; display: grid; justify-items: center; align-content: center; gap: 22px; }
+  #firma .kana { writing-mode: vertical-rl; font: 600 72px/1 "Shippori Mincho", serif; letter-spacing: .12em; color: var(--sumi); }
+  #firma .seal { width: 130px; height: 130px; border-radius: 22px; font-size: 88px; }
+  #firma-clara .kana { color: #EDE3D6; }
+  #firma-clara { width: 220px; height: 440px; display: grid; justify-items: center; align-content: center; gap: 22px; }
+  #firma-clara .kana { writing-mode: vertical-rl; font: 600 72px/1 "Shippori Mincho", serif; letter-spacing: .12em; }
+  #firma-clara .seal { width: 130px; height: 130px; border-radius: 22px; font-size: 88px; }
+
+  /* Marca: sello + MARU */
+  .wordmark { display: flex; align-items: center; gap: 34px; padding: 30px 40px; }
+  .wordmark .seal { width: 120px; height: 120px; border-radius: 26px; font-size: 80px; transform: rotate(-4deg); }
+  .wordmark span { font: 400 110px/1 "Tenor Sans", sans-serif; letter-spacing: .26em; }
+  #marca-oscura span { color: var(--sumi); }
+  #marca-clara span { color: #F3EDE2; }
+
+  /* Logo completo convertido a PNG */
+  #logo { width: 1254px; height: 1254px; }
+  #logo img { width: 100%; height: 100%; display: block; }
+
+  /* Marco de celular: la pantalla es un hueco transparente de proporción 9:19.5 */
+  #marco-celular { width: 1080px; height: 1920px; }
+  #marco-celular .phone {
+    position: absolute; left: 172px; top: 170px; width: 736px; height: 1580px;
+    border-radius: 96px; box-sizing: border-box;
+    border: 18px solid var(--sumi);
+    box-shadow: 0 60px 110px -50px rgba(70, 48, 32, .55);
+  }
+  /* Marco de ventana de escritorio (grabaciones de la PC en 16:9) */
+  #marco-ventana { width: 1080px; height: 1920px; }
+  #marco-ventana .win {
+    position: absolute; left: 60px; top: 620px; width: 960px; height: 600px;
+    border-radius: 34px; box-sizing: border-box;
+    border: 14px solid #FBF7EF; border-top-width: 66px;
+    box-shadow: 0 50px 90px -40px rgba(70, 48, 32, .5), 0 0 0 2px rgba(43, 39, 36, .08);
+  }
+  #marco-ventana .bar { position: absolute; left: 60px; top: 620px; width: 960px; height: 66px; display: flex; align-items: center; gap: 14px; padding: 0 30px; box-sizing: border-box; }
+  #marco-ventana .bar .seal { width: 36px; height: 36px; border-radius: 8px; font-size: 24px; transform: rotate(-4deg); }
+  #marco-ventana .bar span { font: 700 26px/1 "Zen Kaku Gothic New", sans-serif; color: var(--sumi); }
+  #marco-ventana .bar em { margin-left: auto; font: 700 20px/1 "Zen Kaku Gothic New", sans-serif; font-style: normal; color: #6B6055; background: #EDE5D8; padding: 8px 14px; border-radius: 99px; }
+
+  /* Guía de zona segura de TikTok (solo para editar, no se exporta) */
+  #guia-zona-segura { width: 1080px; height: 1920px; font: 700 30px/1.2 "Zen Kaku Gothic New", sans-serif; color: #fff; }
+  #guia-zona-segura .z { position: absolute; background: rgba(200, 69, 44, .38); display: grid; place-items: center; text-align: center; outline: 3px dashed rgba(200, 69, 44, .9); outline-offset: -3px; }
+  #guia-zona-segura .top { left: 0; right: 0; top: 0; height: 150px; }
+  #guia-zona-segura .bottom { left: 0; right: 0; bottom: 0; height: 400px; }
+  #guia-zona-segura .right { right: 0; width: 150px; top: 700px; height: 820px; }
+  #guia-zona-segura .safe { position: absolute; left: 60px; right: 170px; top: 170px; bottom: 420px; outline: 3px dashed rgba(215, 185, 140, .95); outline-offset: -3px; }
+  #guia-zona-segura .safe b { position: absolute; left: 16px; top: 12px; font-size: 26px; color: #D7B98C; text-shadow: 0 1px 2px rgba(0,0,0,.6); }
+</style>
+</head>
+<body>
+  <div class="piece bg grain" id="fondo-washi"></div>
+  <div class="piece bg grain" id="fondo-sakura"></div>
+  <div class="piece bg grain" id="fondo-sumi"></div>
+  <div class="piece bg grain" id="fondo-noche"></div>
+  <div class="piece" id="sello"><div class="seal" lang="ja">丸</div></div>
+  <div class="piece" id="firma"><span class="kana" lang="ja">マル</span><div class="seal" lang="ja">丸</div></div>
+  <div class="piece" id="firma-clara"><span class="kana" lang="ja">マル</span><div class="seal" lang="ja">丸</div></div>
+  <div class="piece wordmark" id="marca-oscura"><div class="seal" lang="ja">丸</div><span>MARU</span></div>
+  <div class="piece wordmark" id="marca-clara"><div class="seal" lang="ja">丸</div><span>MARU</span></div>
+  <div class="piece" id="logo"><img src="../img/maru-logo.webp" alt=""></div>
+  <div class="piece" id="marco-celular"><div class="phone"></div></div>
+  <div class="piece" id="marco-ventana"><div class="win"></div><div class="bar"><div class="seal" lang="ja">丸</div><span>Nombre de la herramienta</span><em>Ejemplo</em></div></div>
+  <div class="piece" id="guia-zona-segura">
+    <div class="z top">Arriba: barra de TikTok</div>
+    <div class="z right">Botones<br>(like,<br>comentar,<br>compartir)</div>
+    <div class="z bottom">Abajo: usuario, descripción y música</div>
+    <div class="safe"><b>Zona segura para textos importantes</b></div>
+  </div>
+<script>
+  // Textura de papel (la misma de la animación)
+  const c = document.createElement("canvas"); c.width = c.height = 220;
+  const g = c.getContext("2d"); const d = g.createImageData(220, 220);
+  let s = 7; const rnd = () => ((s = (s * 16807) % 2147483647) / 2147483647);
+  for (let i = 0; i < d.data.length; i += 4) { const v = rnd(); d.data[i] = 90; d.data[i + 1] = 70; d.data[i + 2] = 50; d.data[i + 3] = v > 0.985 ? 38 : v * 14; }
+  g.putImageData(d, 0, 0);
+  document.documentElement.style.setProperty("--grain", `url(${c.toDataURL()})`);
+  window.__ready = Promise.all([document.fonts.ready, ...[...document.images].map((i) => i.decode().catch(() => {}))]);
+</script>
+</body>
+</html>
