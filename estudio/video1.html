@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="es-PE">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maru · Video 1 (prueba)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;800&family=Zen+Kaku+Gothic+New:wght@500;700&display=swap">
+<style>
+  /* Estudio de animación: lienzo 1080×1920 con línea de tiempo exacta (render(t)).
+     Paleta del logo v2: washi, sumi, shu (sol), mikan (gata), sakura, kin (nubes). */
+  :root {
+    --washi: #F3EDE2; --washi-hi: #FFFCF6; --chat: #ECE3D5;
+    --sumi: #2B2724; --sumi-2: #3A342F; --ink-soft: #8A7F75;
+    --shu: #C8452C; --mikan: #DE9A5A; --sakura: #F4DDD3; --kin: #D7B98C;
+    --mincho: "Shippori Mincho", "Yu Mincho", "Hiragino Mincho ProN", serif;
+    --gothic: "Zen Kaku Gothic New", "Yu Gothic", system-ui, sans-serif;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: #171412; color: #EDE6DA; font-family: var(--gothic); }
+  body { display: grid; grid-template-rows: 1fr auto; overflow: hidden; }
+  .viewport { position: relative; overflow: hidden; display: grid; place-items: center; }
+  #stage {
+    position: absolute; left: 50%; top: 50%; width: 1080px; height: 1920px;
+    transform-origin: 0 0; overflow: hidden; background: var(--washi);
+  }
+  .rec body, body.rec { background: var(--washi); }
+  body.rec { display: block; }
+  body.rec .viewport { position: static; }
+  body.rec #stage { left: 0; top: 0; transform: none !important; }
+  body.rec .bar { display: none; }
+
+  .abs { position: absolute; will-change: transform, opacity; }
+  .paper::after { content: ""; position: absolute; inset: 0; background-image: var(--grain); opacity: .55; mix-blend-mode: multiply; pointer-events: none; }
+
+  /* Capas de fondo */
+  #sumi { inset: 0; background: var(--sumi); clip-path: circle(0px at 540px 960px); }
+  #sun {
+    left: 260px; top: 680px; width: 560px; height: 560px; border-radius: 50%;
+    background: radial-gradient(circle at 38% 34%, #D9603F 0%, #C8452C 55%, #B23A24 100%);
+    opacity: 0;
+  }
+  #sun::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background-image: var(--grain); opacity: .8; mix-blend-mode: multiply; }
+
+  /* Firma: マル + sello 丸, como en el logo */
+  #sign { right: 64px; top: 70px; display: grid; justify-items: center; gap: 10px; }
+  #sign .kana { writing-mode: vertical-rl; font: 600 34px/1 var(--mincho); letter-spacing: .12em; color: var(--sumi); }
+  .hanko { display: grid; place-items: center; width: 62px; height: 62px; border-radius: 10px; background: var(--shu); color: #FBEDE4; font: 800 40px/1 var(--mincho); }
+
+  /* Títulos */
+  .title { left: 90px; right: 130px; font: 800 84px/1.14 var(--mincho); letter-spacing: -0.01em; color: var(--sumi); }
+  .title .line { display: block; }
+  .title .w { display: inline-block; margin-right: .22em; }
+  #titleA { top: 190px; }
+  #titleB { top: 300px; }
+  #fix { left: 0; right: 0; top: 880px; text-align: center; font: 800 112px/1.1 var(--mincho); color: #FFF7EE; transform-origin: 50% 50%; }
+  #result { left: 90px; right: 150px; top: 1390px; font: 800 80px/1.12 var(--mincho); color: #FFF7EE; }
+  #result .accent { color: var(--mikan); }
+
+  /* Teléfono */
+  .phone {
+    left: 160px; width: 760px; border-radius: 64px; padding: 14px;
+    background: var(--sumi);
+    box-shadow: 0 50px 90px -40px rgba(58, 36, 24, .55), 0 0 0 2px rgba(0, 0, 0, .06);
+  }
+  .screen { position: relative; height: 100%; border-radius: 52px; overflow: hidden; background: var(--chat); display: grid; grid-template-rows: 124px 1fr 118px; }
+  .head { display: flex; align-items: center; gap: 20px; padding: 26px 32px 0; background: var(--washi-hi); border-bottom: 2px solid #E4D9C8; }
+  .av { width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; font: 700 30px/1 var(--gothic); color: #fff; background: var(--mikan); }
+  .who strong { display: block; font: 700 32px/1.15 var(--gothic); color: var(--sumi); }
+  .who span { font: 500 24px/1.2 var(--gothic); color: #5E8C5A; }
+  .chat { position: relative; overflow: hidden; }
+  .list { position: absolute; left: 0; right: 0; top: 0; padding: 0 28px; }
+  .msg {
+    position: absolute; max-width: 540px; padding: 18px 24px 14px; border-radius: 30px;
+    font: 500 31px/1.35 var(--gothic); color: var(--sumi);
+    box-shadow: 0 2px 0 rgba(43, 39, 36, .06);
+  }
+  .msg.in { left: 28px; background: var(--washi-hi); border-bottom-left-radius: 10px; transform-origin: 0 100%; }
+  .msg.out { right: 28px; background: var(--sakura); border-bottom-right-radius: 10px; transform-origin: 100% 100%; }
+  .msg small { display: block; margin-top: 6px; font: 500 20px/1 var(--gothic); color: var(--ink-soft); text-align: right; }
+  .msg .tag { display: block; margin-bottom: 4px; font: 700 20px/1 var(--gothic); color: var(--shu); letter-spacing: .02em; }
+  .typing { display: flex; gap: 10px; padding: 26px 30px; }
+  .typing i { width: 14px; height: 14px; border-radius: 50%; background: #B08A6E; }
+  .photo { padding: 10px; }
+  .photo .img {
+    width: 380px; height: 250px; border-radius: 22px; position: relative; overflow: hidden;
+    background: linear-gradient(160deg, #4A2F24 0%, #8C5637 40%, #D69A62 75%, #EFC996 100%);
+  }
+  .photo .img::after { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 20%, rgba(255,255,255,.35), transparent 55%); }
+  .photo small { padding: 0 8px 4px; }
+  .compose { display: flex; align-items: center; gap: 18px; padding: 0 26px; background: var(--washi-hi); border-top: 2px solid #E4D9C8; }
+  .field { flex: 1; height: 72px; border-radius: 36px; background: var(--chat); display: flex; align-items: center; padding: 0 28px; font: 500 28px/1 var(--gothic); color: var(--ink-soft); }
+  .send { width: 72px; height: 72px; border-radius: 50%; background: var(--shu); display: grid; place-items: center; }
+  .send svg { width: 34px; height: 34px; }
+
+  /* Gancho: menú "Copiar | Pegar" y contador */
+  #menu { left: 250px; top: 1360px; display: flex; border-radius: 22px; overflow: hidden; background: var(--sumi); box-shadow: 0 16px 30px -12px rgba(43,39,36,.5); }
+  #menu span { padding: 20px 34px; font: 700 30px/1 var(--gothic); color: #F3EDE2; }
+  #menu .paste { background: var(--sumi-2); }
+  #tap { left: 470px; top: 1360px; width: 64px; height: 64px; margin: -2px 0 0 0; border-radius: 50%; border: 5px solid var(--shu); opacity: 0; }
+  #count { z-index: 5; right: 120px; top: 580px; padding: 14px 26px; border-radius: 40px; background: var(--shu); color: #FFF3EA; font: 800 44px/1 var(--mincho); transform-origin: 50% 50%; }
+
+  /* Antes: lista tachada con pincel */
+  .row { left: 90px; right: 150px; height: 120px; display: flex; align-items: center; font: 700 64px/1 var(--gothic); color: var(--sumi); }
+  .row .txt { position: relative; }
+  .row svg { position: absolute; left: -14px; top: 50%; height: 60px; margin-top: -26px; overflow: visible; }
+  .row path { fill: none; stroke: var(--shu); stroke-linecap: round; stroke-dasharray: 1; opacity: 0; }
+  .row .lab { display: none; }
+  #antesLab { left: 90px; top: 610px; font: 700 34px/1 var(--gothic); color: var(--ink-soft); letter-spacing: .04em; }
+
+  /* Final */
+  #notice { left: 200px; top: 590px; width: 680px; display: flex; align-items: center; gap: 18px; padding: 22px 28px; border-radius: 28px; background: var(--sumi); color: #FFF3EA; font: 700 30px/1.2 var(--gothic); box-shadow: 0 20px 40px -18px rgba(0,0,0,.6); }
+  #notice .dot { width: 18px; height: 18px; border-radius: 50%; background: var(--mikan); flex: none; }
+  #stamp { left: 740px; top: 1150px; width: 210px; height: 210px; }
+  #stamp .hanko { width: 210px; height: 210px; border-radius: 30px; font-size: 140px; box-shadow: 0 18px 40px -16px rgba(0,0,0,.6); }
+  #ring { left: 740px; top: 1150px; width: 210px; height: 210px; border-radius: 34px; border: 8px solid var(--shu); opacity: 0; }
+
+  /* Controles (no salen en la grabación) */
+  .bar { display: flex; align-items: center; gap: 14px; padding: 12px 16px; background: #221E1B; border-top: 1px solid #332D29; font-size: 14px; }
+  .bar button { font: 600 14px/1 var(--gothic); color: #F3EDE2; background: #3A342F; border: 0; border-radius: 999px; padding: 10px 16px; cursor: pointer; }
+  .bar button:hover { background: #4A433D; }
+  .bar input[type="range"] { flex: 1; accent-color: #C8452C; }
+  .bar output { font-variant-numeric: tabular-nums; min-width: 92px; color: #CFC5B8; }
+  .bar .hint { color: #8A7F75; }
+  @media (max-width: 560px) { .bar .hint { display: none; } }
+</style>
+</head>
+<body>
+<div class="viewport" id="viewport">
+  <div id="stage" class="paper">
+    <div class="abs paper" id="sumi"></div>
+    <div class="abs" id="sun"></div>
+
+    <div class="abs" id="sign"><span class="kana">マル</span><span class="hanko">丸</span></div>
+
+    <!-- Escena 1: gancho -->
+    <h1 class="abs title" id="titleA">
+      <span class="line"><span class="w">¿Copias</span><span class="w">y</span><span class="w">pegas</span></span>
+      <span class="line"><span class="w">el</span><span class="w">mismo</span><span class="w">mensaje</span></span>
+      <span class="line"><span class="w">todo</span><span class="w">el</span><span class="w">día?</span></span>
+    </h1>
+    <div class="abs" id="count">×1</div>
+    <div class="abs phone" id="phoneA" style="top:620px;height:900px">
+      <div class="screen">
+        <div class="head"><div class="av">M</div><div class="who"><strong>María</strong><span>en línea</span></div></div>
+        <div class="chat"><div class="list" id="listA"></div></div>
+        <div class="compose"><div class="field">Mensaje</div><div class="send"><svg viewBox="0 0 24 24"><path d="M4.5 12L19.5 5l-4 14.5-3.5-6z" fill="#FFF3EA"/></svg></div></div>
+      </div>
+    </div>
+    <div class="abs" id="menu"><span>Copiar</span><span class="paste">Pegar</span></div>
+    <div class="abs" id="tap"></div>
+
+    <!-- Escena 2: antes -->
+    <h2 class="abs title" id="titleB"><span class="line">Así, con cada clienta:</span></h2>
+    <div id="rows"></div>
+
+    <!-- Escena 3 y 4: el arreglo -->
+    <div class="abs" id="fix">Así lo arreglamos</div>
+    <div class="abs phone" id="phoneB" style="top:430px;height:900px">
+      <div class="screen">
+        <div class="head"><div class="av">M</div><div class="who"><strong>María</strong><span>en línea</span></div></div>
+        <div class="chat" id="chatB"><div class="list" id="listB"></div></div>
+        <div class="compose"><div class="field">Mensaje</div><div class="send"><svg viewBox="0 0 24 24"><path d="M4.5 12L19.5 5l-4 14.5-3.5-6z" fill="#FFF3EA"/></svg></div></div>
+      </div>
+    </div>
+    <div class="abs" id="notice"><span class="dot"></span>Nueva clienta lista para cotizar</div>
+    <div class="abs" id="ring"></div>
+    <div class="abs" id="stamp"><span class="hanko">丸</span></div>
+    <div class="abs" id="result">Ella solo entra<br><span class="accent">para cotizar.</span></div>
+  </div>
+</div>
+
+<div class="bar">
+  <button id="play" type="button">Pausa</button>
+  <button id="restart" type="button">Reiniciar</button>
+  <input id="scrub" type="range" min="0" max="10.5" step="0.01" value="0" aria-label="Posición en la animación">
+  <output id="time">0.00 s</output>
+  <span class="hint">Espacio: pausa · R: reiniciar · ?rec: modo grabación</span>
+</div>
+
+<script>
+/* ---------- Utilidades de tiempo ---------- */
+const DURATION = 10.5;
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const E = {
+  out: (t) => 1 - Math.pow(1 - t, 3),
+  out5: (t) => 1 - Math.pow(1 - t, 5),
+  inn: (t) => t * t * t,
+  inOut: (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2),
+};
+const p = (t, start, dur, ease = E.out) => ease(clamp((t - start) / dur));
+const lerp = (a, b, k) => a + (b - a) * k;
+const $ = (id) => document.getElementById(id);
+const set = (el, o, tf) => { el.style.opacity = o; if (tf !== undefined) el.style.transform = tf; };
+
+/* Textura de papel washi: se genera una vez */
+(() => {
+  const c = document.createElement("canvas"); c.width = c.height = 220;
+  const g = c.getContext("2d"); const d = g.createImageData(220, 220);
+  let s = 7; const rnd = () => ((s = (s * 16807) % 2147483647) / 2147483647);
+  for (let i = 0; i < d.data.length; i += 4) {
+    const v = rnd();
+    d.data[i] = 90; d.data[i + 1] = 70; d.data[i + 2] = 50;
+    d.data[i + 3] = v > 0.985 ? 38 : v * 14;
+  }
+  g.putImageData(d, 0, 0);
+  document.documentElement.style.setProperty("--grain", `url(${c.toDataURL()})`);
+})();
+
+/* ---------- Escena 1: los "pegar" se aceleran ---------- */
+const PASTES = [0.7, 1.05, 1.33, 1.56, 1.74, 1.88, 1.99, 2.08, 2.15, 2.21];
+const PRICE = "Hola, bienvenida. Precios: corte S/ 35, tinte desde S/ 120, balayage desde S/ 180.";
+const listA = $("listA");
+const bubblesA = PASTES.map(() => {
+  const b = document.createElement("div");
+  b.className = "msg out";
+  b.innerHTML = `${PRICE}<small>11:48 p. m.</small>`;
+  listA.append(b);
+  return b;
+});
+
+/* ---------- Escena 2: filas del antes ---------- */
+const ROWS = ["Copiar y pegar precios", "Esperar la respuesta", "Buscar el chat", "Pedir la foto"];
+const rowsEl = $("rows");
+const rows = ROWS.map((txt, i) => {
+  const r = document.createElement("div");
+  r.className = "abs row";
+  r.style.top = 700 + i * 170 + "px";
+  r.innerHTML = `<span class="txt">${txt}<svg viewBox="0 0 100 20" preserveAspectRatio="none"><path pathLength="1" stroke-width="6" d="M2 11 C 22 8, 42 13, 62 9 S 90 11, 98 8"/></svg></span>`;
+  rowsEl.append(r);
+  return r;
+});
+
+/* ---------- Escena 4: conversación con el bot ---------- */
+const listB = $("listB");
+const CHAT_B = [
+  { side: "in", at: 7.3, html: "Hola, ¿cuánto cuesta el balayage?<small>11:48 p. m.</small>" },
+  { side: "out", at: 7.5, out: 7.82, typing: true },
+  { side: "out", at: 7.82, html: '<span class="tag">Automático</span>¡Hola! Desde S/ 180. ¿Me mandas una foto de tu cabello para darte el precio exacto?<small>11:48 p. m.</small>' },
+  { side: "in", at: 8.25, photo: true, html: '<div class="img"></div><small>11:49 p. m.</small>' },
+  { side: "out", at: 8.5, out: 8.78, typing: true },
+  { side: "out", at: 8.78, html: '<span class="tag">Automático</span>¡Gracias! Ya le pasé tus datos a la dueña para tu cotización.<small>11:49 p. m.</small>' },
+];
+const itemsB = CHAT_B.map((m) => {
+  const el = document.createElement("div");
+  el.className = `msg ${m.side}` + (m.typing ? " typing" : "") + (m.photo ? " photo" : "");
+  el.innerHTML = m.typing ? "<i></i><i></i><i></i>" : m.html;
+  listB.append(el);
+  return { ...m, el, h: 0 };
+});
+const GAP = 16;
+
+function measure() {
+  bubblesA.forEach((b) => (b.dataset.h = b.offsetHeight));
+  itemsB.forEach((m) => (m.h = m.el.offsetHeight));
+}
+
+/* ---------- Render de un instante ---------- */
+function render(t) {
+  /* Escena 1 */
+  const wordsA = document.querySelectorAll("#titleA .w");
+  const exitA = p(t, 2.4, 0.3, E.inn);
+  wordsA.forEach((w, i) => {
+    const k = p(t, 0.05 + i * 0.07, 0.45, E.out5);
+    set(w, k * (1 - exitA), `translateY(${(1 - k) * 50 - exitA * 40}px)`);
+  });
+
+  const inA = p(t, 0.15, 0.55, E.out5);
+  const outA = p(t, 2.35, 0.4, E.inn);
+  set($("phoneA"), inA * (1 - outA), `translateY(${(1 - inA) * 140 + outA * 180}px) scale(${0.94 + 0.06 * inA})`);
+
+  const bump = (x, w = 0.14) => (x >= 0 && x < w ? 1 - x / w : 0);
+  let n = 0, pulse = 0;
+  const viewA = 900 - 28 - 124 - 118;
+  const hA = (+bubblesA[0].dataset.h || 190) + GAP;
+  let offset = 0;
+  PASTES.forEach((tp, i) => {
+    const a = p(t, tp, 0.2, E.out5);
+    if (t >= tp) n++;
+    pulse = Math.max(pulse, bump(t - tp));
+    offset += a * hA;
+    const b = bubblesA[i];
+    b.style.top = viewA - hA + i * hA + "px";
+    set(b, a, `scale(${0.9 + 0.1 * a})`);
+  });
+  listA.style.transform = `translateY(${-offset}px)`;
+
+  const menuIn = p(t, 0.45, 0.25, E.out5);
+  set($("menu"), menuIn * (1 - outA), `translateY(${outA * 180}px) scale(${1 + 0.1 * pulse})`);
+  $("menu").querySelector(".paste").style.background = pulse > 0.4 ? "var(--shu)" : "var(--sumi-2)";
+  set($("tap"), pulse * (1 - outA), `scale(${0.6 + (1 - pulse) * 0.9})`);
+
+  const cnt = $("count");
+  cnt.textContent = "×" + Math.max(1, n);
+  set(cnt, (n > 0 ? 1 : 0) * (1 - outA), `translateY(${outA * 180}px) scale(${1 + 0.28 * pulse}) rotate(${-4 + pulse * 4}deg)`);
+
+  /* Escena 2 */
+  const inB = p(t, 2.65, 0.45, E.out5);
+  const outB = p(t, 5.5, 0.28, E.inn);
+  set($("titleB"), inB * (1 - outB), `translateY(${(1 - inB) * 40 - outB * 30}px)`);
+  rows.forEach((r, i) => {
+    const s0 = 2.9 + i * 0.6;
+    const a = p(t, s0, 0.38, E.out5);
+    const strike = p(t, s0 + 0.36, 0.28, E.inOut);
+    set(r, a * (1 - outB), `translateX(${(1 - a) * -50}px) translateY(${-outB * 20}px)`);
+    r.querySelector(".txt").style.opacity = 1 - 0.4 * strike;
+    r.querySelectorAll("path").forEach((pa) => { pa.style.strokeDashoffset = 1 - strike; pa.style.opacity = strike > 0.01 ? 1 : 0; });
+    r.querySelector("svg").style.width = r.querySelector(".txt").offsetWidth + 28 + "px";
+  });
+
+  /* Escena 3: el sol y el cambio a sumi */
+  const sunIn = p(t, 5.8, 0.42, E.out5);
+  const sunMove = p(t, 6.8, 0.55, E.inOut);
+  set($("sun"), sunIn, `translateY(${sunMove * 120}px) scale(${lerp(0.25, 1, sunIn) * lerp(1, 1.3, sunMove)})`);
+  const dark = p(t, 6.0, 0.62, E.inOut);
+  $("sumi").style.clipPath = `circle(${dark * 1400}px at 540px 960px)`;
+  $("sign").querySelector(".kana").style.color = dark > 0.5 ? "#EDE3D6" : "var(--sumi)";
+
+  const fixIn = p(t, 6.2, 0.45, E.out5);
+  const fixUp = p(t, 6.85, 0.5, E.inOut);
+  set($("fix"), fixIn, `translateY(${(1 - fixIn) * 30 - fixUp * 640}px) scale(${lerp(1, 0.62, fixUp)})`);
+
+  /* Escena 4: el bot trabaja */
+  const inP = p(t, 7.0, 0.45, E.out5);
+  set($("phoneB"), inP, `translateY(${(1 - inP) * 220}px)`);
+  const viewB = 900 - 28 - 124 - 118;
+  let y = 24;
+  itemsB.forEach((m) => {
+    let a = p(t, m.at, 0.22, E.out5);
+    if (m.out) a *= 1 - p(t, m.out, 0.08, E.inn);
+    m.el.style.top = y + "px";
+    set(m.el, a, `scale(${0.9 + 0.1 * a})`);
+    y += (m.h + GAP) * a;
+  });
+  listB.style.transform = `translateY(${-Math.max(0, y - viewB)}px)`;
+
+  /* Escena 5: aviso, sello y remate */
+  const noteIn = p(t, 9.05, 0.35, E.out5);
+  set($("notice"), noteIn, `translateY(${(1 - noteIn) * -70}px)`);
+  const st = p(t, 9.4, 0.26, E.out5);
+  set($("stamp"), clamp(st * 3), `scale(${lerp(2.4, 1, st)}) rotate(${lerp(-26, -8, st)}deg)`);
+  const ring = p(t, 9.45, 0.55, E.out);
+  set($("ring"), t >= 9.45 ? 0.7 * (1 - ring) : 0, `scale(${1 + 1.4 * ring}) rotate(-8deg)`);
+  const shake = t > 9.45 && t < 9.75 ? Math.sin((t - 9.45) * 90) * 7 * (1 - (t - 9.45) / 0.3) : 0;
+  if (shake) $("phoneB").style.transform = `translate(${shake}px, ${shake * 0.4}px)`;
+  const resIn = p(t, 9.6, 0.45, E.out5);
+  set($("result"), resIn, `translateY(${(1 - resIn) * 40}px)`);
+}
+
+/* ---------- Reproductor ---------- */
+const params = new URLSearchParams(location.search);
+const REC = params.has("rec");
+if (REC) document.body.classList.add("rec");
+
+const stage = $("stage");
+function fit() {
+  if (REC) return;
+  const vp = $("viewport").getBoundingClientRect();
+  const s = Math.min(vp.width / 1080, vp.height / 1920) * 0.96;
+  stage.style.transform = `translate(${-540 * s}px, ${-960 * s}px) scale(${s})`;
+}
+addEventListener("resize", fit);
+
+let playing = !REC, t0 = performance.now(), now = 0;
+const scrub = $("scrub"), out = $("time"), playBtn = $("play");
+function show(t) { now = t; render(t); scrub.value = t; out.textContent = t.toFixed(2) + " s"; }
+function loop(ts) {
+  if (playing) {
+    let t = (ts - t0) / 1000;
+    if (t > DURATION + 1.2) { t0 = ts; t = 0; }
+    show(Math.min(t, DURATION));
+  }
+  requestAnimationFrame(loop);
+}
+playBtn.onclick = () => { playing = !playing; playBtn.textContent = playing ? "Pausa" : "Reproducir"; t0 = performance.now() - now * 1000; };
+$("restart").onclick = () => { t0 = performance.now(); playing = true; playBtn.textContent = "Pausa"; };
+scrub.oninput = () => { playing = false; playBtn.textContent = "Reproducir"; show(+scrub.value); };
+addEventListener("keydown", (e) => {
+  if (e.code === "Space") { e.preventDefault(); playBtn.click(); }
+  if (e.key === "r" || e.key === "R") $("restart").click();
+});
+
+// Para exportar cuadro por cuadro
+window.__seek = (t) => show(t);
+window.__duration = DURATION;
+window.__ready = document.fonts.ready.then(() => { measure(); fit(); show(0); return true; });
+window.__ready.then(() => { t0 = performance.now(); requestAnimationFrame(loop); });
+</script>
+</body>
+</html>
