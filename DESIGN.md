@@ -3,7 +3,7 @@
 Registrado a partir de la versión construida (`index.html`, `styles.css`, `scenes.js`, `main.js`, `i18n.js`). Logo v2 en `img/maru-logo.webp` (ilustración: gata calicó dormida, sol shu, sakura, nubes kin, マル + sello 丸). La v1 (sumi azul + naranja, Zen Maru Gothic) quedó descartada por verse genérica.
 
 ## Color
-Paleta tomada del logo. Tokens semánticos en `:root`, con tema oscuro ("noche de tinta sumi").
+Paleta tomada del logo. Tokens semánticos en `:root`. Tema oscuro = noche japonesa: añil #111726, papel #182033, texto crema #EEE8DC, bermellón #D9563A. Los valores "Oscuro" de la tabla quedan como referencia de la versión anterior.
 
 | Nombre | Claro | Oscuro | Uso |
 |---|---|---|---|
@@ -26,7 +26,7 @@ Texto sobre shu: `--on-accent` #FFF6EE. Sombras cálidas (`--shadow: 70 48 32`).
 
 ## Recursos de marca
 - Sello 丸 (hanko) rojo, girado -4°: menú, pie, favicon, vista previa del mensaje, escena de IA.
-- Sol shu con dos nubes kin detrás del escenario del hero.
+- Astro del hero: de día, sol shu con dos nubes kin; de noche el sol se pone (baja y se apaga) y sale la luna crema con estrellas (1 s, junto al círculo de la transición de tema).
 - La figura "¿Por qué una gata?" muestra el logo v2 sobre papel #F2EBDF (el mismo papel de la imagen, en ambos temas).
 
 ## Componentes
