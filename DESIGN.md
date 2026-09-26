@@ -66,3 +66,12 @@ Símbolo SVG `#maru`: gata dormida, coloreable con `--m-ink`, `--m-halo` (igual 
 
 ## Móvil chico (iPhone 12 mini, 375×629 útil)
 - Bajo 560px las opciones son una grilla de 3×2 con ícono y nombre corto (el texto largo queda para lectores de pantalla). Sustituye a la fila deslizable, que escondía 5 de las 6 opciones.
+
+## Rojo beni (detalles)
+- `--beni` #B7282E en claro, #E4625C en oscuro (y sobre la banda del pie). Solo en detalles: 丸くなる vertical, sellos (hanko) 丸, el hilo del módulo de servicio abierto y la flecha de la pregunta abierta. Nunca en botones ni en estados de acción: eso sigue siendo Mandarina.
+
+## Servicios y pasos (v2.1)
+- Servicios: módulos desplegables, uno abierto a la vez (`grid-template-rows 0fr → 1fr`, 500ms). Cerrado muestra nombre + "para quién"; abierto, descripción y "Ver ejemplo". Paneles cerrados con `inert`.
+- Encabezados de sección apilados (título arriba, texto abajo), sin el párrafo flotando a la derecha.
+- Pasos en escritorio: una sola línea de 1 a 3 que se llena con el scroll (`animation-timeline: view()`); los círculos 2 y 3 se encienden con un pequeño pop al alcanzarlos. Sin soporte, se llena por tramos con IntersectionObserver. En móvil, tramos verticales.
+- Escena del chat con ritmo 1.35×; aviso de citas entra, se queda y sale; nodos del flujo "cargan" llenando su propio contorno.
