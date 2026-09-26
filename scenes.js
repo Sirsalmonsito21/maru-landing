@@ -194,16 +194,16 @@ async function sceneCitas(root, c) {
     return c.a(toast, [
       { opacity: 0, transform: "translate(-50%, 14px) scale(0.96)" },
       { opacity: 1, transform: "translate(-50%, 0) scale(1)" },
-    ], { duration: 420 });
+    ], { duration: 340 });
   };
   const hideToast = () => c.a(toast, [
     { opacity: 1, transform: "translate(-50%, 0) scale(1)" },
     { opacity: 0, transform: "translate(-50%, 8px) scale(0.98)" },
-  ], { duration: 220, easing: "ease-in" });
+  ], { duration: 180, easing: "ease-in" });
 
   for (const [name, d, r] of book) {
     await showToast("i-wa", T.booked(name, days[d], hours[r]));
-    await c.wait(n === 0 ? 650 : 420);
+    await c.wait(n === 0 ? 520 : 320);
     const ev = h("span", "cal-ev", name);
     cells[`${d}-${r}`].append(ev);
     evs.push(ev);
@@ -211,9 +211,9 @@ async function sceneCitas(root, c) {
     await c.enter(ev, { y: -14, s: 0.86, dur: 420 });
     n++;
     count.textContent = T.count(n);
-    await c.wait(n === 1 ? 450 : 260);
+    await c.wait(n === 1 ? 360 : 200);
     await hideToast();
-    await c.wait(120);
+    await c.wait(90);
   }
 
   await c.wait(300);
@@ -449,11 +449,12 @@ async function sceneCobros(root, c) {
   // En pantallas angostas el flujo va en dos filas.
   const narrow = W < 520;
   if (narrow) {
-    Object.assign(nodes.a, { x: 14, y: 15 });
-    Object.assign(nodes.b, { x: 50, y: 15 });
-    Object.assign(nodes.c, { x: 86, y: 15 });
-    Object.assign(nodes.d, { x: 30, y: 50 });
-    Object.assign(nodes.e, { x: 72, y: 50 });
+    root.classList.add("narrow");
+    Object.assign(nodes.a, { x: 36, y: 11, side: true });
+    Object.assign(nodes.b, { x: 36, y: 32, side: true });
+    Object.assign(nodes.c, { x: 36, y: 53, side: true });
+    Object.assign(nodes.d, { x: 20, y: 77 });
+    Object.assign(nodes.e, { x: 62, y: 77 });
   }
   const px = (n) => [(n.x / 100) * W, (n.y / 100) * H];
   const svg = document.createElementNS(NS, "svg");
@@ -476,7 +477,7 @@ async function sceneCobros(root, c) {
 
   const els = {};
   Object.entries(nodes).forEach(([k, n]) => {
-    const el = h("div", "fnode" + (n.trig ? " trig" : ""));
+    const el = h("div", "fnode" + (n.trig ? " trig" : "") + (n.side ? " side" : ""));
     el.style.left = n.x + "%";
     el.style.top = n.y + "%";
     const box = h("span", "fnode-box");

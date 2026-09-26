@@ -241,7 +241,7 @@ const theme = () => root.dataset.theme || (darkMQ.matches ? "dark" : "light");
 function syncThemeLabel() {
   const dark = theme() === "dark";
   themeBtn.setAttribute("aria-label", T().ui[dark ? "theme.toLight" : "theme.toDark"]);
-  document.querySelector('meta[name="theme-color"]').content = dark ? "#1A1714" : "#F3EDE2";
+  document.querySelector('meta[name="theme-color"]').content = dark ? "#111726" : "#F3EDE2";
 }
 
 themeBtn.addEventListener("click", () => {
