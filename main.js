@@ -2,6 +2,8 @@
 const WHATSAPP = "51900000000";
 
 // Íconos de cada opción; los textos viven en i18n.js.
+// Ritmo por escena: el chat va un poco más pausado para leerlo con calma.
+const PACE = { whatsapp: 1.35 };
 const ICONS = { whatsapp: "i-wa", citas: "i-cal", excel: "i-sheet", reportes: "i-chart", cobros: "i-split", ia: "i-doc" };
 
 const $ = (id) => document.getElementById(id);
@@ -54,7 +56,7 @@ async function play(key) {
   stage.dataset.scene = key;
   stage.classList.remove("done");
   try {
-    await SCENES[key](scene, makeCtx(ctl.signal, reduced, T().scenes));
+    await SCENES[key](scene, makeCtx(ctl.signal, reduced, T().scenes, PACE[key] || 1));
     stage.classList.add("done");
   } catch (e) {
     if (e.name !== "AbortError") console.error(e);
@@ -102,6 +104,21 @@ document.querySelectorAll("[data-demo]").forEach((btn) => {
 new IntersectionObserver((entries, io) => {
   if (entries[0].isIntersecting) { if (!started) play(current); io.disconnect(); }
 }, { threshold: 0.35 }).observe(stage);
+
+/* ---------- Servicios: módulos desplegables, uno abierto a la vez ---------- */
+const svcs = [...document.querySelectorAll(".svc")];
+function setOpen(li, open) {
+  li.toggleAttribute("data-open", open);
+  li.querySelector(".svc-toggle").setAttribute("aria-expanded", String(open));
+  li.querySelector(".svc-panel").inert = !open;
+}
+svcs.forEach((li) => {
+  li.querySelector(".svc-toggle").addEventListener("click", () => {
+    const open = !li.hasAttribute("data-open");
+    svcs.forEach((o) => { if (o !== li) setOpen(o, false); });
+    setOpen(li, open);
+  });
+});
 
 /* ---------- Mensaje final ---------- */
 const composeText = $("compose-text");
@@ -182,6 +199,7 @@ function transition(kind, update, origin) {
   activeVT?.skipTransition();
   root.classList.add("vt-" + kind);
   const vt = (activeVT = document.startViewTransition(update));
+  vt.ready.catch(() => {}); // al saltarla, "ready" se rechaza: es esperado
   // Tope de seguridad: si la pestaña no pinta (oculta, en segundo plano), no bloquear la página.
   const cap = setTimeout(() => vt.skipTransition(), 1200);
   vt.finished.finally(() => {

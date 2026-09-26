@@ -24,7 +24,8 @@ function icon(id, cls = "ic") {
 
 const abortErr = () => new DOMException("scene aborted", "AbortError");
 
-function makeCtx(signal, fast, t = {}) {
+// pace > 1 hace la escena más lenta (esperas y duraciones).
+function makeCtx(signal, fast, t = {}, pace = 1) {
   const guard = () => { if (signal.aborted) throw abortErr(); };
   const c = {
     fast,
@@ -33,13 +34,14 @@ function makeCtx(signal, fast, t = {}) {
     wait(ms) {
       if (fast) return Promise.resolve().then(guard);
       return new Promise((res, rej) => {
-        const t = setTimeout(() => (signal.aborted ? rej(abortErr()) : res()), ms);
+        const t = setTimeout(() => (signal.aborted ? rej(abortErr()) : res()), ms * pace);
         signal.addEventListener("abort", () => { clearTimeout(t); rej(abortErr()); }, { once: true });
       });
     },
     // Anima y espera. fill: both para que los retrasos muestren el estado inicial.
     async a(node, kf, o = {}) {
       const opts = { duration: 400, easing: EASE, fill: "both", ...o };
+      opts.duration *= pace; opts.delay = (opts.delay || 0) * pace;
       if (fast) { opts.duration = 0; opts.delay = 0; }
       const an = node.animate(kf, opts);
       await an.finished.catch(() => {});
@@ -49,6 +51,7 @@ function makeCtx(signal, fast, t = {}) {
     // Anima sin esperar.
     fire(node, kf, o = {}) {
       const opts = { duration: 400, easing: EASE, fill: "both", ...o };
+      opts.duration *= pace; opts.delay = (opts.delay || 0) * pace;
       if (fast) { opts.duration = 0; opts.delay = 0; }
       return node.animate(kf, opts);
     },
@@ -65,7 +68,7 @@ function makeCtx(signal, fast, t = {}) {
         const t0 = performance.now();
         const tick = (now) => {
           if (signal.aborted) return res();
-          const p = Math.min(1, (now - t0) / dur);
+          const p = Math.min(1, (now - t0) / (dur * pace));
           const e = 1 - Math.pow(1 - p, 3);
           node.textContent = fmt(from + (to - from) * e);
           p < 1 ? requestAnimationFrame(tick) : res();
@@ -82,7 +85,7 @@ function makeCtx(signal, fast, t = {}) {
         const t0 = performance.now();
         const tick = (now) => {
           if (signal.aborted) return res();
-          const p = Math.min(1, (now - t0) / dur);
+          const p = Math.min(1, (now - t0) / (dur * pace));
           const e = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
           const pt = path.getPointAtLength(len * e);
           dot.style.left = pt.x + "px";
@@ -185,10 +188,21 @@ async function sceneCitas(root, c) {
   const book = [["Ana", 3, 1], ["Luis", 1, 2], ["Rosa", 0, 3], ["Jorge", 4, 4], ["Carla", 2, 0]];
   const evs = [];
   let n = 0;
+  const showToast = (ic, text) => {
+    toast.replaceChildren(icon(ic), h("span", null, text));
+    return c.a(toast, [
+      { opacity: 0, transform: "translate(-50%, 14px) scale(0.96)" },
+      { opacity: 1, transform: "translate(-50%, 0) scale(1)" },
+    ], { duration: 420 });
+  };
+  const hideToast = () => c.a(toast, [
+    { opacity: 1, transform: "translate(-50%, 0) scale(1)" },
+    { opacity: 0, transform: "translate(-50%, 8px) scale(0.98)" },
+  ], { duration: 220, easing: "ease-in" });
+
   for (const [name, d, r] of book) {
-    toast.replaceChildren(icon("i-wa"), h("span", null, T.booked(name, days[d], hours[r])));
-    c.fire(toast, [{ opacity: 0, transform: "translate(-50%, 10px)" }, { opacity: 1, transform: "translate(-50%, 0)" }], { duration: 240 });
-    await c.wait(n === 0 ? 420 : 260);
+    await showToast("i-wa", T.booked(name, days[d], hours[r]));
+    await c.wait(n === 0 ? 650 : 420);
     const ev = h("span", "cal-ev", name);
     cells[`${d}-${r}`].append(ev);
     evs.push(ev);
@@ -196,13 +210,14 @@ async function sceneCitas(root, c) {
     await c.enter(ev, { y: -14, s: 0.86, dur: 420, blur: 2 });
     n++;
     count.textContent = T.count(n);
-    await c.wait(Math.max(120, 300 - n * 40));
+    await c.wait(n === 1 ? 450 : 260);
+    await hideToast();
+    await c.wait(120);
   }
 
+  await c.wait(300);
+  await showToast("i-bell", T.reminders);
   await c.wait(350);
-  toast.replaceChildren(icon("i-bell"), h("span", null, T.reminders));
-  c.fire(toast, [{ opacity: 0, transform: "translate(-50%, 10px)" }, { opacity: 1, transform: "translate(-50%, 0)" }], { duration: 260 });
-  await c.wait(400);
   for (const ev of evs) {
     const ok = icon("i-check", "ic ok");
     ev.append(ok);
@@ -493,7 +508,7 @@ async function sceneCobros(root, c) {
 
   const run = async (k) => {
     els[k].classList.add("run");
-    await c.wait(380);
+    await c.wait(700);
     els[k].classList.remove("run");
     els[k].classList.add("ok");
     c.fire(els[k].querySelector(".fnode-box"), [{ transform: "scale(1.08)" }, { transform: "scale(1)" }], { duration: 320, fill: "none" });

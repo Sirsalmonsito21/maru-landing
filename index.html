@@ -144,50 +144,92 @@
       </div>
 
       <ul class="svc-list">
-        <li class="svc">
-          <h3 data-i18n="svc.1.h">Bots de WhatsApp</h3>
-          <div class="svc-body">
-            <p data-i18n="svc.1.p">Respuestas automáticas a preguntas frecuentes, toma de pedidos, citas y recordatorios desde tu número de WhatsApp Business.</p>
-            <p class="svc-for" data-i18n="svc.1.for">Para negocios que viven en el chat.</p>
-          </div>
-          <button class="svc-demo" type="button" data-demo="whatsapp"><span data-i18n="svc.demo">Ver ejemplo</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
-        </li>
-        <li class="svc">
-          <h3 data-i18n="svc.2.h">Automatización de procesos</h3>
-          <div class="svc-body">
-            <p data-i18n="svc.2.p">Conectamos formularios, correos, Excel y Google Sheets para que los datos se pasen solos y las tareas repetitivas desaparezcan.</p>
-            <p class="svc-for" data-i18n="svc.2.for">Para quien copia y pega todos los días.</p>
-          </div>
-          <button class="svc-demo" type="button" data-demo="cobros"><span data-i18n="svc.demo">Ver ejemplo</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
-        </li>
-        <li class="svc">
-          <h3 data-i18n="svc.3.h">Dashboards</h3>
-          <div class="svc-body">
-            <p data-i18n="svc.3.p">Un tablero con tus ventas, citas o inventario al día, que puedes ver desde el celular sin armar reportes.</p>
-            <p class="svc-for" data-i18n="svc.3.for">Para decidir con números, no a ojo.</p>
-          </div>
-          <button class="svc-demo" type="button" data-demo="reportes"><span data-i18n="svc.demo">Ver ejemplo</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
-        </li>
-        <li class="svc">
-          <h3 data-i18n="svc.4.h">Asistentes de IA con tu información</h3>
-          <div class="svc-body">
-            <p data-i18n="svc.4.p">Un asistente que conoce tus productos, precios y políticas, y responde a tu equipo o a tus clientes con tus propios datos.</p>
-            <p class="svc-for" data-i18n="svc.4.for">Para no repetir lo mismo a cada persona nueva.</p>
-          </div>
-          <button class="svc-demo" type="button" data-demo="ia"><span data-i18n="svc.demo">Ver ejemplo</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
-        </li>
-        <li class="svc">
-          <h3 data-i18n="svc.5.h">Páginas web</h3>
-          <div class="svc-body">
-            <p data-i18n="svc.5.p">Webs claras y rápidas que explican lo que vendes y llevan al cliente directo a tu WhatsApp o a tu agenda.</p>
-            <p class="svc-for" data-i18n="svc.5.for">Para que te encuentren y te escriban.</p>
+        <li class="svc" data-open>
+          <h3>
+            <button class="svc-toggle" type="button" aria-expanded="true" aria-controls="svc-1">
+              <span class="svc-name" data-i18n="svc.1.h">Bots de WhatsApp</span>
+              <span class="svc-for" data-i18n="svc.1.for">Para negocios que viven en el chat.</span>
+              <span class="svc-plus" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="svc-panel" id="svc-1">
+            <div class="svc-inner">
+              <p data-i18n="svc.1.p">Respuestas automáticas a preguntas frecuentes, toma de pedidos, citas y recordatorios desde tu número de WhatsApp Business.</p>
+              <button class="svc-demo" type="button" data-demo="whatsapp"><span data-i18n="svc.demo">Ver ejemplo</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+            </div>
           </div>
         </li>
         <li class="svc">
-          <h3 data-i18n="svc.6.h">Talleres de IA para tu equipo</h3>
-          <div class="svc-body">
-            <p data-i18n="svc.6.p">Sesiones prácticas para usar ChatGPT, Claude y otras herramientas en el trabajo diario, con ejemplos de tu propio rubro.</p>
-            <p class="svc-for" data-i18n="svc.6.for">Para que tu equipo gane tiempo desde la semana uno.</p>
+          <h3>
+            <button class="svc-toggle" type="button" aria-expanded="false" aria-controls="svc-2">
+              <span class="svc-name" data-i18n="svc.2.h">Automatización de procesos</span>
+              <span class="svc-for" data-i18n="svc.2.for">Para quien copia y pega todos los días.</span>
+              <span class="svc-plus" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="svc-panel" id="svc-2" inert>
+            <div class="svc-inner">
+              <p data-i18n="svc.2.p">Conectamos formularios, correos, Excel y Google Sheets para que los datos se pasen solos y las tareas repetitivas desaparezcan.</p>
+              <button class="svc-demo" type="button" data-demo="cobros"><span data-i18n="svc.demo">Ver ejemplo</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+            </div>
+          </div>
+        </li>
+        <li class="svc">
+          <h3>
+            <button class="svc-toggle" type="button" aria-expanded="false" aria-controls="svc-3">
+              <span class="svc-name" data-i18n="svc.3.h">Dashboards</span>
+              <span class="svc-for" data-i18n="svc.3.for">Para decidir con números, no a ojo.</span>
+              <span class="svc-plus" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="svc-panel" id="svc-3" inert>
+            <div class="svc-inner">
+              <p data-i18n="svc.3.p">Un tablero con tus ventas, citas o inventario al día, que puedes ver desde el celular sin armar reportes.</p>
+              <button class="svc-demo" type="button" data-demo="reportes"><span data-i18n="svc.demo">Ver ejemplo</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+            </div>
+          </div>
+        </li>
+        <li class="svc">
+          <h3>
+            <button class="svc-toggle" type="button" aria-expanded="false" aria-controls="svc-4">
+              <span class="svc-name" data-i18n="svc.4.h">Asistentes de IA con tu información</span>
+              <span class="svc-for" data-i18n="svc.4.for">Para no repetir lo mismo a cada persona nueva.</span>
+              <span class="svc-plus" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="svc-panel" id="svc-4" inert>
+            <div class="svc-inner">
+              <p data-i18n="svc.4.p">Un asistente que conoce tus productos, precios y políticas, y responde a tu equipo o a tus clientes con tus propios datos.</p>
+              <button class="svc-demo" type="button" data-demo="ia"><span data-i18n="svc.demo">Ver ejemplo</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+            </div>
+          </div>
+        </li>
+        <li class="svc">
+          <h3>
+            <button class="svc-toggle" type="button" aria-expanded="false" aria-controls="svc-5">
+              <span class="svc-name" data-i18n="svc.5.h">Páginas web</span>
+              <span class="svc-for" data-i18n="svc.5.for">Para que te encuentren y te escriban.</span>
+              <span class="svc-plus" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="svc-panel" id="svc-5" inert>
+            <div class="svc-inner">
+              <p data-i18n="svc.5.p">Webs claras y rápidas que explican lo que vendes y llevan al cliente directo a tu WhatsApp o a tu agenda.</p>
+            </div>
+          </div>
+        </li>
+        <li class="svc">
+          <h3>
+            <button class="svc-toggle" type="button" aria-expanded="false" aria-controls="svc-6">
+              <span class="svc-name" data-i18n="svc.6.h">Talleres de IA para tu equipo</span>
+              <span class="svc-for" data-i18n="svc.6.for">Para que tu equipo gane tiempo desde la semana uno.</span>
+              <span class="svc-plus" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="svc-panel" id="svc-6" inert>
+            <div class="svc-inner">
+              <p data-i18n="svc.6.p">Sesiones prácticas para usar ChatGPT, Claude y otras herramientas en el trabajo diario, con ejemplos de tu propio rubro.</p>
+            </div>
           </div>
         </li>
       </ul>
@@ -229,6 +271,7 @@
     <div class="shell why-grid">
       <figure class="mandarina">
         <span class="maru-ja" lang="ja" aria-hidden="true">丸くなる</span>
+        <span class="hanko" lang="ja" aria-hidden="true">丸</span>
         <svg class="mandarina-cat" viewBox="0 0 112 76" aria-hidden="true"><use href="#maru"/></svg>
         <figcaption data-i18n-html="why.cap"><strong>¿Por qué una gata?</strong>En japonés, cuando un gato se enrosca tranquilo se dice <span lang="ja">丸くなる</span>, “volverse maru”. Así queremos que se sienta tu negocio cuando lo repetitivo ya no depende de ti. Las manchas naranjas son de Mandarina, la gata de la casa.</figcaption>
       </figure>
@@ -307,7 +350,7 @@
       <span class="brand-word">maru</span>
     </a>
     <p data-i18n="foot.tag">Automatización e IA para pymes · Lima, Perú</p>
-    <p class="foot-small">© 2026 Maru</p>
+    <p class="foot-small"><span class="hanko" lang="ja" aria-hidden="true">丸</span>© 2026 Maru</p>
   </div>
 </footer>
 
