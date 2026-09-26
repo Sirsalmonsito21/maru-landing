@@ -1,64 +1,27 @@
 // TODO: reemplazar por el número real de WhatsApp Business (código de país + número, sin + ni espacios)
 const WHATSAPP = "51900000000";
 
-const PAINS = {
-  whatsapp: {
-    title: "Un asistente que responde por ti",
-    con: "Un bot en tu WhatsApp Business responde al instante, a cualquier hora, y te pasa solo las conversaciones que necesitan a una persona.",
-    svc: "Bots de WhatsApp",
-    tool: "WhatsApp Business", icon: "i-wa",
-    msg: "responder los mismos mensajes de WhatsApp",
-  },
-  citas: {
-    title: "Tu agenda se llena y se confirma sola",
-    con: "El cliente elige su horario, la cita entra a tu calendario y el recordatorio sale solo el día anterior.",
-    svc: "Bots de WhatsApp + agenda",
-    tool: "Tu agenda", icon: "i-cal",
-    msg: "agendar y confirmar citas",
-  },
-  excel: {
-    title: "Los datos se ordenan solos",
-    con: "Cada pedido o formulario llega a tu Google Sheets o Excel limpio, sin duplicados, y el gráfico se arma solo.",
-    svc: "Automatización de procesos",
-    tool: "Google Sheets", icon: "i-sheet",
-    msg: "pasar datos a Excel a mano",
-  },
-  reportes: {
-    title: "Tus números al día, sin armarlos",
-    con: "Un dashboard se actualiza con cada venta, y lo revisas desde el celular cuando quieras.",
-    svc: "Dashboards",
-    tool: "Panel de ventas", icon: "i-chart",
-    msg: "armar reportes de ventas",
-  },
-  cobros: {
-    title: "Cobros que no se te escapan",
-    con: "Un flujo revisa cada mañana quién debe, manda el recordatorio por WhatsApp y marca lo que ya se pagó.",
-    svc: "Automatización de procesos",
-    tool: "Flujo automático", icon: "i-split",
-    msg: "perseguir pagos y comprobantes",
-  },
-  ia: {
-    title: "Una IA que conoce tu negocio",
-    con: "Empezamos con un taller práctico y, si te sirve, armamos un asistente que responde con tus propios documentos.",
-    svc: "Talleres y asistentes de IA",
-    tool: "Asistente de IA", icon: "i-doc",
-    msg: "empezar a usar la IA en mi negocio",
-  },
-};
+// Íconos de cada opción; los textos viven en i18n.js.
+const ICONS = { whatsapp: "i-wa", citas: "i-cal", excel: "i-sheet", reportes: "i-chart", cobros: "i-split", ia: "i-doc" };
 
 const $ = (id) => document.getElementById(id);
+const root = document.documentElement;
 const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const { makeCtx, list: SCENES } = window.MaruScenes;
+const I18N = window.MaruI18n;
+
+let lang = root.lang.startsWith("en") ? "en" : "es";
 let current = "whatsapp";
+const T = () => I18N[lang];
+const store = (k, v) => { try { localStorage.setItem(k, v); } catch (e) { /* modo privado */ } };
 
 /* ---------- Enlaces de WhatsApp ---------- */
-const topicMessage = () => `Hola Maru, quiero una consultoría gratis. Lo que más tiempo me quita es ${PAINS[current].msg}.`;
+const topicMessage = () => T().wa.topic(T().pains[current].msg);
 const waLink = (text) => `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(text)}`;
 
 function updateLinks() {
-  const general = "Hola Maru, quiero una consultoría gratis para automatizar tareas de mi negocio.";
   document.querySelectorAll("[data-wa]").forEach((a) => {
-    a.href = waLink(a.dataset.wa === "topic" ? topicMessage() : general);
+    a.href = waLink(a.dataset.wa === "topic" ? topicMessage() : T().wa.general);
     a.target = "_blank";
     a.rel = "noopener";
   });
@@ -69,8 +32,10 @@ const stage = $("stage");
 const view = $("stage-view");
 const outCopy = $("out-copy");
 let controller;
+let started = false;
 
 async function play(key) {
+  started = true;
   controller?.abort();
   const ctl = (controller = new AbortController());
 
@@ -83,13 +48,13 @@ async function play(key) {
     if (ctl.signal.aborted) return;
   }
 
-  const root = document.createElement("div");
-  root.className = "scene";
-  view.replaceChildren(root);
+  const scene = document.createElement("div");
+  scene.className = "scene";
+  view.replaceChildren(scene);
   stage.dataset.scene = key;
   stage.classList.remove("done");
   try {
-    await SCENES[key](root, makeCtx(ctl.signal, reduced));
+    await SCENES[key](scene, makeCtx(ctl.signal, reduced, T().scenes));
     stage.classList.add("done");
   } catch (e) {
     if (e.name !== "AbortError") console.error(e);
@@ -97,12 +62,12 @@ async function play(key) {
 }
 
 function renderCopy(key) {
-  const p = PAINS[key];
+  const p = T().pains[key];
   $("o-title").textContent = p.title;
   $("o-text").textContent = p.con;
   $("o-svc").textContent = p.svc;
   $("stage-tool").textContent = p.tool;
-  $("stage-icon").setAttribute("href", "#" + p.icon);
+  $("stage-icon").setAttribute("href", "#" + ICONS[key]);
 }
 
 let swapTimer;
@@ -128,7 +93,6 @@ document.querySelectorAll("[data-demo]").forEach((btn) => {
   btn.addEventListener("click", () => {
     const input = document.querySelector(`input[name="pain"][value="${btn.dataset.demo}"]`);
     input.checked = true;
-    input.scrollIntoView({ block: "nearest", inline: "center" });
     stage.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "center" });
     select(btn.dataset.demo);
   });
@@ -136,7 +100,7 @@ document.querySelectorAll("[data-demo]").forEach((btn) => {
 
 // La primera escena arranca cuando el escenario se ve. Cada escena corre una vez; no hay loops.
 new IntersectionObserver((entries, io) => {
-  if (entries[0].isIntersecting) { play(current); io.disconnect(); }
+  if (entries[0].isIntersecting) { if (!started) play(current); io.disconnect(); }
 }, { threshold: 0.35 }).observe(stage);
 
 /* ---------- Mensaje final ---------- */
@@ -154,7 +118,7 @@ async function typeInto(text, speed) {
   const run = ++typeRun;
   if (reduced) { composeText.textContent = text; return; }
   composer.classList.add("typing");
-  const base = "Hola Maru, quiero una consultoría gratis. ";
+  const base = T().wa.base;
   let i = composeText.textContent.startsWith(base) && text.startsWith(base) ? base.length : 0;
   composeText.textContent = text.slice(0, i);
   while (i < text.length) {
@@ -174,16 +138,91 @@ new IntersectionObserver((entries, io) => {
 }, { threshold: 0.6 }).observe(composer);
 
 /* ---------- Pasos: se encienden al llegar ---------- */
-const steps = document.querySelectorAll(".step");
 const stepIO = new IntersectionObserver((entries) => {
   entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("on"); stepIO.unobserve(e.target); } });
 }, { rootMargin: "0px 0px -30% 0px" });
-steps.forEach((s) => stepIO.observe(s));
+document.querySelectorAll(".step").forEach((s) => stepIO.observe(s));
 
-/* ---------- Nav ---------- */
+/* ---------- Idioma (sin recargar) ---------- */
+function applyLang(next) {
+  lang = next;
+  const t = T();
+  root.lang = lang === "en" ? "en" : "es-PE";
+  document.title = t.meta.title;
+  document.querySelector('meta[name="description"]').content = t.meta.desc;
+  document.querySelectorAll("[data-i18n]").forEach((el) => { el.textContent = t.ui[el.dataset.i18n]; });
+  document.querySelectorAll("[data-i18n-html]").forEach((el) => { el.innerHTML = t.ui[el.dataset.i18nHtml]; });
+  document.querySelectorAll("[data-i18n-aria]").forEach((el) => el.setAttribute("aria-label", t.ui[el.dataset.i18nAria]));
+  document.querySelectorAll(".pain").forEach((label) => {
+    const p = t.pains[label.querySelector("input").value];
+    label.querySelector(".pl").textContent = p.label;
+    label.querySelector(".ps").textContent = p.short;
+  });
+  document.querySelectorAll("[data-lang]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.lang === lang)));
+  document.querySelector(".lang").dataset.active = lang;
+  syncThemeLabel();
+  renderCopy(current);
+  updateLinks();
+  typeRun++;
+  composer.classList.remove("typing");
+  composeText.textContent = topicMessage();
+  if (started) play(current);
+}
+
+// Transiciones de página: crossfade corto para idioma, círculo desde el botón para el tema.
+function transition(kind, update, origin) {
+  if (reduced || !document.startViewTransition) { update(); return; }
+  if (origin) {
+    const r = origin.getBoundingClientRect();
+    const x = r.left + r.width / 2, y = r.top + r.height / 2;
+    root.style.setProperty("--vt-x", x + "px");
+    root.style.setProperty("--vt-y", y + "px");
+    root.style.setProperty("--vt-r", Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y)) + "px");
+  }
+  activeVT?.skipTransition();
+  root.classList.add("vt-" + kind);
+  const vt = (activeVT = document.startViewTransition(update));
+  // Tope de seguridad: si la pestaña no pinta (oculta, en segundo plano), no bloquear la página.
+  const cap = setTimeout(() => vt.skipTransition(), 1200);
+  vt.finished.finally(() => {
+    clearTimeout(cap);
+    root.classList.remove("vt-" + kind);
+    if (activeVT === vt) activeVT = null;
+  });
+}
+let activeVT = null;
+
+document.querySelectorAll("[data-lang]").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    if (btn.dataset.lang === lang) return;
+    store("maru-lang", btn.dataset.lang);
+    transition("lang", () => applyLang(btn.dataset.lang));
+  });
+});
+
+/* ---------- Tema claro / oscuro ---------- */
+const darkMQ = matchMedia("(prefers-color-scheme: dark)");
+const themeBtn = $("theme-btn");
+const theme = () => root.dataset.theme || (darkMQ.matches ? "dark" : "light");
+
+function syncThemeLabel() {
+  const dark = theme() === "dark";
+  themeBtn.setAttribute("aria-label", T().ui[dark ? "theme.toLight" : "theme.toDark"]);
+  document.querySelector('meta[name="theme-color"]').content = dark ? "#0F161D" : "#F4F5F3";
+}
+
+themeBtn.addEventListener("click", () => {
+  const next = theme() === "dark" ? "light" : "dark";
+  store("maru-theme", next);
+  transition("theme", () => { root.dataset.theme = next; syncThemeLabel(); }, themeBtn);
+});
+darkMQ.addEventListener("change", syncThemeLabel);
+
+/* ---------- Nav: borde al dejar el tope (sin escuchar el scroll) ---------- */
 const nav = document.querySelector(".nav");
-const onScroll = () => nav.classList.toggle("scrolled", scrollY > 8);
-addEventListener("scroll", onScroll, { passive: true });
-onScroll();
+const sentinel = document.createElement("div");
+sentinel.className = "top-sentinel";
+document.body.prepend(sentinel);
+new IntersectionObserver(([e]) => nav.classList.toggle("scrolled", !e.isIntersecting)).observe(sentinel);
 
-updateLinks();
+applyLang(lang);

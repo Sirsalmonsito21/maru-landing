@@ -2,10 +2,19 @@
 <html lang="es-PE">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Maru · Automatización e IA para pymes</title>
 <meta name="description" content="Maru automatiza las tareas repetitivas de tu negocio: bots de WhatsApp, agenda, Excel, reportes y talleres de IA. Consultoría inicial gratis.">
+<meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#F4F5F3">
+<script>
+  // Tema e idioma guardados, antes de pintar para que no parpadee.
+  try {
+    var t = localStorage.getItem("maru-theme");
+    if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
+    if (localStorage.getItem("maru-lang") === "en") document.documentElement.lang = "en";
+  } catch (e) {}
+</script>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -44,26 +53,38 @@
   <symbol id="i-cal" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5.5" width="16" height="14.5" rx="2.5"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/></g></symbol>
   <symbol id="i-chart" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16M7 16v-5M12 16V7M17 16v-8"/></g></symbol>
   <symbol id="i-send" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12L19.5 5l-4 14.5-3.5-6z"/><path d="M12 13.5l7.5-8.5"/></g></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4L6 18M18 6l1.4-1.4"/></g></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M19.5 14.2A7.8 7.8 0 0 1 9.8 4.5a7.8 7.8 0 1 0 9.7 9.7Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
 </svg>
 
-<a class="skip" href="#contenido">Saltar al contenido</a>
+<a class="skip" href="#contenido" data-i18n="skip">Saltar al contenido</a>
 
 <header class="nav" id="top">
   <div class="shell nav-in">
-    <a class="brand" href="#top" aria-label="Maru, inicio">
+    <a class="brand" href="#top" data-i18n-aria="brand.home" aria-label="Maru, inicio">
       <svg class="brand-mark" viewBox="10 22 112 76" aria-hidden="true"><use href="#maru"/></svg>
       <span class="brand-word">maru</span>
     </a>
-    <nav aria-label="Principal">
+    <nav data-i18n-aria="nav.label" aria-label="Principal">
       <ul class="nav-links">
-        <li><a href="#servicios">Servicios</a></li>
-        <li><a href="#proceso">Cómo trabajamos</a></li>
-        <li><a href="#preguntas">Preguntas</a></li>
+        <li><a href="#servicios" data-i18n="nav.services">Servicios</a></li>
+        <li><a href="#proceso" data-i18n="nav.process">Cómo trabajamos</a></li>
+        <li><a href="#preguntas" data-i18n="nav.faq">Preguntas</a></li>
       </ul>
     </nav>
-    <a class="btn btn-ink btn-sm" href="#" data-wa="general">
-      <svg aria-hidden="true"><use href="#i-wa"/></svg><span>Escríbenos</span>
-    </a>
+    <div class="nav-tools">
+      <div class="lang" role="group" data-i18n-aria="lang.label" aria-label="Idioma">
+        <button type="button" data-lang="es" aria-pressed="true" lang="es">ES</button>
+        <button type="button" data-lang="en" aria-pressed="false" lang="en">EN</button>
+      </div>
+      <button class="theme-btn" id="theme-btn" type="button" aria-label="Cambiar a modo oscuro">
+        <svg class="ic-sun" aria-hidden="true"><use href="#i-sun"/></svg>
+        <svg class="ic-moon" aria-hidden="true"><use href="#i-moon"/></svg>
+      </button>
+      <a class="btn btn-ink btn-sm" href="#" data-wa="general">
+        <svg aria-hidden="true"><use href="#i-wa"/></svg><span data-i18n="nav.cta">Escríbenos</span>
+      </a>
+    </div>
   </div>
 </header>
 
@@ -73,25 +94,25 @@
   <section class="hero" id="demo" aria-labelledby="hero-q">
     <div class="shell hero-grid">
       <div class="hero-ask">
-        <h1 id="hero-q">¿Qué es lo que más tiempo te quita en tu negocio?</h1>
-        <p class="lede">Toca una opción y mira cómo lo resolveríamos.</p>
+        <h1 id="hero-q" data-i18n="hero.h1">¿Qué es lo que más tiempo te quita en tu negocio?</h1>
+        <p class="lede" data-i18n="hero.lede">Toca una opción y mira cómo lo resolveríamos.</p>
 
         <fieldset class="pains">
-          <legend class="sr-only">Elige lo que más tiempo te quita</legend>
-          <label class="pain"><input type="radio" name="pain" value="whatsapp" checked><span>Responder los mismos mensajes de WhatsApp</span><i aria-hidden="true"><svg><use href="#i-arrow"/></svg></i></label>
-          <label class="pain"><input type="radio" name="pain" value="citas"><span>Agendar y confirmar citas</span><i aria-hidden="true"><svg><use href="#i-arrow"/></svg></i></label>
-          <label class="pain"><input type="radio" name="pain" value="excel"><span>Pasar datos a Excel a mano</span><i aria-hidden="true"><svg><use href="#i-arrow"/></svg></i></label>
-          <label class="pain"><input type="radio" name="pain" value="reportes"><span>Armar reportes de ventas</span><i aria-hidden="true"><svg><use href="#i-arrow"/></svg></i></label>
-          <label class="pain"><input type="radio" name="pain" value="cobros"><span>Perseguir pagos y comprobantes</span><i aria-hidden="true"><svg><use href="#i-arrow"/></svg></i></label>
-          <label class="pain"><input type="radio" name="pain" value="ia"><span>No sé por dónde empezar con la IA</span><i aria-hidden="true"><svg><use href="#i-arrow"/></svg></i></label>
+          <legend class="sr-only" data-i18n="hero.legend">Elige lo que más tiempo te quita</legend>
+          <label class="pain"><input type="radio" name="pain" value="whatsapp" checked><span><svg class="pain-ic" aria-hidden="true"><use href="#i-wa"/></svg><b class="pl">Responder los mismos mensajes de WhatsApp</b><b class="ps" aria-hidden="true">WhatsApp</b></span><i aria-hidden="true"><svg><use href="#i-arrow"/></svg></i></label>
+          <label class="pain"><input type="radio" name="pain" value="citas"><span><svg class="pain-ic" aria-hidden="true"><use href="#i-cal"/></svg><b class="pl">Agendar y confirmar citas</b><b class="ps" aria-hidden="true">Citas</b></span><i aria-hidden="true"><svg><use href="#i-arrow"/></svg></i></label>
+          <label class="pain"><input type="radio" name="pain" value="excel"><span><svg class="pain-ic" aria-hidden="true"><use href="#i-sheet"/></svg><b class="pl">Pasar datos a Excel a mano</b><b class="ps" aria-hidden="true">Excel</b></span><i aria-hidden="true"><svg><use href="#i-arrow"/></svg></i></label>
+          <label class="pain"><input type="radio" name="pain" value="reportes"><span><svg class="pain-ic" aria-hidden="true"><use href="#i-chart"/></svg><b class="pl">Armar reportes de ventas</b><b class="ps" aria-hidden="true">Reportes</b></span><i aria-hidden="true"><svg><use href="#i-arrow"/></svg></i></label>
+          <label class="pain"><input type="radio" name="pain" value="cobros"><span><svg class="pain-ic" aria-hidden="true"><use href="#i-bell"/></svg><b class="pl">Perseguir pagos y comprobantes</b><b class="ps" aria-hidden="true">Cobros</b></span><i aria-hidden="true"><svg><use href="#i-arrow"/></svg></i></label>
+          <label class="pain"><input type="radio" name="pain" value="ia"><span><svg class="pain-ic" aria-hidden="true"><use href="#i-doc"/></svg><b class="pl">No sé por dónde empezar con la IA</b><b class="ps" aria-hidden="true">IA</b></span><i aria-hidden="true"><svg><use href="#i-arrow"/></svg></i></label>
         </fieldset>
       </div>
 
       <div class="stage" id="stage" data-scene="whatsapp">
         <div class="stage-bar">
           <span class="stage-tool"><svg aria-hidden="true"><use id="stage-icon" href="#i-wa"/></svg><span id="stage-tool">WhatsApp Business</span></span>
-          <span class="stage-tag">Ejemplo</span>
-          <button class="stage-replay" id="replay" type="button" aria-label="Repetir la animación">
+          <span class="stage-tag" data-i18n="stage.tag">Ejemplo</span>
+          <button class="stage-replay" id="replay" type="button" data-i18n-aria="stage.replay" aria-label="Repetir la animación">
             <svg aria-hidden="true"><use href="#i-replay"/></svg>
           </button>
         </div>
@@ -101,14 +122,14 @@
       <div class="hero-out" aria-live="polite">
         <div class="out-copy" id="out-copy">
           <h2 class="out-title" id="o-title">Un asistente que responde por ti</h2>
-          <p class="out-text" id="o-text">Un bot en tu WhatsApp Business responde al instante y te pasa solo las conversaciones que necesitan a una persona.</p>
-          <p class="out-svc">Servicio: <strong id="o-svc">Bots de WhatsApp</strong></p>
+          <p class="out-text" id="o-text">Un bot en tu WhatsApp Business responde al instante, a cualquier hora, y te pasa solo las conversaciones que necesitan a una persona.</p>
+          <p class="out-svc"><span data-i18n="out.svc">Servicio:</span> <strong id="o-svc">Bots de WhatsApp</strong></p>
         </div>
         <div class="out-cta">
           <a class="btn btn-orange" href="#" data-wa="topic">
-            <svg aria-hidden="true"><use href="#i-wa"/></svg><span>Pedir consultoría gratis</span>
+            <svg aria-hidden="true"><use href="#i-wa"/></svg><span data-i18n="out.cta">Pedir consultoría gratis</span>
           </a>
-          <p class="out-note">Te escribimos con este tema ya contado.</p>
+          <p class="out-note" data-i18n="out.note">Te escribimos con este tema ya contado.</p>
         </div>
       </div>
     </div>
@@ -118,55 +139,55 @@
   <section class="services" id="servicios" aria-labelledby="svc-h">
     <div class="shell">
       <div class="sec-head">
-        <h2 id="svc-h">Lo que hacemos</h2>
-        <p>Trabajamos con las herramientas que tu negocio ya usa: WhatsApp, Excel o Google Sheets, correo y tu sistema de ventas. No tienes que cambiar tu forma de trabajar para empezar.</p>
+        <h2 id="svc-h" data-i18n="svc.h">Lo que hacemos</h2>
+        <p data-i18n="svc.p">Trabajamos con las herramientas que tu negocio ya usa: WhatsApp, Excel o Google Sheets, correo y tu sistema de ventas. No tienes que cambiar tu forma de trabajar para empezar.</p>
       </div>
 
       <ul class="svc-list">
         <li class="svc">
-          <h3>Bots de WhatsApp</h3>
+          <h3 data-i18n="svc.1.h">Bots de WhatsApp</h3>
           <div class="svc-body">
-            <p>Respuestas automáticas a preguntas frecuentes, toma de pedidos, citas y recordatorios desde tu número de WhatsApp Business.</p>
-            <p class="svc-for">Para negocios que viven en el chat.</p>
+            <p data-i18n="svc.1.p">Respuestas automáticas a preguntas frecuentes, toma de pedidos, citas y recordatorios desde tu número de WhatsApp Business.</p>
+            <p class="svc-for" data-i18n="svc.1.for">Para negocios que viven en el chat.</p>
           </div>
-          <button class="svc-demo" type="button" data-demo="whatsapp">Ver ejemplo<svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+          <button class="svc-demo" type="button" data-demo="whatsapp"><span data-i18n="svc.demo">Ver ejemplo</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
         </li>
         <li class="svc">
-          <h3>Automatización de procesos</h3>
+          <h3 data-i18n="svc.2.h">Automatización de procesos</h3>
           <div class="svc-body">
-            <p>Conectamos formularios, correos, Excel y Google Sheets para que los datos se pasen solos y las tareas repetitivas desaparezcan.</p>
-            <p class="svc-for">Para quien copia y pega todos los días.</p>
+            <p data-i18n="svc.2.p">Conectamos formularios, correos, Excel y Google Sheets para que los datos se pasen solos y las tareas repetitivas desaparezcan.</p>
+            <p class="svc-for" data-i18n="svc.2.for">Para quien copia y pega todos los días.</p>
           </div>
-          <button class="svc-demo" type="button" data-demo="cobros">Ver ejemplo<svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+          <button class="svc-demo" type="button" data-demo="cobros"><span data-i18n="svc.demo">Ver ejemplo</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
         </li>
         <li class="svc">
-          <h3>Dashboards</h3>
+          <h3 data-i18n="svc.3.h">Dashboards</h3>
           <div class="svc-body">
-            <p>Un tablero con tus ventas, citas o inventario al día, que puedes ver desde el celular sin armar reportes.</p>
-            <p class="svc-for">Para decidir con números, no a ojo.</p>
+            <p data-i18n="svc.3.p">Un tablero con tus ventas, citas o inventario al día, que puedes ver desde el celular sin armar reportes.</p>
+            <p class="svc-for" data-i18n="svc.3.for">Para decidir con números, no a ojo.</p>
           </div>
-          <button class="svc-demo" type="button" data-demo="reportes">Ver ejemplo<svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+          <button class="svc-demo" type="button" data-demo="reportes"><span data-i18n="svc.demo">Ver ejemplo</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
         </li>
         <li class="svc">
-          <h3>Asistentes de IA con tu información</h3>
+          <h3 data-i18n="svc.4.h">Asistentes de IA con tu información</h3>
           <div class="svc-body">
-            <p>Un asistente que conoce tus productos, precios y políticas, y responde a tu equipo o a tus clientes con tus propios datos.</p>
-            <p class="svc-for">Para no repetir lo mismo a cada persona nueva.</p>
+            <p data-i18n="svc.4.p">Un asistente que conoce tus productos, precios y políticas, y responde a tu equipo o a tus clientes con tus propios datos.</p>
+            <p class="svc-for" data-i18n="svc.4.for">Para no repetir lo mismo a cada persona nueva.</p>
           </div>
-          <button class="svc-demo" type="button" data-demo="ia">Ver ejemplo<svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+          <button class="svc-demo" type="button" data-demo="ia"><span data-i18n="svc.demo">Ver ejemplo</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
         </li>
         <li class="svc">
-          <h3>Páginas web</h3>
+          <h3 data-i18n="svc.5.h">Páginas web</h3>
           <div class="svc-body">
-            <p>Webs claras y rápidas que explican lo que vendes y llevan al cliente directo a tu WhatsApp o a tu agenda.</p>
-            <p class="svc-for">Para que te encuentren y te escriban.</p>
+            <p data-i18n="svc.5.p">Webs claras y rápidas que explican lo que vendes y llevan al cliente directo a tu WhatsApp o a tu agenda.</p>
+            <p class="svc-for" data-i18n="svc.5.for">Para que te encuentren y te escriban.</p>
           </div>
         </li>
         <li class="svc">
-          <h3>Talleres de IA para tu equipo</h3>
+          <h3 data-i18n="svc.6.h">Talleres de IA para tu equipo</h3>
           <div class="svc-body">
-            <p>Sesiones prácticas para usar ChatGPT, Claude y otras herramientas en el trabajo diario, con ejemplos de tu propio rubro.</p>
-            <p class="svc-for">Para que tu equipo gane tiempo desde la semana uno.</p>
+            <p data-i18n="svc.6.p">Sesiones prácticas para usar ChatGPT, Claude y otras herramientas en el trabajo diario, con ejemplos de tu propio rubro.</p>
+            <p class="svc-for" data-i18n="svc.6.for">Para que tu equipo gane tiempo desde la semana uno.</p>
           </div>
         </li>
       </ul>
@@ -177,27 +198,27 @@
   <section class="process" id="proceso" aria-labelledby="proc-h">
     <div class="shell">
       <div class="sec-head">
-        <h2 id="proc-h">Cómo trabajamos</h2>
-        <p>Tres pasos, y en el primero no pagas nada.</p>
+        <h2 id="proc-h" data-i18n="proc.h">Cómo trabajamos</h2>
+        <p data-i18n="proc.p">Tres pasos, y en el primero no pagas nada.</p>
       </div>
       <ol class="steps" id="steps">
         <li class="step on">
           <span class="step-n" aria-hidden="true">1</span>
-          <h3>Diagnóstico gratis</h3>
-          <p>Conversamos sobre tu día a día y ubicamos las tareas que más tiempo te quitan. Te decimos qué conviene automatizar primero, y qué no.</p>
-          <p class="step-out">Te llevas: una propuesta clara, con precio y plazo.</p>
+          <h3 data-i18n="proc.1.h">Diagnóstico gratis</h3>
+          <p data-i18n="proc.1.p">Conversamos sobre tu día a día y ubicamos las tareas que más tiempo te quitan. Te decimos qué conviene automatizar primero, y qué no.</p>
+          <p class="step-out" data-i18n="proc.1.out">Te llevas: una propuesta clara, con precio y plazo.</p>
         </li>
         <li class="step">
           <span class="step-n" aria-hidden="true">2</span>
-          <h3>Implementación</h3>
-          <p>Construimos la solución sobre tus herramientas, la probamos contigo y capacitamos a tu equipo para usarla.</p>
-          <p class="step-out">Te llevas: la automatización funcionando y tu equipo sabiendo usarla.</p>
+          <h3 data-i18n="proc.2.h">Implementación</h3>
+          <p data-i18n="proc.2.p">Construimos la solución sobre tus herramientas, la probamos contigo y capacitamos a tu equipo para usarla.</p>
+          <p class="step-out" data-i18n="proc.2.out">Te llevas: la automatización funcionando y tu equipo sabiendo usarla.</p>
         </li>
         <li class="step">
           <span class="step-n" aria-hidden="true">3</span>
-          <h3>Acompañamiento mensual</h3>
-          <p>Cuidamos que todo siga funcionando, hacemos ajustes y proponemos la siguiente mejora cuando tu negocio crece.</p>
-          <p class="step-out">Te llevas: soporte cuando lo necesitas.</p>
+          <h3 data-i18n="proc.3.h">Acompañamiento mensual</h3>
+          <p data-i18n="proc.3.p">Cuidamos que todo siga funcionando, hacemos ajustes y proponemos la siguiente mejora cuando tu negocio crece.</p>
+          <p class="step-out" data-i18n="proc.3.out">Te llevas: soporte cuando lo necesitas.</p>
         </li>
       </ol>
     </div>
@@ -209,18 +230,15 @@
       <figure class="mandarina">
         <span class="maru-ja" lang="ja" aria-hidden="true">丸くなる</span>
         <svg class="mandarina-cat" viewBox="10 22 112 76" aria-hidden="true"><use href="#maru"/></svg>
-        <figcaption>
-          <strong>¿Por qué una gata?</strong>
-          En japonés, cuando un gato se enrosca tranquilo se dice <span lang="ja">丸くなる</span>, “volverse maru”. Así queremos que se sienta tu negocio cuando lo repetitivo ya no depende de ti. Las manchas naranjas son de Mandarina, la gata de la casa.
-        </figcaption>
+        <figcaption data-i18n-html="why.cap"><strong>¿Por qué una gata?</strong>En japonés, cuando un gato se enrosca tranquilo se dice <span lang="ja">丸くなる</span>, “volverse maru”. Así queremos que se sienta tu negocio cuando lo repetitivo ya no depende de ti. Las manchas naranjas son de Mandarina, la gata de la casa.</figcaption>
       </figure>
       <div class="why-text">
-        <h2 id="why-h">Tecnología que se entiende</h2>
+        <h2 id="why-h" data-i18n="why.h">Tecnología que se entiende</h2>
         <dl class="principles">
-          <div><dt>Hablamos en simple</dt><dd>Te explicamos todo en lenguaje de negocio, sin tecnicismos.</dd></div>
-          <div><dt>Usamos lo que ya tienes</dt><dd>Primero aprovechamos tus herramientas y solo después sumamos otras nuevas.</dd></div>
-          <div><dt>Empezamos pequeño</dt><dd>Una tarea bien automatizada vale más que un gran proyecto a medias.</dd></div>
-          <div><dt>Todo queda a tu nombre</dt><dd>Las cuentas y los datos son de tu negocio.</dd></div>
+          <div><dt data-i18n="why.1.t">Hablamos en simple</dt><dd data-i18n="why.1.d">Te explicamos todo en lenguaje de negocio, sin tecnicismos.</dd></div>
+          <div><dt data-i18n="why.2.t">Usamos lo que ya tienes</dt><dd data-i18n="why.2.d">Primero aprovechamos tus herramientas y solo después sumamos otras nuevas.</dd></div>
+          <div><dt data-i18n="why.3.t">Empezamos pequeño</dt><dd data-i18n="why.3.d">Una tarea bien automatizada vale más que un gran proyecto a medias.</dd></div>
+          <div><dt data-i18n="why.4.t">Todo queda a tu nombre</dt><dd data-i18n="why.4.d">Las cuentas y los datos son de tu negocio.</dd></div>
         </dl>
       </div>
     </div>
@@ -229,27 +247,27 @@
   <!-- FAQ -->
   <section class="faq" id="preguntas" aria-labelledby="faq-h">
     <div class="shell faq-grid">
-      <h2 id="faq-h">Preguntas frecuentes</h2>
+      <h2 id="faq-h" data-i18n="faq.h">Preguntas frecuentes</h2>
       <div class="faq-list">
         <details>
-          <summary>¿Cuánto cuesta?</summary>
-          <div class="faq-a"><p>Depende de lo que haya que automatizar. El diagnóstico es gratis, y después te enviamos una propuesta con el precio antes de empezar. No hay costos sorpresa.</p></div>
+          <summary data-i18n="faq.1.q">¿Cuánto cuesta?</summary>
+          <div class="faq-a"><p data-i18n="faq.1.a">Depende de lo que haya que automatizar. El diagnóstico es gratis, y después te enviamos una propuesta con el precio antes de empezar. No hay costos sorpresa.</p></div>
         </details>
         <details>
-          <summary>¿Necesito saber de tecnología?</summary>
-          <div class="faq-a"><p>No. Nosotros nos encargamos de la parte técnica y te enseñamos solo lo que necesitas para usarlo en tu día a día.</p></div>
+          <summary data-i18n="faq.2.q">¿Necesito saber de tecnología?</summary>
+          <div class="faq-a"><p data-i18n="faq.2.a">No. Nosotros nos encargamos de la parte técnica y te enseñamos solo lo que necesitas para usarlo en tu día a día.</p></div>
         </details>
         <details>
-          <summary>Mi negocio es pequeño, ¿me sirve?</summary>
-          <div class="faq-a"><p>Sí. Justamente trabajamos con pymes. Si una tarea se repite todos los días, probablemente se puede automatizar, aunque seas tú solo.</p></div>
+          <summary data-i18n="faq.3.q">Mi negocio es pequeño, ¿me sirve?</summary>
+          <div class="faq-a"><p data-i18n="faq.3.a">Sí. Justamente trabajamos con pymes. Si una tarea se repite todos los días, probablemente se puede automatizar, aunque seas tú solo.</p></div>
         </details>
         <details>
-          <summary>¿Cuánto demora?</summary>
-          <div class="faq-a"><p>Depende del alcance. En el diagnóstico te damos un plazo concreto, y siempre empezamos por lo que te da resultados más rápido.</p></div>
+          <summary data-i18n="faq.4.q">¿Cuánto demora?</summary>
+          <div class="faq-a"><p data-i18n="faq.4.a">Depende del alcance. En el diagnóstico te damos un plazo concreto, y siempre empezamos por lo que te da resultados más rápido.</p></div>
         </details>
         <details>
-          <summary>¿Qué pasa con mis datos?</summary>
-          <div class="faq-a"><p>Trabajamos con cuentas a nombre de tu negocio y solo accedemos a lo necesario para cada automatización. Tú mantienes el control.</p></div>
+          <summary data-i18n="faq.5.q">¿Qué pasa con mis datos?</summary>
+          <div class="faq-a"><p data-i18n="faq.5.a">Trabajamos con cuentas a nombre de tu negocio y solo accedemos a lo necesario para cada automatización. Tú mantienes el control.</p></div>
         </details>
       </div>
     </div>
@@ -259,22 +277,22 @@
   <section class="close" aria-labelledby="close-h">
     <div class="shell close-in">
       <div class="close-copy">
-        <h2 id="close-h">Cuéntanos qué te quita tiempo</h2>
-        <p>La primera conversación es gratis. Si vemos que no te podemos ayudar, te lo decimos.</p>
+        <h2 id="close-h" data-i18n="close.h">Cuéntanos qué te quita tiempo</h2>
+        <p data-i18n="close.p">La primera conversación es gratis. Si vemos que no te podemos ayudar, te lo decimos.</p>
         <a class="btn btn-orange btn-lg" href="#" data-wa="topic">
-          <svg aria-hidden="true"><use href="#i-wa"/></svg><span>Enviar este mensaje</span>
+          <svg aria-hidden="true"><use href="#i-wa"/></svg><span data-i18n="close.cta">Enviar este mensaje</span>
         </a>
       </div>
-      <div class="composer" aria-label="Vista previa del mensaje que se enviará por WhatsApp">
+      <div class="composer" data-i18n-aria="composer.label" aria-label="Vista previa del mensaje que se enviará por WhatsApp">
         <div class="composer-head">
           <svg class="composer-cat" viewBox="10 22 112 76" aria-hidden="true"><use href="#maru"/></svg>
-          <div><strong>Maru</strong><span>Consultoría gratis</span></div>
+          <div><strong>Maru</strong><span data-i18n="composer.sub">Consultoría gratis</span></div>
         </div>
         <div class="composer-body">
           <p class="composer-bubble"><span id="compose-text">Hola Maru, quiero una consultoría gratis. Lo que más tiempo me quita es responder los mismos mensajes de WhatsApp.</span><i class="caret" aria-hidden="true"></i></p>
         </div>
         <div class="composer-bar" aria-hidden="true">
-          <span>Mensaje</span>
+          <span data-i18n="composer.input">Mensaje</span>
           <span class="composer-send"><svg><use href="#i-send"/></svg></span>
         </div>
       </div>
@@ -284,15 +302,16 @@
 
 <footer class="foot">
   <div class="shell foot-in">
-    <a class="brand" href="#top" aria-label="Maru, volver arriba">
+    <a class="brand" href="#top" data-i18n-aria="brand.top" aria-label="Maru, volver arriba">
       <svg class="brand-mark" viewBox="10 22 112 76" aria-hidden="true"><use href="#maru"/></svg>
       <span class="brand-word">maru</span>
     </a>
-    <p>Automatización e IA para pymes · Lima, Perú</p>
+    <p data-i18n="foot.tag">Automatización e IA para pymes · Lima, Perú</p>
     <p class="foot-small">© 2026 Maru</p>
   </div>
 </footer>
 
+<script src="i18n.js"></script>
 <script src="scenes.js"></script>
 <script src="main.js"></script>
 </body>

@@ -24,10 +24,11 @@ function icon(id, cls = "ic") {
 
 const abortErr = () => new DOMException("scene aborted", "AbortError");
 
-function makeCtx(signal, fast) {
+function makeCtx(signal, fast, t = {}) {
   const guard = () => { if (signal.aborted) throw abortErr(); };
   const c = {
     fast,
+    t,
     guard,
     wait(ms) {
       if (fast) return Promise.resolve().then(guard);
@@ -101,10 +102,11 @@ const soles = (v) => "S/ " + Math.round(v).toLocaleString("es-PE");
 /* ---------------- WhatsApp: el bot responde a las 11 de la noche ---------------- */
 async function sceneWhatsapp(root, c) {
   root.classList.add("sc-chat");
+  const T = c.t.chat;
   const head = h("div", "chat-head");
   const who = h("div", "chat-who");
-  who.append(h("strong", null, "Tu negocio"), h("span", null, "en línea"));
-  head.append(h("span", "chat-av", "T"), who);
+  who.append(h("strong", null, T.biz), h("span", null, T.online));
+  head.append(h("span", "chat-av", T.biz[0]), who);
   const body = h("div", "chat-body");
   root.append(head, body);
 
@@ -124,30 +126,30 @@ async function sceneWhatsapp(root, c) {
   };
 
   await c.wait(300);
-  await msg("in", "Hola, ¿cuánto cuesta la limpieza dental?", "23:14");
+  await msg("in", T.q, T.t1);
   let t = await typing();
   await c.wait(850);
   t.remove();
-  await msg("out", "¡Hola! La limpieza cuesta S/ 120 e incluye evaluación. ¿Te separo una cita?", "Automático · 23:14");
+  await msg("out", T.a1, `${T.auto} · ${T.t1}`);
 
   const qr = h("div", "chat-qr");
-  const yes = h("span", "qr", "Sí, reservar");
-  qr.append(yes, h("span", "qr", "Hablar con alguien"));
+  const yes = h("span", "qr", T.yes);
+  qr.append(yes, h("span", "qr", T.human));
   body.append(qr);
   await c.enter(qr, { y: 6, dur: 300 });
   await c.wait(700);
   await c.a(yes, [{ transform: "scale(1)" }, { transform: "scale(0.92)" }, { transform: "scale(1)" }], { duration: 260, fill: "none" });
   yes.classList.add("on");
   await c.wait(220);
-  await msg("in", "Sí, reservar", "23:15");
+  await msg("in", T.yes, T.t2);
   t = await typing();
   await c.wait(700);
   t.remove();
-  await msg("out", "Listo, Ana. Tu cita es el jueves a las 10:00. Te lo recuerdo un día antes.", "Automático · 23:15");
+  await msg("out", T.a2, `${T.auto} · ${T.t2}`);
   await c.wait(250);
 
   const done = h("div", "chat-done");
-  done.append(icon("i-check"), h("span", null, "Resuelto sin que tuvieras que contestar"));
+  done.append(icon("i-check"), h("span", null, T.done));
   body.append(done);
   await c.enter(done, { y: 10, s: 0.9, dur: 460 });
 }
@@ -155,12 +157,13 @@ async function sceneWhatsapp(root, c) {
 /* ---------------- Citas: la semana se llena sola ---------------- */
 async function sceneCitas(root, c) {
   root.classList.add("sc-cal");
-  const days = ["Lun", "Mar", "Mié", "Jue", "Vie"];
+  const T = c.t.cal;
+  const days = T.days;
   const hours = ["9:00", "10:00", "11:00", "12:00", "16:00"];
 
   const top = h("div", "cal-top");
-  const count = h("span", "cal-count", "0 citas nuevas");
-  top.append(h("strong", null, "Esta semana"), count);
+  const count = h("span", "cal-count", T.count(0));
+  top.append(h("strong", null, T.week), count);
 
   const grid = h("div", "cal-grid");
   grid.append(h("span"));
@@ -183,7 +186,7 @@ async function sceneCitas(root, c) {
   const evs = [];
   let n = 0;
   for (const [name, d, r] of book) {
-    toast.replaceChildren(icon("i-wa"), h("span", null, `${name} reservó · ${days[d]} ${hours[r]}`));
+    toast.replaceChildren(icon("i-wa"), h("span", null, T.booked(name, days[d], hours[r])));
     c.fire(toast, [{ opacity: 0, transform: "translate(-50%, 10px)" }, { opacity: 1, transform: "translate(-50%, 0)" }], { duration: 240 });
     await c.wait(n === 0 ? 420 : 260);
     const ev = h("span", "cal-ev", name);
@@ -192,12 +195,12 @@ async function sceneCitas(root, c) {
     c.fire(cells[`${d}-${r}`], [{ boxShadow: "inset 0 0 0 2px var(--mandarina)" }, { boxShadow: "inset 0 0 0 2px transparent" }], { duration: 700, fill: "none" });
     await c.enter(ev, { y: -14, s: 0.86, dur: 420, blur: 2 });
     n++;
-    count.textContent = `${n} citas nuevas`;
+    count.textContent = T.count(n);
     await c.wait(Math.max(120, 300 - n * 40));
   }
 
   await c.wait(350);
-  toast.replaceChildren(icon("i-bell"), h("span", null, "Recordatorios enviados para mañana"));
+  toast.replaceChildren(icon("i-bell"), h("span", null, T.reminders));
   c.fire(toast, [{ opacity: 0, transform: "translate(-50%, 10px)" }, { opacity: 1, transform: "translate(-50%, 0)" }], { duration: 260 });
   await c.wait(400);
   for (const ev of evs) {
@@ -207,23 +210,19 @@ async function sceneCitas(root, c) {
     c.fire(ok, [{ opacity: 0, transform: "scale(0.5)" }, { opacity: 1, transform: "scale(1)" }], { duration: 300 });
     await c.wait(110);
   }
-  count.textContent = `${evs.length} confirmadas`;
-  c.fire(count, [{ color: "var(--mandarina-deep)", transform: "scale(1.06)" }, { color: "var(--sumi)", transform: "scale(1)" }], { duration: 600, fill: "none" });
+  count.textContent = T.confirmed(evs.length);
+  c.fire(count, [{ color: "var(--mandarina-deep)", transform: "scale(1.06)" }, { color: "var(--text)", transform: "scale(1)" }], { duration: 600, fill: "none" });
 }
 
 /* ---------------- Excel: el desorden se ordena y se vuelve gráfico ---------------- */
 async function sceneExcel(root, c) {
   root.classList.add("sc-xl");
-  const rows = [
-    [["ana perez", "Ana Pérez"], ["3/15", "15/03"], ["s/.120", "S/ 120.00"]],
-    [["LUIS RAMOS", "Luis Ramos"], ["15-mar", "15/03"], ["85 soles", "S/ 85.00"]],
-    [["Rosa  quispe", "Rosa Quispe"], ["16.03.26", "16/03"], ["S/ 200", "S/ 200.00"]],
-    [["jorge vega ", "Jorge Vega"], ["17 de marzo", "17/03"], ["S/45", "S/ 45.00"]],
-  ];
+  const T = c.t.xl;
+  const rows = T.rows;
   const dups = [["ANA PEREZ", 0, 0], ["15/3", 0, 1], ["120", 0, 2]];
 
   const sheet = h("div", "xl-sheet");
-  ["Cliente", "Fecha", "Monto"].forEach((t) => sheet.append(h("span", "xl-h", t)));
+  T.heads.forEach((t) => sheet.append(h("span", "xl-h", t)));
   const cells = rows.map((r) => r.map((_, ci) => {
     const cell = h("span", "xl-c" + (ci === 2 ? " num" : ""));
     sheet.append(cell);
@@ -234,11 +233,11 @@ async function sceneExcel(root, c) {
   const bars = h("div", "xl-bars");
   const total = h("strong", null, "S/ 0.00");
   const tot = h("p", "xl-total");
-  tot.append(h("span", null, "Total"), total);
-  chart.append(h("p", "xl-ctitle", "Monto por cliente"), bars, tot);
+  tot.append(h("span", null, T.total), total);
+  chart.append(h("p", "xl-ctitle", T.chart), bars, tot);
 
   const notes = h("div", "xl-notes");
-  ["4 filas limpias", "3 duplicados quitados", "Fechas y montos en un solo formato"].forEach((t) => {
+  T.notes.forEach((t) => {
     const n = h("span", "xl-note");
     n.append(icon("i-check"), h("span", null, t));
     notes.append(n);
@@ -340,11 +339,12 @@ async function sceneExcel(root, c) {
 /* ---------------- Reportes: el panel se actualiza solo ---------------- */
 async function sceneReportes(root, c) {
   root.classList.add("sc-dash");
+  const T = c.t.dash;
   const kpi = h("div", "dash-kpi");
   const val = h("strong", "dash-val", "S/ 0");
-  const live = h("span", "dash-live", "Al día");
+  const live = h("span", "dash-live", T.live);
   const kl = h("div");
-  kl.append(h("span", "dash-lab", "Ventas de la semana"), val);
+  kl.append(h("span", "dash-lab", T.kpi), val);
   kpi.append(kl, live);
 
   const chartBox = h("div", "dash-chart");
@@ -371,11 +371,11 @@ async function sceneReportes(root, c) {
     return dot;
   });
   const axis = h("div", "dash-axis");
-  ["L", "M", "M", "J", "V", "S", "D"].forEach((t) => axis.append(h("span", null, t)));
+  T.axis.forEach((t) => axis.append(h("span", null, t)));
 
   const top = h("div", "dash-top");
-  top.append(h("p", "dash-lab", "Lo más vendido"));
-  const items = [["Combo familiar", 100], ["Menú del día", 74], ["Postres", 38]];
+  top.append(h("p", "dash-lab", T.top));
+  const items = [[T.items[0], 100], [T.items[1], 74], [T.items[2], 38]];
   const rowsEl = items.map(([name, w]) => {
     const r = h("div", "dash-row");
     const tr = h("span", "xl-track");
@@ -388,7 +388,7 @@ async function sceneReportes(root, c) {
   });
 
   const toast = h("div", "dash-toast");
-  toast.append(icon("i-chart"), h("span", null, "Venta nueva · S/ 180"));
+  toast.append(icon("i-chart"), h("span", null, T.sale));
   root.append(kpi, chartBox, axis, top, toast);
 
   // Ya con tamaño real, el trazo pasa a píxeles para que no se deforme.
@@ -409,23 +409,24 @@ async function sceneReportes(root, c) {
   await c.a(toast, [{ opacity: 0, transform: "translateY(-10px) scale(0.96)" }, { opacity: 1, transform: "none" }], { duration: 320 });
   const last = dots[dots.length - 1];
   last.classList.add("ping");
-  c.fire(val, [{ color: "var(--mandarina-deep)" }, { color: "var(--sumi)" }], { duration: 900, fill: "none" });
+  c.fire(val, [{ color: "var(--mandarina-deep)" }, { color: "var(--text)" }], { duration: 900, fill: "none" });
   await c.count(val, 8240, 8420, 600, soles);
-  live.textContent = "Actualizado hace un momento";
+  live.textContent = T.liveNow;
 }
 
 /* ---------------- Cobros: un flujo de nodos que trabaja solo ---------------- */
 async function sceneCobros(root, c) {
   root.classList.add("sc-flow");
+  const T = c.t.flow;
   const NS = "http://www.w3.org/2000/svg";
   const nodes = {
-    a: { x: 11, y: 42, ic: "i-clock", t: "Cada día", s: "9:00 a. m.", trig: true },
-    b: { x: 33, y: 42, ic: "i-sheet", t: "Lee pagos", s: "Google Sheets" },
-    c: { x: 55, y: 42, ic: "i-split", t: "¿Venció?", s: "Sí / Pagó" },
-    d: { x: 80, y: 20, ic: "i-wa", t: "Recordatorio", s: "WhatsApp" },
-    e: { x: 80, y: 64, ic: "i-check", t: "Marca pagado", s: "Google Sheets" },
+    a: { x: 11, y: 42, ic: "i-clock", t: T.nodes.a[0], s: T.nodes.a[1], trig: true },
+    b: { x: 33, y: 42, ic: "i-sheet", t: T.nodes.b[0], s: T.nodes.b[1] },
+    c: { x: 55, y: 42, ic: "i-split", t: T.nodes.c[0], s: T.nodes.c[1] },
+    d: { x: 80, y: 20, ic: "i-wa", t: T.nodes.d[0], s: T.nodes.d[1] },
+    e: { x: 80, y: 64, ic: "i-check", t: T.nodes.e[0], s: T.nodes.e[1] },
   };
-  const edges = [["a", "b", "12 filas"], ["b", "c", "12 filas"], ["c", "d", "4 vencidos"], ["c", "e", "2 pagaron"]];
+  const edges = [["a", "b", T.edges[0]], ["b", "c", T.edges[1]], ["c", "d", T.edges[2]], ["c", "e", T.edges[3]]];
 
   // Las conexiones se dibujan en píxeles reales de la escena para que el trazo no se deforme.
   const W = root.clientWidth, H = root.clientHeight;
@@ -512,8 +513,8 @@ async function sceneCobros(root, c) {
   await Promise.all([run("d"), run("e")]);
 
   const preview = h("div", "flow-msg");
-  const bub = h("p", null, "Hola Luis, tu pago de S/ 85 venció ayer. Aquí tienes el enlace para pagar.");
-  preview.append(h("span", "flow-msg-h", "Enviado por WhatsApp"), bub);
+  const bub = h("p", null, T.msg);
+  preview.append(h("span", "flow-msg-h", T.sent), bub);
   root.append(preview);
   await c.enter(preview, { y: 12, dur: 460 });
 }
@@ -521,9 +522,10 @@ async function sceneCobros(root, c) {
 /* ---------------- IA: un asistente que conoce tu negocio ---------------- */
 async function sceneIa(root, c) {
   root.classList.add("sc-ia");
+  const T = c.t.ia;
   const docs = h("div", "ia-docs");
-  docs.append(h("p", "ia-label", "Lo que le enseñas"));
-  const names = ["Catálogo.pdf", "Precios.xlsx", "Envíos y cambios.docx"];
+  docs.append(h("p", "ia-label", T.label));
+  const names = T.docs;
   const docEls = names.map((n) => {
     const d = h("span", "ia-doc");
     d.append(icon("i-doc"), h("span", null, n));
@@ -533,7 +535,7 @@ async function sceneIa(root, c) {
 
   const panel = h("div", "ia-panel");
   const ph = h("div", "ia-head");
-  const known = h("span", "ia-known", "Aún no conoce tu negocio");
+  const known = h("span", "ia-known", T.none);
   const cat = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   cat.setAttribute("viewBox", "10 22 112 76");
   cat.setAttribute("class", "ia-cat");
@@ -541,7 +543,7 @@ async function sceneIa(root, c) {
   u.setAttribute("href", "#maru");
   cat.append(u);
   const hw = h("div");
-  hw.append(h("strong", null, "Asistente de tu negocio"), known);
+  hw.append(h("strong", null, T.title), known);
   ph.append(cat, hw);
   const chat = h("div", "ia-chat");
   panel.append(ph, chat);
@@ -568,13 +570,13 @@ async function sceneIa(root, c) {
       .finished.then(() => ghost.remove()).catch(() => {});
     await c.wait(520);
     d.classList.add("read");
-    known.textContent = `Conoce ${i + 1} documento${i ? "s" : ""}`;
+    known.textContent = T.knows(i + 1);
     c.fire(cat, [{ transform: "scale(1)" }, { transform: "scale(1.12)" }, { transform: "scale(1)" }], { duration: 320, fill: "none" });
     await c.wait(120);
   }
   await c.wait(350);
 
-  const q = h("div", "bub in", "¿Hacemos envíos a Arequipa? ¿Cuánto cuesta?");
+  const q = h("div", "bub in", T.q);
   chat.append(q);
   await c.enter(q, { y: 10, s: 0.95, origin: "0% 100%" });
   await c.wait(400);
@@ -582,7 +584,7 @@ async function sceneIa(root, c) {
   const a = h("div", "bub out");
   chat.append(a);
   await c.enter(a, { y: 6, dur: 220, origin: "100% 100%" });
-  const words = "Sí. Enviamos a Arequipa en 2 a 3 días hábiles. Cuesta S/ 15 y es gratis desde S/ 150.".split(" ");
+  const words = T.a.split(" ");
   for (const w of words) {
     const s = h("span", "w", w + " ");
     a.append(s);
@@ -591,7 +593,7 @@ async function sceneIa(root, c) {
   }
   await c.wait(250);
   const src = h("span", "ia-src");
-  src.append(icon("i-doc"), h("span", null, "Fuente: Envíos y cambios.docx"));
+  src.append(icon("i-doc"), h("span", null, T.src));
   chat.append(src);
   await c.enter(src, { y: 6, dur: 300 });
   docEls[2].classList.add("cited");

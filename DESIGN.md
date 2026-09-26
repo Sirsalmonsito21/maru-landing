@@ -53,3 +53,16 @@ Cada opción tiene su propia demostración, todas marcadas como "Ejemplo" y sin 
 
 ## Logo
 Símbolo SVG `#maru`: gata dormida, coloreable con `--m-ink`, `--m-halo` (igual al fondo) y `--m-accent`.
+
+## Tema claro / oscuro
+- Tokens semánticos en `:root` (`--bg`, `--paper`, `--shiro`, `--text`, `--muted`, `--line`, `--ink-block`, `--band`, `--bubble-out`…). Modo oscuro en tinta Sumi profunda (`--bg #0F161D`, `--paper #16202A`); el naranja Mandarina no cambia y el texto naranja sube a `#FFA85C` para contraste.
+- Sigue al sistema (`prefers-color-scheme`) hasta que el usuario elige con el botón sol/luna; la elección se guarda en `localStorage` (`maru-theme`) y se aplica en el `<head>` antes de pintar.
+- Transición: círculo que se abre desde el botón (View Transitions, 650ms). Sin soporte o con movimiento reducido, el cambio es inmediato.
+
+## Idiomas
+- ES / EN sin recargar. Todos los textos (página, opciones, escenas y mensajes de WhatsApp) viven en `i18n.js`; el HTML marca los nodos con `data-i18n`, `data-i18n-html` y `data-i18n-aria`.
+- Transición: crossfade corto con blur (160ms de salida, 340ms de entrada). Se guarda en `maru-lang`.
+- Las transiciones tienen un tope de 1.2s para no bloquear la página si la pestaña no pinta.
+
+## Móvil chico (iPhone 12 mini, 375×629 útil)
+- Bajo 560px las opciones son una grilla de 3×2 con ícono y nombre corto (el texto largo queda para lectores de pantalla). Sustituye a la fila deslizable, que escondía 5 de las 6 opciones.
