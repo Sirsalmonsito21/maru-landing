@@ -552,12 +552,7 @@ async function sceneIa(root, c) {
   const panel = h("div", "ia-panel");
   const ph = h("div", "ia-head");
   const known = h("span", "ia-known", T.none);
-  const cat = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-  cat.setAttribute("viewBox", "0 0 112 76");
-  cat.setAttribute("class", "ia-cat");
-  const u = document.createElementNS("http://www.w3.org/2000/svg", "use");
-  u.setAttribute("href", "#maru");
-  cat.append(u);
+  const cat = h("span", "ia-seal", "丸");
   const hw = h("div");
   hw.append(h("strong", null, T.title), known);
   ph.append(cat, hw);

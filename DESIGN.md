@@ -1,29 +1,33 @@
-# Maru · Design system (v2, landing)
+# Maru · Design system (v3, identidad del logo v2)
 
-Registrado a partir de la versión construida (`index.html`, `styles.css`, `scenes.js`, `main.js`). La v1 queda en `.impeccable/backup-v1/`. El logo está pendiente de rediseño.
+Registrado a partir de la versión construida (`index.html`, `styles.css`, `scenes.js`, `main.js`, `i18n.js`). Logo v2 en `img/maru-logo.webp` (ilustración: gata calicó dormida, sol shu, sakura, nubes kin, マル + sello 丸). La v1 (sumi azul + naranja, Zen Maru Gothic) quedó descartada por verse genérica.
 
 ## Color
-| Token | Valor | Uso |
-|---|---|---|
-| `--sumi` | #243140 | Texto, opción elegida, banda final, footer |
-| `--sumi-2` | #2E3D4E | Hover de botones oscuros |
-| `--sumi-3` | #1B2531 | Lienzo del flujo de nodos |
-| `--sumi-soft` | #A9B6C2 | Texto secundario sobre Sumi |
-| `--mandarina` | #F28A2E | CTA principal, lo activo, trazos y datos destacados |
-| `--mandarina-deep` | #A4500F | Texto naranja sobre blanco (contraste AA) |
-| `--mandarina-tint` | #FDEBD9 | Selección de texto, burbujas salientes, citas en agenda |
-| `--shiro` | #F4F5F3 | Fondo base |
-| `--paper` | #FFFFFF | Secciones alternas, paneles, barra del escenario |
-| `--kori` | #E3E9EE | Sección de principios |
-| `--muted` | #5B6875 | Texto de apoyo |
-| `--line` / `--line-soft` | #D6DDE3 / #E8ECEF | Divisores de 1.5px / líneas internas de las escenas |
+Paleta tomada del logo. Tokens semánticos en `:root`, con tema oscuro ("noche de tinta sumi").
 
-Estrategia: contenida. Neutros fríos, Sumi para los bloques de peso y un solo acento naranja para lo activo, la acción principal y el dato que importa en cada escena.
+| Nombre | Claro | Oscuro | Uso |
+|---|---|---|---|
+| Washi (`--bg`) | #F3EDE2 | #1A1714 | Fondo |
+| Papel (`--paper`) | #FBF7EF | #221E1A | Secciones alternas, paneles |
+| Sumi (`--text`, `--ink-block`) | #2B2724 | #EFE7DA / #3E3630 | Texto, bloques de tinta, opción elegida |
+| Shu (`--mandarina`) | #C8452C | #D9563A | El sol: CTA, lo activo, sellos (el nombre del token se conserva) |
+| Shu para texto (`--mandarina-deep`) | #A8361F | #F08A6C | Texto de acento (AA) |
+| Mikan (`--mikan`) | #DE9A5A | igual | Manchas de la gata, acentos secundarios |
+| Sakura (`--mandarina-tint`, `--bubble-out`) | #F6DED4 / #F4DDD3 | tonos tierra | Fondos suaves, burbujas salientes |
+| Kin (`--kin`) | #D7B98C | igual | Líneas de nube, separadores |
+| Beni (`--beni`) | #B8392A | #E0654A | Detalles: tachados, hilos, flecha abierta |
+
+Texto sobre shu: `--on-accent` #FFF6EE. Sombras cálidas (`--shadow: 70 48 32`).
 
 ## Tipografía
-- Display: **Zen Maru Gothic** en 700 y 900, tracking -0.02 a -0.03em. H1 `clamp(2.4rem, 4.4vw, 4rem)`; H2 de sección en 900, `clamp(2.2rem, 4.4vw, 3.6rem)`.
-- Texto: **Figtree** 400 a 700, base 17px, interlineado 1.6. Cifras con `tabular-nums`.
-- Japonés solo como firma: 丸くなる en vertical (`writing-mode: vertical-rl`) sobre la figura de Mandarina.
+- Títulos: **Shippori Mincho** 600-800 (mincho japonés: libros y carteles), tracking -0.01em.
+- Texto: **Zen Kaku Gothic New** 400-700.
+- Marca: **Tenor Sans** solo para la palabra MARU, en mayúsculas y con 0.26em de espaciado, junto al sello 丸.
+
+## Recursos de marca
+- Sello 丸 (hanko) rojo, girado -4°: menú, pie, favicon, vista previa del mensaje, escena de IA.
+- Sol shu con dos nubes kin detrás del escenario del hero.
+- La figura "¿Por qué una gata?" muestra el logo v2 sobre papel #F2EBDF (el mismo papel de la imagen, en ambos temas).
 
 ## Componentes
 - **Botones:** píldora; `scale(.97)` al presionar; hover solo con puntero fino. `btn-ink`, `btn-orange`, tamaños `sm`/`lg`.

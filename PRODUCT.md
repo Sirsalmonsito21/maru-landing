@@ -43,9 +43,9 @@ Pendiente: número de WhatsApp, correo, dominio, precios. El nombre "Maru" todav
 
 ## Brand Commitments
 
-- Nombre: Maru (丸). Mascota/logo: gata dormida hecha bolita (丸くなる), con manchas naranjas por Mandarina, la gata del fundador. Logo v1 en `identidad-v1.html`; se va a rediseñar más a fondo.
-- Paleta confirmada en v1: Sumi #243140 y Mandarina #F28A2E. Tipografía de marca: Zen Maru Gothic.
-- Estética japonesa sutil, pero profesional. Nada de referencias ni diseños de Naruto.
+- Nombre: Maru (丸). Logo v2 (2026-09-26): ilustración japonesa de una gata calicó dormida hecha bolita (丸くなる) frente a un sol rojo, con sakura, nubes doradas, マル y el sello 丸. Las manchas son por Mandarina, la gata del fundador. Archivo: `img/maru-logo.webp`. Falta la versión vectorial y las versiones simplificadas (avatar e ícono).
+- Paleta del logo: washi #F3EDE2, sumi #2B2724, shu #C8452C, mikan #DE9A5A, sakura #F4DDD3, kin #D7B98C. Tipografías: Shippori Mincho (títulos), Zen Kaku Gothic New (texto), Tenor Sans (palabra MARU).
+- Estética japonesa real (sellos, texto vertical, sol, nubes, espacio vacío), pero profesional. Nada de referencias ni diseños de Naruto.
 - Tono pedido: elegante, confiable, limpio, profesional y cercano.
 
 ## Evidence on Hand

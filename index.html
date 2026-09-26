@@ -6,7 +6,7 @@
 <title>Maru · Automatización e IA para pymes</title>
 <meta name="description" content="Maru automatiza las tareas repetitivas de tu negocio: bots de WhatsApp, agenda, Excel, reportes y talleres de IA. Consultoría inicial gratis.">
 <meta name="color-scheme" content="light dark">
-<meta name="theme-color" content="#F4F5F3">
+<meta name="theme-color" content="#F3EDE2">
 <script>
   // Tema e idioma guardados, antes de pintar para que no parpadee.
   try {
@@ -18,29 +18,12 @@
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Figtree:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Tenor+Sans&display=swap">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<!-- Logo: gata dormida (丸くなる). Colores vía --m-ink, --m-halo, --m-accent -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
-  <defs>
-    <clipPath id="a-body"><path d="M18 82 C18 50 40 30 70 30 C98 30 114 50 114 72 C114 78 111 82 106 82 Z"/></clipPath>
-    <clipPath id="a-tip"><circle cx="55" cy="86" r="9"/></clipPath>
-    <clipPath id="a-head"><circle cx="40" cy="62" r="20"/><path d="M23 55 L21 34 L37 45 Z M43 43 L55 31 L57 52 Z"/></clipPath>
-  </defs>
-  <symbol id="maru" viewBox="10 22 112 76">
-    <path d="M18 82 C18 50 40 30 70 30 C98 30 114 50 114 72 C114 78 111 82 106 82 Z" fill="var(--m-ink)"/>
-    <g clip-path="url(#a-body)"><circle cx="96" cy="30" r="24" fill="var(--m-accent)"/></g>
-    <path d="M110 74 C106 92 72 94 55 86" fill="none" stroke="var(--m-halo)" stroke-width="17" stroke-linecap="round"/>
-    <path d="M110 74 C106 92 72 94 55 86" fill="none" stroke="var(--m-ink)" stroke-width="10" stroke-linecap="round"/>
-    <g clip-path="url(#a-tip)"><path d="M110 74 C106 92 72 94 55 86" fill="none" stroke="var(--m-accent)" stroke-width="10" stroke-linecap="round"/></g>
-    <g fill="var(--m-halo)" stroke="var(--m-halo)" stroke-width="9" stroke-linejoin="round"><circle cx="40" cy="62" r="20"/><path d="M23 55 L21 34 L37 45 Z M43 43 L55 31 L57 52 Z"/></g>
-    <g fill="var(--m-ink)" stroke="var(--m-ink)" stroke-width="3" stroke-linejoin="round"><circle cx="40" cy="62" r="20"/><path d="M23 55 L21 34 L37 45 Z M43 43 L55 31 L57 52 Z"/></g>
-    <g clip-path="url(#a-head)"><circle cx="58" cy="36" r="13" fill="var(--m-accent)"/></g>
-    <g fill="none" stroke="var(--m-halo)" stroke-width="2.8" stroke-linecap="round"><path d="M28 64 q4.5 4 9 0"/><path d="M43 64 q4.5 4 9 0"/></g>
-  </symbol>
   <symbol id="i-wa" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.2a9.7 9.7 0 0 0-8.4 14.6L2.3 21.7l5-1.3A9.7 9.7 0 1 0 12 2.2Zm0 17.7c-1.5 0-2.9-.4-4.1-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8 8 0 1 1 12 19.9Zm4.4-6c-.2-.1-1.4-.7-1.7-.8-.2-.1-.4-.1-.5.1l-.8.9c-.1.2-.3.2-.5.1a6.5 6.5 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.5-.4h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 2s.9 2.3 1 2.5c.1.2 1.7 2.7 4.2 3.8 1.6.7 2.2.7 3 .6.5-.1 1.4-.6 1.6-1.1.2-.6.2-1 .1-1.1l-.4-.2Z"/></symbol>
   <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
@@ -62,8 +45,7 @@
 <header class="nav" id="top">
   <div class="shell nav-in">
     <a class="brand" href="#top" data-i18n-aria="brand.home" aria-label="Maru, inicio">
-      <svg class="brand-mark" viewBox="0 0 112 76" aria-hidden="true"><use href="#maru"/></svg>
-      <span class="brand-word">maru</span>
+      <span class="brand-seal" lang="ja" aria-hidden="true">丸</span><span class="brand-word">MARU</span>
     </a>
     <nav data-i18n-aria="nav.label" aria-label="Principal">
       <ul class="nav-links">
@@ -109,6 +91,7 @@
         </fieldset>
       </div>
 
+      <div class="hero-sun" aria-hidden="true"></div>
       <div class="stage" id="stage" data-scene="whatsapp">
         <div class="stage-bar">
           <span class="stage-tool"><svg aria-hidden="true"><use id="stage-icon" href="#i-wa"/></svg><span id="stage-tool">WhatsApp Business</span></span>
@@ -336,9 +319,7 @@
   <section class="why" aria-labelledby="why-h">
     <div class="shell why-grid">
       <figure class="mandarina">
-        <span class="maru-ja" lang="ja" aria-hidden="true">丸くなる</span>
-        <span class="hanko" lang="ja" aria-hidden="true">丸</span>
-        <svg class="mandarina-cat" viewBox="0 0 112 76" aria-hidden="true"><use href="#maru"/></svg>
+        <img class="mandarina-art" src="img/maru-logo.webp" width="1254" height="1254" loading="lazy" decoding="async" alt="Logo de Maru: una gata calicó dormida hecha bolita frente a un sol rojo, con una rama de sakura, el texto マル y el sello 丸.">
         <figcaption data-i18n-html="why.cap"><strong>¿Por qué una gata?</strong>En japonés, cuando un gato se enrosca tranquilo se dice <span lang="ja">丸くなる</span>, “volverse maru”. Así queremos que se sienta tu negocio cuando lo repetitivo ya no depende de ti. Las manchas naranjas son de Mandarina, la gata de la casa.</figcaption>
       </figure>
       <div class="why-text">
@@ -394,7 +375,7 @@
       </div>
       <div class="composer" data-i18n-aria="composer.label" aria-label="Vista previa del mensaje que se enviará por WhatsApp">
         <div class="composer-head">
-          <svg class="composer-cat" viewBox="0 0 112 76" aria-hidden="true"><use href="#maru"/></svg>
+          <span class="composer-seal" lang="ja" aria-hidden="true">丸</span>
           <div><strong>Maru</strong><span data-i18n="composer.sub">Consultoría gratis</span></div>
         </div>
         <div class="composer-body">
@@ -412,8 +393,7 @@
 <footer class="foot">
   <div class="shell foot-in">
     <a class="brand" href="#top" data-i18n-aria="brand.top" aria-label="Maru, volver arriba">
-      <svg class="brand-mark" viewBox="0 0 112 76" aria-hidden="true"><use href="#maru"/></svg>
-      <span class="brand-word">maru</span>
+      <span class="brand-seal" lang="ja" aria-hidden="true">丸</span><span class="brand-word">MARU</span>
     </a>
     <p data-i18n="foot.tag">Automatización e IA para pymes · Lima, Perú</p>
     <p class="foot-small"><span class="hanko" lang="ja" aria-hidden="true">丸</span>© 2026 Maru</p>
