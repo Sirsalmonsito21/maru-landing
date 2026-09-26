@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="es-PE">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maru · Automatización e IA para pymes</title>
+<meta name="description" content="Maru automatiza las tareas repetitivas de tu negocio: bots de WhatsApp, agenda, Excel, reportes y talleres de IA. Consultoría inicial gratis.">
+<meta name="theme-color" content="#F4F5F3">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Figtree:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- Logo: gata dormida (丸くなる). Colores vía --m-ink, --m-halo, --m-accent -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <clipPath id="a-body"><path d="M18 82 C18 50 40 30 70 30 C98 30 114 50 114 72 C114 78 111 82 106 82 Z"/></clipPath>
+    <clipPath id="a-tip"><circle cx="55" cy="86" r="9"/></clipPath>
+    <clipPath id="a-head"><circle cx="40" cy="62" r="20"/><path d="M23 55 L21 34 L37 45 Z M43 43 L55 31 L57 52 Z"/></clipPath>
+  </defs>
+  <symbol id="maru" viewBox="10 22 112 76">
+    <path d="M18 82 C18 50 40 30 70 30 C98 30 114 50 114 72 C114 78 111 82 106 82 Z" fill="var(--m-ink)"/>
+    <g clip-path="url(#a-body)"><circle cx="96" cy="30" r="24" fill="var(--m-accent)"/></g>
+    <path d="M110 74 C106 92 72 94 55 86" fill="none" stroke="var(--m-halo)" stroke-width="17" stroke-linecap="round"/>
+    <path d="M110 74 C106 92 72 94 55 86" fill="none" stroke="var(--m-ink)" stroke-width="10" stroke-linecap="round"/>
+    <g clip-path="url(#a-tip)"><path d="M110 74 C106 92 72 94 55 86" fill="none" stroke="var(--m-accent)" stroke-width="10" stroke-linecap="round"/></g>
+    <g fill="var(--m-halo)" stroke="var(--m-halo)" stroke-width="9" stroke-linejoin="round"><circle cx="40" cy="62" r="20"/><path d="M23 55 L21 34 L37 45 Z M43 43 L55 31 L57 52 Z"/></g>
+    <g fill="var(--m-ink)" stroke="var(--m-ink)" stroke-width="3" stroke-linejoin="round"><circle cx="40" cy="62" r="20"/><path d="M23 55 L21 34 L37 45 Z M43 43 L55 31 L57 52 Z"/></g>
+    <g clip-path="url(#a-head)"><circle cx="58" cy="36" r="13" fill="var(--m-accent)"/></g>
+    <g fill="none" stroke="var(--m-halo)" stroke-width="2.8" stroke-linecap="round"><path d="M28 64 q4.5 4 9 0"/><path d="M43 64 q4.5 4 9 0"/></g>
+  </symbol>
+  <symbol id="i-wa" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.2a9.7 9.7 0 0 0-8.4 14.6L2.3 21.7l5-1.3A9.7 9.7 0 1 0 12 2.2Zm0 17.7c-1.5 0-2.9-.4-4.1-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8 8 0 1 1 12 19.9Zm4.4-6c-.2-.1-1.4-.7-1.7-.8-.2-.1-.4-.1-.5.1l-.8.9c-.1.2-.3.2-.5.1a6.5 6.5 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.5-.4h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 2s.9 2.3 1 2.5c.1.2 1.7 2.7 4.2 3.8 1.6.7 2.2.7 3 .6.5-.1 1.4-.6 1.6-1.1.2-.6.2-1 .1-1.1l-.4-.2Z"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></g></symbol>
+  <symbol id="i-sheet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2.5"/><path d="M4 9.5h16M4 14.5h16M10 9.5V20"/></g></symbol>
+  <symbol id="i-split" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h6M10 12c3 0 3-5 6-5h4M10 12c3 0 3 5 6 5h4"/></g></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></g></symbol>
+  <symbol id="i-doc" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5h7l4 4V20.5H6V3.5z"/><path d="M14 3.5V8h4M9 12.5h6M9 16h6"/></g></symbol>
+  <symbol id="i-replay" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3"/><path d="M4.5 4.5v4h4"/></g></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5.5" width="16" height="14.5" rx="2.5"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/></g></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16M7 16v-5M12 16V7M17 16v-8"/></g></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12L19.5 5l-4 14.5-3.5-6z"/><path d="M12 13.5l7.5-8.5"/></g></symbol>
+</svg>
+
+<a class="skip" href="#contenido">Saltar al contenido</a>
+
+<header class="nav" id="top">
+  <div class="shell nav-in">
+    <a class="brand" href="#top" aria-label="Maru, inicio">
+      <svg class="brand-mark" viewBox="10 22 112 76" aria-hidden="true"><use href="#maru"/></svg>
+      <span class="brand-word">maru</span>
+    </a>
+    <nav aria-label="Principal">
+      <ul class="nav-links">
+        <li><a href="#servicios">Servicios</a></li>
+        <li><a href="#proceso">Cómo trabajamos</a></li>
+        <li><a href="#preguntas">Preguntas</a></li>
+      </ul>
+    </nav>
+    <a class="btn btn-ink btn-sm" href="#" data-wa="general">
+      <svg aria-hidden="true"><use href="#i-wa"/></svg><span>Escríbenos</span>
+    </a>
+  </div>
+</header>
+
+<main id="contenido">
+
+  <!-- HERO: elige un dolor y míralo resolverse -->
+  <section class="hero" id="demo" aria-labelledby="hero-q">
+    <div class="shell hero-grid">
+      <div class="hero-ask">
+        <h1 id="hero-q">¿Qué es lo que más tiempo te quita en tu negocio?</h1>
+        <p class="lede">Toca una opción y mira cómo lo resolveríamos.</p>
+
+        <fieldset class="pains">
+          <legend class="sr-only">Elige lo que más tiempo te quita</legend>
+          <label class="pain"><input type="radio" name="pain" value="whatsapp" checked><span>Responder los mismos mensajes de WhatsApp</span><i aria-hidden="true"><svg><use href="#i-arrow"/></svg></i></label>
+          <label class="pain"><input type="radio" name="pain" value="citas"><span>Agendar y confirmar citas</span><i aria-hidden="true"><svg><use href="#i-arrow"/></svg></i></label>
+          <label class="pain"><input type="radio" name="pain" value="excel"><span>Pasar datos a Excel a mano</span><i aria-hidden="true"><svg><use href="#i-arrow"/></svg></i></label>
+          <label class="pain"><input type="radio" name="pain" value="reportes"><span>Armar reportes de ventas</span><i aria-hidden="true"><svg><use href="#i-arrow"/></svg></i></label>
+          <label class="pain"><input type="radio" name="pain" value="cobros"><span>Perseguir pagos y comprobantes</span><i aria-hidden="true"><svg><use href="#i-arrow"/></svg></i></label>
+          <label class="pain"><input type="radio" name="pain" value="ia"><span>No sé por dónde empezar con la IA</span><i aria-hidden="true"><svg><use href="#i-arrow"/></svg></i></label>
+        </fieldset>
+      </div>
+
+      <div class="stage" id="stage" data-scene="whatsapp">
+        <div class="stage-bar">
+          <span class="stage-tool"><svg aria-hidden="true"><use id="stage-icon" href="#i-wa"/></svg><span id="stage-tool">WhatsApp Business</span></span>
+          <span class="stage-tag">Ejemplo</span>
+          <button class="stage-replay" id="replay" type="button" aria-label="Repetir la animación">
+            <svg aria-hidden="true"><use href="#i-replay"/></svg>
+          </button>
+        </div>
+        <div class="stage-view" id="stage-view" aria-hidden="true"></div>
+      </div>
+
+      <div class="hero-out" aria-live="polite">
+        <div class="out-copy" id="out-copy">
+          <h2 class="out-title" id="o-title">Un asistente que responde por ti</h2>
+          <p class="out-text" id="o-text">Un bot en tu WhatsApp Business responde al instante y te pasa solo las conversaciones que necesitan a una persona.</p>
+          <p class="out-svc">Servicio: <strong id="o-svc">Bots de WhatsApp</strong></p>
+        </div>
+        <div class="out-cta">
+          <a class="btn btn-orange" href="#" data-wa="topic">
+            <svg aria-hidden="true"><use href="#i-wa"/></svg><span>Pedir consultoría gratis</span>
+          </a>
+          <p class="out-note">Te escribimos con este tema ya contado.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICIOS -->
+  <section class="services" id="servicios" aria-labelledby="svc-h">
+    <div class="shell">
+      <div class="sec-head">
+        <h2 id="svc-h">Lo que hacemos</h2>
+        <p>Trabajamos con las herramientas que tu negocio ya usa: WhatsApp, Excel o Google Sheets, correo y tu sistema de ventas. No tienes que cambiar tu forma de trabajar para empezar.</p>
+      </div>
+
+      <ul class="svc-list">
+        <li class="svc">
+          <h3>Bots de WhatsApp</h3>
+          <div class="svc-body">
+            <p>Respuestas automáticas a preguntas frecuentes, toma de pedidos, citas y recordatorios desde tu número de WhatsApp Business.</p>
+            <p class="svc-for">Para negocios que viven en el chat.</p>
+          </div>
+          <button class="svc-demo" type="button" data-demo="whatsapp">Ver ejemplo<svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+        </li>
+        <li class="svc">
+          <h3>Automatización de procesos</h3>
+          <div class="svc-body">
+            <p>Conectamos formularios, correos, Excel y Google Sheets para que los datos se pasen solos y las tareas repetitivas desaparezcan.</p>
+            <p class="svc-for">Para quien copia y pega todos los días.</p>
+          </div>
+          <button class="svc-demo" type="button" data-demo="cobros">Ver ejemplo<svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+        </li>
+        <li class="svc">
+          <h3>Dashboards</h3>
+          <div class="svc-body">
+            <p>Un tablero con tus ventas, citas o inventario al día, que puedes ver desde el celular sin armar reportes.</p>
+            <p class="svc-for">Para decidir con números, no a ojo.</p>
+          </div>
+          <button class="svc-demo" type="button" data-demo="reportes">Ver ejemplo<svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+        </li>
+        <li class="svc">
+          <h3>Asistentes de IA con tu información</h3>
+          <div class="svc-body">
+            <p>Un asistente que conoce tus productos, precios y políticas, y responde a tu equipo o a tus clientes con tus propios datos.</p>
+            <p class="svc-for">Para no repetir lo mismo a cada persona nueva.</p>
+          </div>
+          <button class="svc-demo" type="button" data-demo="ia">Ver ejemplo<svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+        </li>
+        <li class="svc">
+          <h3>Páginas web</h3>
+          <div class="svc-body">
+            <p>Webs claras y rápidas que explican lo que vendes y llevan al cliente directo a tu WhatsApp o a tu agenda.</p>
+            <p class="svc-for">Para que te encuentren y te escriban.</p>
+          </div>
+        </li>
+        <li class="svc">
+          <h3>Talleres de IA para tu equipo</h3>
+          <div class="svc-body">
+            <p>Sesiones prácticas para usar ChatGPT, Claude y otras herramientas en el trabajo diario, con ejemplos de tu propio rubro.</p>
+            <p class="svc-for">Para que tu equipo gane tiempo desde la semana uno.</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- PROCESO -->
+  <section class="process" id="proceso" aria-labelledby="proc-h">
+    <div class="shell">
+      <div class="sec-head">
+        <h2 id="proc-h">Cómo trabajamos</h2>
+        <p>Tres pasos, y en el primero no pagas nada.</p>
+      </div>
+      <ol class="steps" id="steps">
+        <li class="step on">
+          <span class="step-n" aria-hidden="true">1</span>
+          <h3>Diagnóstico gratis</h3>
+          <p>Conversamos sobre tu día a día y ubicamos las tareas que más tiempo te quitan. Te decimos qué conviene automatizar primero, y qué no.</p>
+          <p class="step-out">Te llevas: una propuesta clara, con precio y plazo.</p>
+        </li>
+        <li class="step">
+          <span class="step-n" aria-hidden="true">2</span>
+          <h3>Implementación</h3>
+          <p>Construimos la solución sobre tus herramientas, la probamos contigo y capacitamos a tu equipo para usarla.</p>
+          <p class="step-out">Te llevas: la automatización funcionando y tu equipo sabiendo usarla.</p>
+        </li>
+        <li class="step">
+          <span class="step-n" aria-hidden="true">3</span>
+          <h3>Acompañamiento mensual</h3>
+          <p>Cuidamos que todo siga funcionando, hacemos ajustes y proponemos la siguiente mejora cuando tu negocio crece.</p>
+          <p class="step-out">Te llevas: soporte cuando lo necesitas.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- PRINCIPIOS + MANDARINA -->
+  <section class="why" aria-labelledby="why-h">
+    <div class="shell why-grid">
+      <figure class="mandarina">
+        <span class="maru-ja" lang="ja" aria-hidden="true">丸くなる</span>
+        <svg class="mandarina-cat" viewBox="10 22 112 76" aria-hidden="true"><use href="#maru"/></svg>
+        <figcaption>
+          <strong>¿Por qué una gata?</strong>
+          En japonés, cuando un gato se enrosca tranquilo se dice <span lang="ja">丸くなる</span>, “volverse maru”. Así queremos que se sienta tu negocio cuando lo repetitivo ya no depende de ti. Las manchas naranjas son de Mandarina, la gata de la casa.
+        </figcaption>
+      </figure>
+      <div class="why-text">
+        <h2 id="why-h">Tecnología que se entiende</h2>
+        <dl class="principles">
+          <div><dt>Hablamos en simple</dt><dd>Te explicamos todo en lenguaje de negocio, sin tecnicismos.</dd></div>
+          <div><dt>Usamos lo que ya tienes</dt><dd>Primero aprovechamos tus herramientas y solo después sumamos otras nuevas.</dd></div>
+          <div><dt>Empezamos pequeño</dt><dd>Una tarea bien automatizada vale más que un gran proyecto a medias.</dd></div>
+          <div><dt>Todo queda a tu nombre</dt><dd>Las cuentas y los datos son de tu negocio.</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq" id="preguntas" aria-labelledby="faq-h">
+    <div class="shell faq-grid">
+      <h2 id="faq-h">Preguntas frecuentes</h2>
+      <div class="faq-list">
+        <details>
+          <summary>¿Cuánto cuesta?</summary>
+          <div class="faq-a"><p>Depende de lo que haya que automatizar. El diagnóstico es gratis, y después te enviamos una propuesta con el precio antes de empezar. No hay costos sorpresa.</p></div>
+        </details>
+        <details>
+          <summary>¿Necesito saber de tecnología?</summary>
+          <div class="faq-a"><p>No. Nosotros nos encargamos de la parte técnica y te enseñamos solo lo que necesitas para usarlo en tu día a día.</p></div>
+        </details>
+        <details>
+          <summary>Mi negocio es pequeño, ¿me sirve?</summary>
+          <div class="faq-a"><p>Sí. Justamente trabajamos con pymes. Si una tarea se repite todos los días, probablemente se puede automatizar, aunque seas tú solo.</p></div>
+        </details>
+        <details>
+          <summary>¿Cuánto demora?</summary>
+          <div class="faq-a"><p>Depende del alcance. En el diagnóstico te damos un plazo concreto, y siempre empezamos por lo que te da resultados más rápido.</p></div>
+        </details>
+        <details>
+          <summary>¿Qué pasa con mis datos?</summary>
+          <div class="faq-a"><p>Trabajamos con cuentas a nombre de tu negocio y solo accedemos a lo necesario para cada automatización. Tú mantienes el control.</p></div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL: el mensaje ya escrito -->
+  <section class="close" aria-labelledby="close-h">
+    <div class="shell close-in">
+      <div class="close-copy">
+        <h2 id="close-h">Cuéntanos qué te quita tiempo</h2>
+        <p>La primera conversación es gratis. Si vemos que no te podemos ayudar, te lo decimos.</p>
+        <a class="btn btn-orange btn-lg" href="#" data-wa="topic">
+          <svg aria-hidden="true"><use href="#i-wa"/></svg><span>Enviar este mensaje</span>
+        </a>
+      </div>
+      <div class="composer" aria-label="Vista previa del mensaje que se enviará por WhatsApp">
+        <div class="composer-head">
+          <svg class="composer-cat" viewBox="10 22 112 76" aria-hidden="true"><use href="#maru"/></svg>
+          <div><strong>Maru</strong><span>Consultoría gratis</span></div>
+        </div>
+        <div class="composer-body">
+          <p class="composer-bubble"><span id="compose-text">Hola Maru, quiero una consultoría gratis. Lo que más tiempo me quita es responder los mismos mensajes de WhatsApp.</span><i class="caret" aria-hidden="true"></i></p>
+        </div>
+        <div class="composer-bar" aria-hidden="true">
+          <span>Mensaje</span>
+          <span class="composer-send"><svg><use href="#i-send"/></svg></span>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="shell foot-in">
+    <a class="brand" href="#top" aria-label="Maru, volver arriba">
+      <svg class="brand-mark" viewBox="10 22 112 76" aria-hidden="true"><use href="#maru"/></svg>
+      <span class="brand-word">maru</span>
+    </a>
+    <p>Automatización e IA para pymes · Lima, Perú</p>
+    <p class="foot-small">© 2026 Maru</p>
+  </div>
+</footer>
+
+<script src="scenes.js"></script>
+<script src="main.js"></script>
+</body>
+</html>

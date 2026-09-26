@@ -1,0 +1,280 @@
+<title>Maru Identity Sheet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Figtree:wght@400;500;600&display=swap">
+<style>
+:root{
+  --sumi:#243140; --mandarina:#F28A2E; --mandarina-deep:#D9701A;
+  --bg:#F4F5F3; --surface:#FFFFFF; --kori:#E3E9EE;
+  --text:#243140; --muted:#6F7C88; --line:#D8DEE3;
+  --m-ink:var(--sumi); --m-halo:var(--surface); --m-accent:var(--mandarina);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#131A22; --surface:#1C2530; --kori:#26313D;
+    --text:#ECEFF1; --muted:#98A4AF; --line:#2E3A47;
+    --m-ink:#ECEFF1;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#131A22; --surface:#1C2530; --kori:#26313D;
+  --text:#ECEFF1; --muted:#98A4AF; --line:#2E3A47;
+  --m-ink:#ECEFF1;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font:400 15px/1.6 Figtree,system-ui,sans-serif;padding-inline:20px;padding-block:32px 64px}
+.wrap{max-width:1040px;margin:0 auto;display:grid;gap:56px}
+h1,h2,h3,.wm{font-family:"Zen Maru Gothic","Hiragino Maru Gothic ProN",system-ui,sans-serif;text-wrap:balance;margin:0}
+h2{font-size:1.5rem;font-weight:700}
+h3{font-size:1.1rem;font-weight:700}
+p{margin:0;max-width:62ch}
+.eyebrow{font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.muted{color:var(--muted)}
+svg.mark{display:block;overflow:visible}
+
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:40px;align-items:center;background:var(--surface);border-radius:28px;padding:48px 40px}
+.hero .lock{display:flex;align-items:flex-end;gap:18px}
+.hero .lock svg{width:min(220px,48vw);height:auto}
+.wm{font-weight:900;letter-spacing:-.02em;line-height:.9;color:var(--m-ink)}
+.hero .wm{font-size:clamp(3.5rem,9vw,6rem);padding-bottom:6px}
+.hero .copy{display:grid;gap:14px}
+.hero h1{font-size:1.9rem;font-weight:700}
+.kanji{font-family:"Zen Maru Gothic",serif;font-weight:500;color:var(--mandarina)}
+
+/* sections */
+section{display:grid;gap:20px}
+.head{display:grid;gap:6px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.card{background:var(--surface);border-radius:20px;padding:28px;display:grid;gap:16px;align-content:start}
+.card .stage{display:grid;place-items:center;min-height:190px;border-radius:14px;background:var(--bg)}
+.card .stage{--m-halo:var(--bg)}
+.tag{display:inline-block;font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:3px 10px;border-radius:99px;background:var(--mandarina);color:#1d1308;justify-self:start}
+.tag.alt{background:var(--kori);color:var(--text)}
+ul.pts{margin:0;padding-left:18px;display:grid;gap:4px;max-width:60ch}
+
+/* before / after */
+.ba{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.ba .card .stage{min-height:160px}
+.old{opacity:.55}
+
+/* applications */
+.apps{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:20px}
+.tile{border-radius:20px;padding:24px;display:grid;gap:14px;align-content:space-between;min-height:220px}
+.tile .cap{font-size:.8rem}
+.t-light{background:var(--surface)}
+.t-ink{background:#243140;color:#E8ECEF;--m-ink:#F4F5F3;--m-halo:#243140;--m-accent:#F28A2E}
+.t-ink .cap{color:#A9B5C0}
+.t-orange{background:#F28A2E;color:#1d1308;--m-ink:#243140;--m-halo:#F28A2E;--m-accent:#FFF3E6}
+.t-orange .cap{color:#5a3210}
+.hlock{display:flex;align-items:center;gap:10px}
+.hlock svg{width:64px;height:auto}
+.hlock .wm{font-size:2.4rem}
+.avatar{width:96px;aspect-ratio:1;border-radius:26px;display:grid;place-items:center;background:#243140;--m-ink:#F4F5F3;--m-halo:#243140}
+.avatar svg{width:72%}
+.avatars{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.avatar.round{border-radius:50%}
+.sizes{display:flex;align-items:flex-end;gap:18px;flex-wrap:wrap}
+.sizes figure{margin:0;display:grid;gap:6px;justify-items:center;font-size:.72rem;color:var(--muted);font-variant-numeric:tabular-nums}
+
+/* palette */
+.pal{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+.sw{border-radius:16px;overflow:hidden;background:var(--surface)}
+.sw .c{height:84px}
+.sw .i{padding:12px 14px;display:grid;gap:2px;font-size:.82rem}
+.sw b{font-family:"Zen Maru Gothic",sans-serif;font-size:.95rem}
+.sw code{font:500 .78rem/1.4 ui-monospace,Consolas,monospace;color:var(--muted)}
+.type{background:var(--surface);border-radius:20px;padding:28px;display:grid;gap:18px}
+.type .row{display:grid;grid-template-columns:140px 1fr;gap:16px;align-items:baseline}
+.type .row span{font-size:.78rem;color:var(--muted)}
+
+.next{background:var(--surface);border-radius:20px;padding:28px;display:grid;gap:12px}
+.next ol{margin:0;padding-left:20px;display:grid;gap:6px;max-width:66ch}
+
+@media (max-width:760px){
+  .hero{grid-template-columns:1fr;padding:32px 22px}
+  .grid2,.ba{grid-template-columns:1fr}
+  .type .row{grid-template-columns:1fr;gap:2px}
+}
+</style>
+
+<!-- Símbolos del logo. Colores por variables: --m-ink (silueta), --m-halo (recortes = color del fondo), --m-accent (Mandarina) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <clipPath id="a-body"><path d="M18 82 C18 50 40 30 70 30 C98 30 114 50 114 72 C114 78 111 82 106 82 Z"/></clipPath>
+    <clipPath id="a-tip"><circle cx="55" cy="86" r="9"/></clipPath>
+    <clipPath id="a-head">
+      <circle cx="40" cy="62" r="20"/>
+      <path d="M23 55 L21 34 L37 45 Z M43 43 L55 31 L57 52 Z"/>
+    </clipPath>
+  </defs>
+  <symbol id="maru-a" viewBox="10 22 112 76">
+    <!-- cuerpo -->
+    <path d="M18 82 C18 50 40 30 70 30 C98 30 114 50 114 72 C114 78 111 82 106 82 Z" fill="var(--m-ink)"/>
+    <!-- mancha Mandarina en el lomo -->
+    <g clip-path="url(#a-body)"><circle cx="96" cy="30" r="24" fill="var(--m-accent)"/></g>
+    <!-- cola que envuelve -->
+    <path d="M110 74 C106 92 72 94 55 86" fill="none" stroke="var(--m-halo)" stroke-width="17" stroke-linecap="round"/>
+    <path d="M110 74 C106 92 72 94 55 86" fill="none" stroke="var(--m-ink)" stroke-width="10" stroke-linecap="round"/>
+    <g clip-path="url(#a-tip)"><path d="M110 74 C106 92 72 94 55 86" fill="none" stroke="var(--m-accent)" stroke-width="10" stroke-linecap="round"/></g>
+    <!-- cabeza escondida -->
+    <g fill="var(--m-halo)" stroke="var(--m-halo)" stroke-width="9" stroke-linejoin="round">
+      <circle cx="40" cy="62" r="20"/><path d="M23 55 L21 34 L37 45 Z M43 43 L55 31 L57 52 Z"/>
+    </g>
+    <g fill="var(--m-ink)" stroke="var(--m-ink)" stroke-width="3" stroke-linejoin="round">
+      <circle cx="40" cy="62" r="20"/><path d="M23 55 L21 34 L37 45 Z M43 43 L55 31 L57 52 Z"/>
+    </g>
+    <g clip-path="url(#a-head)"><circle cx="58" cy="36" r="13" fill="var(--m-accent)"/></g>
+    <!-- ojos cerrados: dormida, tranquila -->
+    <g fill="none" stroke="var(--m-halo)" stroke-width="2.8" stroke-linecap="round">
+      <path d="M28 64 q4.5 4 9 0"/><path d="M43 64 q4.5 4 9 0"/>
+    </g>
+  </symbol>
+
+  <symbol id="maru-b" viewBox="10 16 100 78">
+    <path d="M22 84 V54 a14 14 0 0 1 28 0 V84 M50 54 a14 14 0 0 1 28 0 V84" fill="none" stroke="var(--m-ink)" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M18 46 L19 24 L33 38 Z M39 38 L53 24 L54 46 Z" fill="var(--m-ink)" stroke="var(--m-ink)" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M78 84 C93 84 102 76 102 64 C102 55 95 51 90 56" fill="none" stroke="var(--m-accent)" stroke-width="9" stroke-linecap="round"/>
+  </symbol>
+
+  <symbol id="old" viewBox="0 0 100 100">
+    <path d="M22 38 L20 8 L44 24 Z M56 24 L80 8 L78 38 Z" fill="var(--m-ink)"/>
+    <circle cx="50" cy="56" r="34" fill="var(--m-ink)"/>
+    <circle cx="38" cy="52" r="5" fill="var(--m-halo)"/><circle cx="62" cy="52" r="5" fill="var(--m-halo)"/>
+    <path d="M42 68 q8 6 16 0" fill="none" stroke="var(--m-halo)" stroke-width="3" stroke-linecap="round"/>
+  </symbol>
+</svg>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="lock">
+      <svg class="mark" viewBox="10 22 112 76" role="img" aria-label="Logo Maru: gata dormida hecha bolita"><use href="#maru-a"/></svg>
+    </div>
+    <div class="copy">
+      <span class="eyebrow">Identidad · propuesta v1 · 26 set 2026</span>
+      <div class="wm">maru<span class="kanji" style="font-size:.45em;margin-left:.2em">丸</span></div>
+      <h1>Automatización e IA para pymes</h1>
+      <p class="muted">En japonés, cuando un gato se hace bolita se dice <b>丸くなる</b> (marukunaru): “volverse maru”. El logo es eso: una gata tranquila, enroscada, con el trabajo resuelto. Las manchas naranjas son de Mandarina.</p>
+    </div>
+  </header>
+
+  <section>
+    <div class="head">
+      <span class="eyebrow">Qué cambió</span>
+      <h2>De avatar de bot a gata de verdad</h2>
+    </div>
+    <div class="ba">
+      <div class="card">
+        <div class="stage old"><svg class="mark" width="110" viewBox="0 0 100 100" aria-hidden="true"><use href="#old"/></svg></div>
+        <h3>Antes</h3>
+        <ul class="pts muted">
+          <li>Círculo + orejas + cara frontal: el mismo esquema que cualquier ícono de chatbot.</li>
+          <li>Ojos abiertos mirando al frente se leen como “asistente”.</li>
+          <li>El círculo perfecto choca con las orejas en punta.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="stage"><svg class="mark" width="170" viewBox="10 22 112 76" aria-hidden="true"><use href="#maru-a"/></svg></div>
+        <h3>Ahora</h3>
+        <ul class="pts">
+          <li>Silueta completa de perfil: se lee como gata, no como cara.</li>
+          <li>Ojos cerrados y sin boca: calma, confianza, cero “robot”.</li>
+          <li>La forma redonda sale del cuerpo enroscado, así las orejas encajan.</li>
+          <li>Dos toques naranjas (oreja y punta de la cola) = Mandarina.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="head">
+      <span class="eyebrow">Dos direcciones</span>
+      <h2>Símbolo principal y monograma</h2>
+      <p class="muted">A es el logo. B es una alternativa más sobria para contextos corporativos (facturas, propuestas, firma de correo), o se puede usar como sub-marca.</p>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <span class="tag">Recomendado</span>
+        <div class="stage"><svg class="mark" width="190" viewBox="10 22 112 76" aria-hidden="true"><use href="#maru-a"/></svg></div>
+        <h3>A · Marukunaru</h3>
+        <p class="muted">La gata dormida. Tiene historia, es tierna sin ser infantil y funciona sola como avatar en WhatsApp e Instagram.</p>
+      </div>
+      <div class="card">
+        <span class="tag alt">Alternativa</span>
+        <div class="stage"><svg class="mark" width="150" viewBox="10 16 100 78" aria-hidden="true"><use href="#maru-b"/></svg></div>
+        <h3>B · Monograma m</h3>
+        <p class="muted">Una “m” redondeada con orejas en el primer arco y la cola naranja al final. Más geométrica y más seria, pero con menos personalidad.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="head">
+      <span class="eyebrow">Aplicaciones</span>
+      <h2>Cómo se ve en uso</h2>
+    </div>
+    <div class="apps">
+      <div class="tile t-light">
+        <div class="hlock"><svg class="mark" viewBox="10 22 112 76" aria-hidden="true"><use href="#maru-a"/></svg><span class="wm">maru</span></div>
+        <span class="cap muted">Horizontal · web, propuestas, firma</span>
+      </div>
+      <div class="tile t-ink">
+        <div class="hlock"><svg class="mark" viewBox="10 22 112 76" aria-hidden="true"><use href="#maru-a"/></svg><span class="wm">maru</span></div>
+        <span class="cap">Sobre Sumi · fondos oscuros</span>
+      </div>
+      <div class="tile t-orange">
+        <div class="hlock"><svg class="mark" viewBox="10 22 112 76" aria-hidden="true"><use href="#maru-a"/></svg><span class="wm">maru</span></div>
+        <span class="cap">Sobre Mandarina · redes, stickers</span>
+      </div>
+      <div class="tile t-light">
+        <div class="avatars">
+          <div class="avatar"><svg class="mark" viewBox="10 22 112 76" aria-hidden="true"><use href="#maru-a"/></svg></div>
+          <div class="avatar round"><svg class="mark" viewBox="10 22 112 76" aria-hidden="true"><use href="#maru-a"/></svg></div>
+        </div>
+        <span class="cap muted">Avatar · WhatsApp Business, IG, LinkedIn (recorte circular)</span>
+      </div>
+      <div class="tile t-light">
+        <div class="sizes">
+          <figure><svg class="mark" width="64" viewBox="10 22 112 76" aria-hidden="true"><use href="#maru-a"/></svg>64 px</figure>
+          <figure><svg class="mark" width="32" viewBox="10 22 112 76" aria-hidden="true"><use href="#maru-a"/></svg>32 px</figure>
+          <figure><svg class="mark" width="16" viewBox="10 22 112 76" aria-hidden="true"><use href="#maru-a"/></svg>16 px</figure>
+        </div>
+        <span class="cap muted">Favicon · a 16 px conviene una versión sin ojos</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="head">
+      <span class="eyebrow">Sistema</span>
+      <h2>Color y tipografía</h2>
+    </div>
+    <div class="pal">
+      <div class="sw"><div class="c" style="background:#243140"></div><div class="i"><b>Sumi</b><code>#243140</code><span class="muted">Texto, silueta, fondos oscuros</span></div></div>
+      <div class="sw"><div class="c" style="background:#F28A2E"></div><div class="i"><b>Mandarina</b><code>#F28A2E</code><span class="muted">Acento, botones, detalles</span></div></div>
+      <div class="sw"><div class="c" style="background:#D9701A"></div><div class="i"><b>Mandarina oscura</b><code>#D9701A</code><span class="muted">Hover, texto naranja sobre claro</span></div></div>
+      <div class="sw"><div class="c" style="background:#E3E9EE"></div><div class="i"><b>Kōri</b><code>#E3E9EE</code><span class="muted">Superficies, tarjetas</span></div></div>
+      <div class="sw"><div class="c" style="background:#F4F5F3;box-shadow:inset 0 0 0 1px var(--line)"></div><div class="i"><b>Shiro</b><code>#F4F5F3</code><span class="muted">Fondo</span></div></div>
+    </div>
+    <div class="type">
+      <div class="row"><span>Marca y títulos<br>Zen Maru Gothic</span><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:1.9rem;line-height:1.2">Tu negocio en piloto automático</div></div>
+      <div class="row"><span>Texto<br>Figtree</span><div>Conectamos WhatsApp, tu agenda y tus hojas de cálculo para que las tareas repetitivas se hagan solas. Tú atiendes clientes; Maru hace el resto.</div></div>
+      <p class="muted" style="font-size:.85rem">Zen Maru Gothic es literalmente una “maru gothic”: la tipografía japonesa redondeada. El nombre de la marca y su letra cuentan la misma historia.</p>
+    </div>
+  </section>
+
+  <section class="next">
+    <span class="eyebrow">Antes de imprimir nada</span>
+    <h2>Pendientes para cerrar la marca</h2>
+    <ol>
+      <li>Buscar “Maru” en Indecopi (clase 35 y 42) y en IG/TikTok de Perú. Es un nombre común, así que probablemente toque registrarlo como “Maru Automatiza”, “Maru Labs” o similar.</li>
+      <li>Revisar dominios: maru.pe, maru.lat, somosmaru.com, hola-maru.com.</li>
+      <li>Si A queda, pasarla a vectores limpios (Figma o Illustrator) y hacer la versión favicon simplificada.</li>
+      <li>Foto de Mandarina para la sección “Sobre nosotros”. Una mascota real vende más que cualquier ilustración.</li>
+    </ol>
+  </section>
+
+</div>
