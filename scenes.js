@@ -537,7 +537,7 @@ async function sceneIa(root, c) {
   const ph = h("div", "ia-head");
   const known = h("span", "ia-known", T.none);
   const cat = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-  cat.setAttribute("viewBox", "10 22 112 76");
+  cat.setAttribute("viewBox", "0 0 112 76");
   cat.setAttribute("class", "ia-cat");
   const u = document.createElementNS("http://www.w3.org/2000/svg", "use");
   u.setAttribute("href", "#maru");
