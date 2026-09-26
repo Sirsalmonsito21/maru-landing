@@ -50,7 +50,13 @@ Pendiente: número de WhatsApp, correo, dominio, precios. El nombre "Maru" todav
 
 ## Evidence on Hand
 
-No hay clientes, testimonios, casos, cifras ni logos de clientes. No inventar ninguno. Los ejemplos se presentan como "lo que podemos automatizar", no como resultados.
+Proyectos reales (confirmados por el fundador el 2026-09-26), publicados en la sección "Proyectos" de la landing:
+- Chatbot con n8n para un salón de belleza en Lima: la dueña ya no copia y pega textos, no espera ni busca mensajes ni pide la foto; el bot hace el proceso y ella entra al final para la cotización personalizada.
+- App de escritorio para dos salones de belleza: de datos desordenados sin control de ingresos y salidas, a reportes, ingresos/egresos ordenados y seguimiento de clientas.
+- Web de Luxent Detailing (detallado de autos, Rohnert Park, California), en desarrollo: ahora muestra proyectos, paquetes, zona de trabajo y quién está detrás.
+- Web de un estudio de diseño de interiores en Surco (anónimo): web elegante que representa la marca.
+
+No hay cifras, testimonios ni logos autorizados todavía. No inventar números; los ejemplos del hero siguen marcados como "Ejemplo".
 
 ## Product Principles
 

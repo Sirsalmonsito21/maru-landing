@@ -105,6 +105,21 @@ new IntersectionObserver((entries, io) => {
   if (entries[0].isIntersecting) { if (!started) play(current); io.disconnect(); }
 }, { threshold: 0.35 }).observe(stage);
 
+/* ---------- Proyectos: el caso del bot se cuenta al entrar en pantalla ---------- */
+const caseBot = $("case-bot");
+if (!reduced) {
+  caseBot.classList.add("armed");
+  new IntersectionObserver((entries, io) => {
+    if (!entries[0].isIntersecting) return;
+    caseBot.classList.add("play");
+    io.disconnect();
+  }, { threshold: 0.45 }).observe(caseBot);
+}
+
+// La gata solo respira mientras se ve (ahorra batería y trabajo al navegador).
+const catFig = document.querySelector(".mandarina");
+new IntersectionObserver(([e]) => catFig.classList.toggle("visible", e.isIntersecting)).observe(catFig);
+
 /* ---------- Servicios: módulos desplegables, uno abierto a la vez ---------- */
 const svcs = [...document.querySelectorAll(".svc")];
 function setOpen(li, open) {

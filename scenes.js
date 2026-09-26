@@ -55,12 +55,13 @@ function makeCtx(signal, fast, t = {}, pace = 1) {
       if (fast) { opts.duration = 0; opts.delay = 0; }
       return node.animate(kf, opts);
     },
-    enter(node, { y = 8, s = 0.97, dur = 380, delay = 0, origin, blur = 4 } = {}) {
+    // Solo transform + opacity: el blur animado en muchos elementos traba Safari.
+    enter(node, { y = 8, s = 0.97, dur = 380, delay = 0, origin } = {}) {
       if (origin) node.style.transformOrigin = origin;
       return c.a(node, [
-        { opacity: 0, transform: `translateY(${y}px) scale(${s})`, filter: `blur(${blur}px)` },
-        { opacity: 1, transform: "none", filter: "blur(0px)" },
-      ], { duration: dur, delay });
+        { opacity: 0, transform: `translateY(${y}px) scale(${s})` },
+        { opacity: 1, transform: "none" },
+      ], { duration: dur, delay, fill: "backwards" });
     },
     count(node, from, to, dur, fmt) {
       if (fast) { node.textContent = fmt(to); return Promise.resolve(); }
@@ -207,7 +208,7 @@ async function sceneCitas(root, c) {
     cells[`${d}-${r}`].append(ev);
     evs.push(ev);
     c.fire(cells[`${d}-${r}`], [{ boxShadow: "inset 0 0 0 2px var(--mandarina)" }, { boxShadow: "inset 0 0 0 2px transparent" }], { duration: 700, fill: "none" });
-    await c.enter(ev, { y: -14, s: 0.86, dur: 420, blur: 2 });
+    await c.enter(ev, { y: -14, s: 0.86, dur: 420 });
     n++;
     count.textContent = T.count(n);
     await c.wait(n === 1 ? 450 : 260);
@@ -325,7 +326,7 @@ async function sceneExcel(root, c) {
       const cell = cells[ri][ci];
       cell.textContent = clean;
       cell.classList.remove("raw");
-      c.fire(cell, [{ filter: "blur(3px)", opacity: 0.3 }, { filter: "blur(0px)", opacity: 1 }], { duration: 280, fill: "none" });
+      c.fire(cell, [{ opacity: 0.25 }, { opacity: 1 }], { duration: 280, fill: "none" });
     });
     await c.wait(170);
   }
@@ -603,7 +604,7 @@ async function sceneIa(root, c) {
   for (const w of words) {
     const s = h("span", "w", w + " ");
     a.append(s);
-    c.fire(s, [{ opacity: 0, filter: "blur(3px)" }, { opacity: 1, filter: "blur(0px)" }], { duration: 260 });
+    c.fire(s, [{ opacity: 0 }, { opacity: 1 }], { duration: 260, fill: "backwards" });
     await c.wait(55);
   }
   await c.wait(250);
