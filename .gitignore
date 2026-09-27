@@ -5,3 +5,9 @@
 estudio/*.mp4
 kit-video/
 videos/
+
+estudio/kuro-hf/assets/audio-kuro.wav
+estudio/kuro-hf/assets/fonts/
+estudio/kuro-hf/snapshots/
+estudio/kuro-hf/renders/
+estudio/kuro-hf/.hyperframes/

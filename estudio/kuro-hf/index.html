@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #050608; }
+      #root { position: relative; width: 100%; height: 100%; overflow: hidden; background: #050608; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="40" data-width="1080" data-height="1920">
+      <div id="playa" data-composition-id="playa" data-composition-src="compositions/playa.html"
+        data-start="0" data-duration="17.11" data-track-index="1" data-width="1080" data-height="1920"></div>
+      <div id="sistema" data-composition-id="sistema" data-composition-src="compositions/sistema.html"
+        data-start="17.11" data-duration="17.1" data-track-index="2" data-width="1080" data-height="1920"></div>
+      <div id="remate" data-composition-id="remate" data-composition-src="compositions/remate.html"
+        data-start="34.21" data-duration="2.81" data-track-index="3" data-width="1080" data-height="1920"></div>
+      <div id="cierre" data-composition-id="cierre" data-composition-src="compositions/cierre.html"
+        data-start="37.02" data-duration="2.98" data-track-index="4" data-width="1080" data-height="1920"></div>
+      <audio id="musica" src="assets/audio-kuro.wav" data-start="0" data-duration="40" data-track-index="10" data-volume="1"></audio>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

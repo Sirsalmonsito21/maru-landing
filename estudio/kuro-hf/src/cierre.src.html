@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Zen Kaku Gothic New"; font-weight: 700; src: url("assets/fonts/ZenKakuGothicNew-Bold.ttf"); }
+        @font-face { font-family: "Zen Kaku Gothic New"; font-weight: 900; src: url("assets/fonts/ZenKakuGothicNew-Black.ttf"); }
+        @font-face { font-family: "Tenor Sans"; src: url("assets/fonts/TenorSans-Regular.ttf"); }
+        #root { position: absolute; inset: 0; overflow: hidden; background: radial-gradient(80% 50% at 50% 42%, #141a26, #050608); font-family: "Zen Kaku Gothic New", sans-serif; color: #F4F1EA; }
+        #cie-brand { position: absolute; left: 0; right: 0; top: 400px; display: flex; justify-content: center; align-items: center; gap: 30px; }
+        #cie-brand img { width: 130px; height: 130px; border-radius: 16px; }
+        #cie-brand span { font-family: "Tenor Sans", serif; font-size: 108px; letter-spacing: .2em; }
+        #cie-q { position: absolute; left: 90px; right: 150px; top: 640px; text-align: center; font-size: 70px; font-weight: 900; line-height: 1.2; }
+        #cie-q em { font-style: normal; color: #FF4D5E; }
+        #cie-c { position: absolute; left: 0; right: 0; top: 940px; display: flex; justify-content: center; align-items: center; gap: 24px; font-size: 64px; font-weight: 700; }
+        #cie-c b { font-weight: 900; background: #E8CFA2; color: #0a0a0a; padding: 8px 32px 12px; border-radius: 14px; }
+        #cie-maru { position: absolute; left: 380px; top: 1150px; width: 320px; height: 330px; overflow: hidden; }
+        #cie-cv { position: absolute; left: 0; top: 0; width: 320px; height: 320px; image-rendering: pixelated; }
+      </style>
+      <div id="root" data-composition-id="cierre" data-width="1080" data-height="1920" data-duration="2.98">
+        <div id="cie-brand"><img src="assets/img/sello-maru.png" alt="" /><span>MARU</span></div>
+        <div id="cie-q">¿Tus números siguen en un <em>Excel roto</em>?</div>
+        <div id="cie-c">Comenta <b>REPORTE</b> ▼</div>
+        <div id="cie-maru"><canvas data-layout-allow-overflow id="cie-cv" width="90" height="90"></canvas></div>
+      </div>
+      <script>
+        (function () {
+        /*__ENGINE__*/
+        var ctx = document.getElementById("cie-cv").getContext("2d");
+        function draw(t) {
+          setCtx(ctx); g.clearRect(0, 0, 90, 90);
+          maruFace(45, 52, 2.3, { glint: t > 1.4 }, 37.02 + t);
+          if (t > 1.9 && t < 2.3) { rect(45 - 6 * 2.3 - 4, 52 - 2 * 2.3 - 2, 18, 6, "#FFF6EE"); line(45 - 6 * 2.3 - 3, 52 - 1 * 2.3, 45 - 6 * 2.3 + 4, 52 - 1 * 2.3, "#2a1c24", 2); }
+        }
+        var tl = gsap.timeline({ paused: true });
+        var p = { t: 0 };
+        tl.to(p, { t: 2.98, duration: 2.98, ease: "none", onUpdate: function () { draw(p.t); } }, 0);
+        tl.fromTo("#cie-brand", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: .5, ease: "expo.out" }, .1);
+        tl.fromTo("#cie-q", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: .5, ease: "expo.out" }, .35);
+        tl.fromTo("#cie-c", { opacity: 0, scale: .8 }, { opacity: 1, scale: 1, duration: .45, ease: "back.out(2)" }, .7);
+        tl.fromTo("#cie-c b", { boxShadow: "0 0 0 0 rgba(232,207,162,.6)" }, { boxShadow: "0 0 0 26px rgba(232,207,162,0)", duration: .7, repeat: 2, ease: "power2.out" }, 1.1);
+        tl.fromTo("#cie-cv", { y: 330 }, { y: 20, duration: .55, ease: "back.out(1.6)" }, 1.0);
+        draw(0);
+        window.__timelines["cierre"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

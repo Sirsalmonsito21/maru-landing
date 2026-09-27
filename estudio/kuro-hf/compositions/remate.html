@@ -1,0 +1,355 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        #root { position: absolute; inset: 0; overflow: hidden; background: #140d24; }
+        #rem-cam { position: absolute; inset: 0; transform-origin: 500px 1236px; }
+        #rem-px { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; image-rendering: pixelated; }
+        #rem-flare { position: absolute; left: 380px; top: 700px; width: 900px; height: 900px; border-radius: 50%; background: radial-gradient(circle, rgba(255,210,122,.55), transparent 60%); mix-blend-mode: screen; opacity: 0; }
+        #rem-black { position: absolute; inset: 0; background: #050608; opacity: 0; }
+      </style>
+      <div id="root" data-composition-id="remate" data-width="1080" data-height="1920" data-duration="2.81">
+        <div id="rem-cam" data-layout-allow-overflow><canvas data-layout-allow-overflow id="rem-px" width="270" height="480"></canvas></div>
+        <div id="rem-flare"></div>
+        <div id="rem-black"></div>
+      </div>
+      <script>
+        (function () {
+        /* Motor pixel compartido (playa, remate, cierre). Todo es función del tiempo: sin azar ni relojes.
+   Lienzo lógico 270×480, escalado ×4 a 1080×1920 con image-rendering: pixelated. */
+var PW = 270, PH = 480;
+var g = null;
+function setCtx(c) { g = c; g.imageSmoothingEnabled = false; }
+var hash = function (n) { var s = Math.sin(n * 12.9898) * 43758.5453; return s - Math.floor(s); };
+var clamp = function (v, a, b) { return Math.min(b === undefined ? 1 : b, Math.max(a === undefined ? 0 : a, v)); };
+var pk = function (t, s, d) { return clamp((t - s) / d); };
+var lerp = function (a, b, k) { return a + (b - a) * k; };
+var outQ = function (k) { return 1 - Math.pow(1 - k, 3); };
+var outBack = function (k) { var c = 1.9; return 1 + (c + 1) * Math.pow(k - 1, 3) + c * Math.pow(k - 1, 2); };
+var SOLID = null;
+function px(x, y, c) { g.fillStyle = SOLID || c; g.fillRect(Math.round(x), Math.round(y), 1, 1); }
+function rect(x, y, w, h, c) { if (w <= 0 || h <= 0) return; g.fillStyle = SOLID || c; g.fillRect(Math.round(x), Math.round(y), Math.max(1, Math.round(w)), Math.max(1, Math.round(h))); }
+var BAYER = [[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]];
+function inE(x, y, cx, cy, rx, ry) { return Math.pow((x + .5 - cx) / rx, 2) + Math.pow((y + .5 - cy) / ry, 2) <= 1; }
+/* Elipse rellena con contorno de color y sombra opcional (luz desde arriba-izquierda). */
+function blob(cx, cy, rx, ry, fill, out, shade, hl) {
+  if (rx < .5 || ry < .5) return;
+  for (var y = Math.floor(cy - ry - 1); y <= cy + ry + 1; y++) for (var x = Math.floor(cx - rx - 1); x <= cx + rx + 1; x++) {
+    if (!inE(x, y, cx, cy, rx, ry)) continue;
+    var edge = !inE(x - 1, y, cx, cy, rx, ry) || !inE(x + 1, y, cx, cy, rx, ry) || !inE(x, y - 1, cx, cy, rx, ry) || !inE(x, y + 1, cx, cy, rx, ry);
+    var c = fill;
+    if (edge && out) c = out;
+    else {
+      var nx = (x + .5 - cx) / rx, ny = (y + .5 - cy) / ry;
+      var l = -nx * .55 - ny * .75;
+      if (shade && l < -.35) c = shade;
+      if (hl && l > .62) c = hl;
+    }
+    px(x, y, c);
+  }
+}
+function tri(ax, ay, bx, by, cx, cy, c) {
+  var minX = Math.floor(Math.min(ax, bx, cx)), maxX = Math.ceil(Math.max(ax, bx, cx)), minY = Math.floor(Math.min(ay, by, cy)), maxY = Math.ceil(Math.max(ay, by, cy));
+  var s = function (x1, y1, x2, y2, x3, y3) { return (x1 - x3) * (y2 - y3) - (x2 - x3) * (y1 - y3); };
+  for (var y = minY; y <= maxY; y++) for (var x = minX; x <= maxX; x++) {
+    var d1 = s(x + .5, y + .5, ax, ay, bx, by), d2 = s(x + .5, y + .5, bx, by, cx, cy), d3 = s(x + .5, y + .5, cx, cy, ax, ay);
+    var neg = d1 < 0 || d2 < 0 || d3 < 0, pos = d1 > 0 || d2 > 0 || d3 > 0;
+    if (!(neg && pos)) px(x, y, c);
+  }
+}
+function quad(pts, c) { tri(pts[0], pts[1], pts[2], pts[3], pts[4], pts[5], c); tri(pts[0], pts[1], pts[4], pts[5], pts[6], pts[7], c); }
+function line(x0, y0, x1, y1, c, w) {
+  var n = Math.max(1, Math.ceil(Math.hypot(x1 - x0, y1 - y0)));
+  for (var i = 0; i <= n; i++) { var x = lerp(x0, x1, i / n), y = lerp(y0, y1, i / n); rect(x - (w || 1) / 2 + .5, y - (w || 1) / 2 + .5, w || 1, w || 1, c); }
+}
+function limb(x0, y0, x1, y1, r, fill, out) {
+  var n = Math.max(2, Math.ceil(Math.hypot(x1 - x0, y1 - y0) * 1.4)), i;
+  if (out) for (i = 0; i <= n; i++) blob(lerp(x0, x1, i / n), lerp(y0, y1, i / n), r + 1, r + 1, out);
+  for (i = 0; i <= n; i++) blob(lerp(x0, x1, i / n), lerp(y0, y1, i / n), r, r, fill);
+}
+function gradient(stops, y0, y1, x0, x1) {
+  x0 = x0 || 0; x1 = x1 || PW;
+  for (var y = y0; y < y1; y++) {
+    var f = (y - y0) / (y1 - y0) * (stops.length - 1), i = Math.floor(f), fr = f - i;
+    for (var x = x0; x < x1; x++) px(x, y, (fr * 16 > BAYER[y & 3][x & 3]) && stops[i + 1] ? stops[i + 1] : stops[i]);
+  }
+}
+function star4(x, y, r, c) { rect(x - r, y, r * 2 + 1, 1, c); rect(x, y - r, 1, r * 2 + 1, c); if (r > 2) { px(x - 1, y - 1, c); px(x + 1, y - 1, c); px(x - 1, y + 1, c); px(x + 1, y + 1, c); } }
+
+/* ======================= PLAYA ======================= */
+var SKY = ["#21133d", "#351850", "#55215e", "#7f2e63", "#b1435f", "#dd6553", "#f28e56", "#fcb86a", "#ffd88a"];
+function beach(t, opt) {
+  opt = opt || {};
+  var horizon = opt.horizon || 262;
+  gradient(SKY, 0, horizon);
+  // estrellas tenues arriba
+  for (var i = 0; i < 26; i++) { var sx = hash(i) * PW, sy = hash(i + 50) * 90; if ((Math.sin(t * 2 + i) + 1) > .9) px(sx, sy, "#e9d9ff"); }
+  // nubes en franjas
+  [[40, 120, 90, 0], [150, 150, 110, 1], [20, 178, 70, 1], [170, 196, 80, 0]].forEach(function (c, j) {
+    var x = ((c[0] + t * (3 + j)) % 360) - 60;
+    rect(x, c[1], c[2], 2, c[3] ? "#f59b86" : "#d86a7c"); rect(x + 10, c[1] + 2, c[2] - 20, 1, "#b8506c");
+  });
+  // sol que se hunde en el mar, con franjas retro
+  var sx0 = opt.sunX || 196, sy0 = horizon - 6, R = 34;
+  for (var y = sy0 - R; y <= horizon; y++) for (var x = sx0 - R; x <= sx0 + R; x++) {
+    if (!inE(x, y, sx0, sy0, R, R)) continue;
+    var dy = y - (sy0 - R);
+    if (y > sy0 - 12 && (y - (sy0 - 12)) % 6 < Math.floor((y - (sy0 - 12)) / 5)) continue;
+    px(x, y, dy < 16 ? "#fff0b8" : dy < 30 ? "#ffd27a" : "#ffb35e");
+  }
+  // gaviotas
+  for (var k = 0; k < 3; k++) {
+    var gx = ((k * 90 + t * 16) % 330) - 30, gy = 110 + k * 18 + Math.sin(t * 2 + k) * 3, f = Math.floor(t * 5 + k) % 2;
+    px(gx, gy, "#fff6ee"); px(gx - 1, gy - 1 + f, "#fff6ee"); px(gx - 2, gy - 1 + f, "#fff6ee"); px(gx + 1, gy - 1 + f, "#fff6ee"); px(gx + 2, gy - 1 + f, "#fff6ee");
+  }
+  // mar
+  var shore = horizon + 74;
+  for (var yy = horizon; yy < shore; yy++) {
+    var k2 = (yy - horizon) / (shore - horizon);
+    var base = k2 < .3 ? "#3a2766" : k2 < .65 ? "#2f2560" : "#2a2d6a";
+    rect(0, yy, PW, 1, base);
+  }
+  // reflejo del sol
+  for (var r = 0; r < 18; r++) {
+    var ry = horizon + 3 + r * 4, w = 36 - r * 1.4 + Math.sin(t * 3 + r) * 4;
+    rect(sx0 - w / 2 + Math.sin(t * 2 + r * .7) * 3, ry, w, 1, r < 6 ? "#ffd27a" : "#e9905a");
+  }
+  // líneas de oleaje
+  for (var l = 0; l < 7; l++) {
+    var ly = horizon + 10 + l * 9, off = (t * (8 + l * 2) + l * 37) % 60;
+    for (var x2 = -60 + off; x2 < PW; x2 += 60) rect(x2, ly, 16 + l * 2, 1, l < 3 ? "#6e5aa8" : "#8577c4");
+  }
+  // espuma de la orilla
+  var foamY = shore + Math.sin(t * 1.3) * 3;
+  for (var x3 = 0; x3 < PW; x3++) { var fy = foamY + Math.sin(x3 * .08 + t * 2) * 1.5; rect(x3, fy, 1, 2, "#fff3e6"); if (hash(x3 + Math.floor(t * 4)) > .8) px(x3, fy + 2, "#cfe4f2"); }
+  // arena mojada y seca
+  gradient(["#b98a7a", "#e2a57a", "#f0b98a", "#eab080", "#dca06f"], foamY + 2, PH);
+  for (var s = 0; s < 70; s++) { var ax = hash(s + 7) * PW, ay = foamY + 10 + hash(s + 9) * (PH - foamY); px(ax, ay, s % 3 ? "#c98d62" : "#fff0d8"); }
+  // conchitas
+  [[40, 440], [220, 452], [120, 470]].forEach(function (c) { rect(c[0], c[1], 3, 2, "#fff0e0"); px(c[0] + 1, c[1] - 1, "#f4c6c0"); });
+  return foamY;
+}
+function palm(x, base, t, scale) {
+  scale = scale || 1;
+  var sway = Math.sin(t * 1.2) * 1.5;
+  // tronco curvo con anillos
+  var top = [x + 26 * scale + sway, base - 250 * scale];
+  for (var i = 0; i <= 40; i++) {
+    var k = i / 40, cx = lerp(x, top[0], k) + Math.sin(k * 3.1) * -14 * scale, cy = lerp(base, top[1], k), w = lerp(14, 8, k) * scale;
+    rect(cx - w / 2, cy, w, 7 * scale, "#6e4127"); rect(cx - w / 2, cy, Math.max(1, w * .35), 7 * scale, "#9a6440");
+    if (i % 3 === 0) rect(cx - w / 2, cy, w, 1, "#4e2c1a");
+  }
+  // cocos
+  blob(top[0] - 4 * scale, top[1] + 6 * scale, 5 * scale, 5 * scale, "#6b3e1f", "#3e2210", "#4e2c14", "#9a6030");
+  blob(top[0] + 5 * scale, top[1] + 7 * scale, 5 * scale, 5 * scale, "#6b3e1f", "#3e2210", "#4e2c14", "#9a6030");
+  // hojas
+  for (var f = 0; f < 7; f++) {
+    var ang = -Math.PI + f / 6 * Math.PI + Math.sin(t * 1.4 + f) * .06, len = (84 + (f % 2) * 16) * scale;
+    for (var j = 0; j < 30; j++) {
+      var kk = j / 30, droop = kk * kk * 30 * scale;
+      var fx = top[0] + Math.cos(ang) * len * kk, fy = top[1] + Math.sin(ang) * len * kk * .6 + droop;
+      var lw = Math.max(1, (1 - kk) * 5 * scale);
+      rect(fx - lw / 2, fy - lw / 2, lw, lw, kk < .5 ? "#2e6b46" : "#3f8a55");
+      if (j % 3 === 0 && kk > .15) { line(fx, fy, fx + Math.cos(ang + 1.3) * 11 * scale, fy + 9 * scale, "#2e6b46", 2); line(fx, fy, fx + Math.cos(ang - 1.3) * 11 * scale, fy + 9 * scale, "#79b86a", 2); }
+    }
+  }
+  return top;
+}
+function umbrella(x, base, t) {
+  var top = base - 120;
+  rect(x - 1, top, 3, 120, "#e8dcc8"); rect(x + 1, top, 1, 120, "#b8a890");
+  for (var yy = 0; yy <= 22; yy++) {
+    var hw = 52 * Math.sqrt(1 - Math.pow((22 - yy) / 22, 2));
+    for (var xx = -hw; xx <= hw; xx++) {
+      var seg = Math.floor(((Math.atan2(yy + 6, xx) / Math.PI) * 8));
+      var c = seg % 2 ? "#C8452C" : "#FFF6EE";
+      if (yy > 18) c = seg % 2 ? "#8e2f1f" : "#d9cdb8";
+      px(x + xx, top - 22 + yy, c);
+    }
+  }
+  for (var i = -52; i <= 52; i += 13) blob(x + i + 6, top + 1, 6.5, 3, (Math.floor((i + 52) / 13) % 2) ? "#C8452C" : "#FFF6EE", null);
+  blob(x, top - 24, 2, 2, "#8e2f1f", null);
+}
+function chair(x, base) {
+  // tumbona de madera con tela a rayas
+  quad([x - 34, base - 2, x + 30, base - 2, x + 30, base - 8, x - 34, base - 8], "#8e5a32");
+  for (var i = 0; i < 8; i++) rect(x - 32 + i * 8, base - 8, 8, 5, i % 2 ? "#2f8a8a" : "#FFF6EE");
+  quad([x + 16, base - 8, x + 30, base - 8, x + 42, base - 58, x + 28, base - 58], "#2f8a8a");
+  for (var j = 0; j < 5; j++) quad([x + 18 + j * 2.4, base - 12 - j * 9, x + 30 + j * 2.4, base - 12 - j * 9, x + 32 + j * 2.4, base - 16 - j * 9, x + 20 + j * 2.4, base - 16 - j * 9], "#FFF6EE");
+  line(x - 30, base - 2, x - 36, base + 12, "#6e4127", 2); line(x + 26, base - 2, x + 32, base + 12, "#6e4127", 2); line(x + 40, base - 56, x + 34, base + 12, "#6e4127", 2);
+}
+
+/* ======================= DON KURO =======================
+   Gato negro mamado, diseño propio. Unidades relativas a (cx, base = cadera), escala k. */
+var K = { out: "#0b0915", base: "#221f38", sh: "#151329", hl: "#3b3a68", rim: "#5b4a8a", shine: "#6f7fd0", muzzle: "#34315a", ear: "#b06a8a", white: "#e8e2f4", short: "#C8452C", shortSh: "#8e2f1f", stripe: "#D7B98C" };
+function kuro(cx, base, k, o, t) {
+  o = o || {};
+  var sq = o.squash || 1, bob = o.breath ? Math.sin(t * 2.4) * .8 : 0;
+  var X = function (v) { return cx + v * k; }, Y = function (v) { return base + v * k * sq + (v < -8 ? bob * k : 0); };
+  // cola
+  var tw = Math.sin(t * 2) * 3;
+  limb(X(14), Y(-6), X(26 + tw), Y(-18), 1.6 * k, K.base, K.out); limb(X(26 + tw), Y(-18), X(22 + tw), Y(-30), 1.4 * k, K.base, K.out);
+  // piernas flacas cómicas
+  var legY = o.legsUp ? -2 : 18;
+  limb(X(-6), Y(0), X(-7), Y(legY), 1.4 * k, K.base, K.out); limb(X(6), Y(0), X(7), Y(legY), 1.4 * k, K.base, K.out);
+  blob(X(-7.5), Y(legY + 1), 3 * k, 1.8 * k, K.base, K.out, K.sh, K.hl); blob(X(7.5), Y(legY + 1), 3 * k, 1.8 * k, K.base, K.out, K.sh, K.hl);
+  // short de baño
+  quad([X(-14), Y(-10), X(14), Y(-10), X(12), Y(3), X(-12), Y(3)], K.out);
+  quad([X(-13), Y(-9), X(13), Y(-9), X(11), Y(2), X(-11), Y(2)], K.short);
+  rect(X(-13), Y(-9), 26 * k, 2 * k, K.stripe); rect(X(5), Y(-7), 6 * k, 9 * k, K.shortSh);
+  // torso en V
+  quad([X(-30), Y(-50), X(30), Y(-50), X(14), Y(-9), X(-14), Y(-9)], K.out);
+  quad([X(-28.5), Y(-49), X(28.5), Y(-49), X(13), Y(-10), X(-13), Y(-10)], K.base);
+  quad([X(8), Y(-49), X(28.5), Y(-49), X(13), Y(-10), X(4), Y(-10)], K.sh);
+  // pectorales
+  blob(X(-11), Y(-40), 12 * k, 8 * k, K.base, K.out, K.sh, K.hl); blob(X(11), Y(-40), 12 * k, 8 * k, K.base, K.out, K.sh, K.hl);
+  // six-pack
+  for (var r = 0; r < 3; r++) { blob(X(-4.5), Y(-29 + r * 6), 3.6 * k, 2.4 * k, K.base, K.out, K.sh, K.hl); blob(X(4.5), Y(-29 + r * 6), 3.6 * k, 2.4 * k, K.base, K.out, K.sh, K.hl); }
+  // reflejo de atardecer a la izquierda
+  for (var i = 0; i < 18; i++) px(X(-27 + i * .7), Y(-48 + i * 2), K.rim);
+  // brazos
+  var arm = function (side, hand, holding) {
+    var sx = side * 30, sy = -46;
+    blob(X(sx), Y(sy), 10 * k, 9 * k, K.base, K.out, K.sh, K.hl);
+    var ex = hand.ex !== undefined ? hand.ex : side * 38, ey = hand.ey !== undefined ? hand.ey : -28;
+    limb(X(sx + side * 3), Y(sy + 4), X(ex), Y(ey), 5.5 * k, K.base, K.out);
+    blob(X(lerp(sx, ex, .45) + side * 1), Y(lerp(sy, ey, .45)), 7 * k, 5.5 * k, K.base, K.out, K.sh, K.hl);
+    limb(X(ex), Y(ey), X(hand.x), Y(hand.y), 3.8 * k, K.base, K.out);
+    blob(X(hand.x), Y(hand.y), 4.4 * k, 4 * k, K.base, K.out, K.sh, K.hl);
+    if (holding === "coco") coconut(X(hand.x), Y(hand.y - 6), k, o.cocoTilt || 0);
+    if (holding === "phone") phoneSmall(X(hand.x - side * 1), Y(hand.y - 7), k, t);
+  };
+  var R = o.right || { x: 24, y: -18 }, L = o.left || { x: -24, y: -18 };
+  arm(-1, L, o.leftHold); arm(1, R, o.rightHold);
+  // cuello y cabeza
+  quad([X(-9), Y(-54), X(9), Y(-54), X(11), Y(-47), X(-11), Y(-47)], K.base);
+  head(X(0), Y(-64), k, o, t);
+  // agua, alga y goteo
+  if (o.wet) {
+    for (var d = 0; d < 6; d++) { var dy = ((t * 30 + d * 13) % 30); px(X(-26 + d * 10), Y(-40) + dy * k * .5, "#8fd0ff"); px(X(-26 + d * 10), Y(-40) + dy * k * .5 + 1, "#cfeaff"); }
+  }
+}
+function head(cx, cy, k, o, t) {
+  var X = function (v) { return cx + v * k; }, Y = function (v) { return cy + v * k; };
+  // orejas
+  tri(X(-13), Y(-4), X(-10), Y(-18), X(-3), Y(-9), K.out); tri(X(-12), Y(-5), X(-9.5), Y(-15), X(-4.5), Y(-9), K.base); tri(X(-10.5), Y(-7), X(-9.2), Y(-12.5), X(-6.5), Y(-9), K.ear);
+  tri(X(13), Y(-4), X(10), Y(-18), X(3), Y(-9), K.out); tri(X(12), Y(-5), X(9.5), Y(-15), X(4.5), Y(-9), K.base); tri(X(10.5), Y(-7), X(9.2), Y(-12.5), X(6.5), Y(-9), K.ear);
+  blob(X(0), Y(0), 14 * k, 12 * k, K.base, K.out, K.sh, K.hl);
+  if (o.wet) for (var s = 0; s < 7; s++) tri(X(-12 + s * 4), Y(-10 + Math.abs(s - 3) * .6), X(-10 + s * 4), Y(-14 + Math.abs(s - 3) * .6), X(-8 + s * 4), Y(-10 + Math.abs(s - 3) * .6), K.base);
+  blob(X(0), Y(5), 8 * k, 5.5 * k, K.muzzle, null);
+  // nariz y boca
+  rect(X(-1.5), Y(2), 3 * k, 1.6 * k, K.ear);
+  var mouth = o.mouth || "smug";
+  if (mouth === "smug") { line(X(-4), Y(6.5), X(0), Y(7.5), K.out, k); line(X(0), Y(7.5), X(5), Y(5.5), K.out, k); }
+  if (mouth === "flat") line(X(-4), Y(7), X(4), Y(7), K.out, k);
+  if (mouth === "o") blob(X(0), Y(7.5), 2.4 * k, 2.8 * k, "#2a0f18", K.out);
+  if (mouth === "grin") { quad([X(-6), Y(5), X(6), Y(5), X(4), Y(9), X(-4), Y(9)], "#2a0f18"); rect(X(-5), Y(5), 10 * k, 1.4 * k, "#fff6ee"); }
+  if (mouth === "wince") { for (var z = 0; z < 5; z++) line(X(-5 + z * 2), Y(7 + (z % 2)), X(-3 + z * 2), Y(7 + ((z + 1) % 2)), K.out, k); }
+  // bigotes
+  [[-1, 3], [-1, 5.5], [1, 3], [1, 5.5]].forEach(function (w) { line(X(w[0] * 8), Y(w[1]), X(w[0] * 17), Y(w[1] - 1 + (w[1] > 4 ? 2 : 0)), K.white, Math.max(1, k * .6)); });
+  // ojos / lentes
+  var eyes = o.eyes || "glasses";
+  var gl = o.glassesY || 0, tilt = o.glassesTilt || 0;
+  var eye = function (side, kind) {
+    var ex = side * 5.5, ey = -2;
+    if (kind === "deadpan") { blob(X(ex), Y(ey), 3.2 * k, 2.6 * k, "#f4f0e0", K.out); rect(X(ex - 3), Y(ey - 3), 6.4 * k, 2.6 * k, K.base); blob(X(ex), Y(ey + .6), 1.3 * k, 1.3 * k, "#1a1030"); }
+    if (kind === "x") { line(X(ex - 2), Y(ey - 2), X(ex + 2), Y(ey + 2), "#fff6ee", k); line(X(ex + 2), Y(ey - 2), X(ex - 2), Y(ey + 2), "#fff6ee", k); }
+    if (kind === "shock") { blob(X(ex), Y(ey), 4.2 * k, 4.6 * k, "#fffaf0", K.out); var j = o.tremble ? Math.sin(t * 60 + side) * .5 : 0; blob(X(ex + j), Y(ey + .4), 1.6 * k, 1.8 * k, "#1a1030"); px(X(ex - 1 + j), Y(ey - 1), "#fffaf0"); }
+    if (kind === "happy") { line(X(ex - 2.5), Y(ey + .5), X(ex), Y(ey - 1.5), "#fff6ee", k); line(X(ex), Y(ey - 1.5), X(ex + 2.5), Y(ey + .5), "#fff6ee", k); }
+  };
+  if (eyes === "glasses") {
+    var gy = -3 + gl;
+    rect(X(-11), Y(gy) + tilt * -k, 22 * k, 1.4 * k, K.out);
+    blob(X(-5.5), Y(gy + 2) - tilt * k, 5 * k, 3.4 * k, "#07060d", K.out); blob(X(5.5), Y(gy + 2) + tilt * k, 5 * k, 3.4 * k, "#07060d", K.out);
+    line(X(-8), Y(gy + 1.5) - tilt * k, X(-6), Y(gy + .5) - tilt * k, K.shine, Math.max(1, k * .7)); line(X(3), Y(gy + 1.5) + tilt * k, X(5), Y(gy + .5) + tilt * k, K.shine, Math.max(1, k * .7));
+  } else { eye(-1, eyes); eye(1, eyes); }
+  if (o.seaweed) { for (var a = 0; a < 3; a++) { for (var b = 0; b < 12; b++) px(X(-6 + a * 5 + Math.sin(b * .6 + a) * 1.5), Y(-13 + b * 1.2), b % 3 ? "#3f8a55" : "#79b86a"); } }
+  if (o.sweat) { blob(X(12), Y(-6), 1.4 * k, 2 * k, "#8fd0ff", "#4a7ab0"); }
+}
+function coconut(x, y, k, tilt) {
+  blob(x, y, 5.5 * k, 5 * k, "#6b3e1f", "#3e2210", "#4e2c14", "#9a6030");
+  rect(x - 4.5 * k, y - 4 * k, 9 * k, 1.5 * k, "#f2e6c8");
+  line(x + 1 * k, y - 4 * k, x + (3 + tilt) * k, y - 12 * k, "#f4a6c0", Math.max(1, k * .9));
+  tri(x - 5 * k, y - 8 * k, x + 1 * k, y - 13 * k, x + 4 * k, y - 7 * k, "#C8452C"); line(x - .5 * k, y - 11 * k, x - .5 * k, y - 5 * k, "#e8dcc8");
+}
+function phoneSmall(x, y, k, t) {
+  rect(x - 3.5 * k, y - 6 * k, 7 * k, 12 * k, "#0b0915"); rect(x - 2.7 * k, y - 5 * k, 5.4 * k, 9.5 * k, Math.floor(t * 3) % 2 ? "#bfe8ff" : "#9fd8ff");
+}
+function crab(x, y, k, t, o) {
+  o = o || {};
+  var C = { b: "#e0503a", sh: "#a8322a", hl: "#ff8a6a", out: "#5a1410" };
+  for (var i = 0; i < 3; i++) { line(x - 5 * k, y + (i - 1) * 1.5 * k, x - 10 * k, y + (i * 1.6 + 1) * k, C.out, Math.max(1, k * .8)); line(x + 5 * k, y + (i - 1) * 1.5 * k, x + 10 * k, y + (i * 1.6 + 1) * k, C.out, Math.max(1, k * .8)); }
+  blob(x, y, 7 * k, 4.5 * k, C.b, C.out, C.sh, C.hl);
+  var wave = o.wave ? Math.sin(t * 14) * 3 : 0, pinch = o.pinch ? (Math.floor(t * 12) % 2) : 0, raise = o.raise || 0;
+  var claw = function (side, up) {
+    var cx = x + side * 10 * k, cy = y - (5 + up) * k;
+    line(x + side * 5 * k, y - 1 * k, cx, cy + 2 * k, C.out, Math.max(1, k));
+    blob(cx, cy, 3.4 * k, 3 * k, C.b, C.out, C.sh, C.hl);
+    tri(cx + side * 1 * k, cy - 3 * k, cx + side * 4 * k, cy - (5 + pinch * 2) * k, cx + side * 3 * k, cy - 1 * k, C.b);
+  };
+  claw(-1, o.wave ? 3 + wave : 0); claw(1, raise);
+  line(x - 2 * k, y - 4 * k, x - 3 * k, y - 8 * k, C.out, Math.max(1, k * .8)); line(x + 2 * k, y - 4 * k, x + 3 * k, y - 8 * k, C.out, Math.max(1, k * .8));
+  blob(x - 3 * k, y - 9 * k, 1.6 * k, 1.6 * k, "#fffaf0", C.out); blob(x + 3 * k, y - 9 * k, 1.6 * k, 1.6 * k, "#fffaf0", C.out);
+  px(x - 3 * k, y - 9 * k, "#120a0a"); px(x + 3 * k, y - 9 * k, "#120a0a");
+  line(x - 2 * k, y + 1 * k, x + 2 * k, y + 1 * k, C.out, Math.max(1, k * .7));
+}
+
+/* ======================= MARU (sticker 😼 y cuerpo) ======================= */
+var M = { w: "#FFF6EE", wsh: "#dcd0c8", o: "#DE9A5A", osh: "#b8733c", k: "#2a1c24", p: "#F4A6A6" };
+function maruFace(cx, cy, k, o, t) {
+  o = o || {};
+  var X = function (v) { return cx + v * k; }, Y = function (v) { return cy + v * k; };
+  tri(X(-15), Y(-4), X(-11), Y(-19), X(-4), Y(-11), M.k); tri(X(-14), Y(-5), X(-10.8), Y(-16), X(-5.5), Y(-11), M.w); tri(X(-12), Y(-8), X(-10.5), Y(-13.5), X(-8), Y(-10.5), M.p);
+  tri(X(15), Y(-4), X(11), Y(-19), X(4), Y(-11), M.k); tri(X(14), Y(-5), X(10.8), Y(-16), X(5.5), Y(-11), M.o); tri(X(12), Y(-8), X(10.5), Y(-13.5), X(8), Y(-10.5), M.p);
+  blob(X(0), Y(0), 16 * k, 13 * k, M.w, M.k);
+  blob(X(0), Y(7), 13 * k, 5 * k, M.wsh, null);
+  blob(X(0), Y(0), 15 * k, 12 * k, M.w, null);
+  blob(X(7), Y(-7), 8 * k, 5 * k, M.o, null); blob(X(9), Y(-5), 4 * k, 2.5 * k, M.osh, null);
+  blob(X(-9), Y(-8), 4 * k, 3 * k, M.o, null);
+  // ojos entrecerrados pícaros 😼
+  var eye = function (side) {
+    var ex = side * 6, ey = -1;
+    blob(X(ex), Y(ey), 3.6 * k, 2.2 * k, "#f7d774", M.k);
+    rect(X(ex - 3.6), Y(ey - 2.6), 7.2 * k, 2 * k, M.k);
+    blob(X(ex + side * .4), Y(ey + .4), 1.1 * k, 1.8 * k, M.k);
+    if (o.glint) star4(X(ex + 1.6), Y(ey - 1.2), Math.max(1, Math.round(1.4 * k)), "#ffffff");
+  };
+  eye(-1); eye(1);
+  rect(X(-1.5), Y(3), 3 * k, 1.5 * k, M.p);
+  line(X(-5), Y(6), X(0), Y(8.2), M.k, Math.max(1, k * .8)); line(X(0), Y(8.2), X(6), Y(4.8), M.k, Math.max(1, k * .8));
+  blob(X(-10), Y(4), 2.4 * k, 1.4 * k, "#f7b8b0", null); blob(X(10), Y(4), 2.4 * k, 1.4 * k, "#f7b8b0", null);
+}
+
+        var ctx = document.getElementById("rem-px").getContext("2d");
+        function scene(t) {
+          setCtx(ctx); g.clearRect(0, 0, PW, PH);
+          var T = 34.21 + t;
+          beach(T); umbrella(222, 368, T); palm(20, 480, T); chair(150, 376);
+          var cool = t >= .8, toast = pk(t, 1.1, .35);
+          kuro(150, 346, 1.25, { wet: true, seaweed: !cool, eyes: cool ? "glasses" : "happy", mouth: "grin", glassesTilt: 0,
+            rightHold: "coco", right: { x: lerp(20, 24, toast), y: lerp(-38, -72, outQ(toast)) }, cocoTilt: 2, leftHold: "phone", left: { x: -20, y: -24 } }, T);
+          // pantalla del celular con la ganancia en verde
+          var sx = 150 - 21 * 1.25, sy = 346 - 24 * 1.25 - 7 * 1.25;
+          rect(sx - 3, sy - 6, 6, 11, "#0b1410");
+          for (var i = 0; i < 6; i++) px(sx - 3 + i, sy + 2 - i * 1.3, "#2FD08A");
+          crab(96, 330, 1.1, T, { raise: t > 1.3 ? 5 : 0, wave: t > 1.3 && t < 1.9 });
+          if (cool && t < 1.1) star4(150 + 6, 346 - 64 * 1.25 - 3, 3, "#ffffff");
+          if (toast > .9) for (var s = 0; s < 6; s++) { var a = T * 4 + s; star4(174 + Math.cos(a) * 14, 346 - 72 * 1.25 - 16 + Math.sin(a) * 8, 2, s % 2 ? "#fff6ee" : "#f2d27a"); }
+        }
+        var tl = gsap.timeline({ paused: true });
+        var p = { t: 0 };
+        tl.to(p, { t: 2.81, duration: 2.81, ease: "none", onUpdate: function () { scene(p.t); } }, 0);
+        tl.fromTo("#rem-cam", { scale: 5 }, { scale: 1, duration: .75, ease: "expo.inOut" }, 0);
+        tl.fromTo("#rem-flare", { opacity: 0 }, { opacity: 1, duration: .5 }, 1.2);
+        tl.fromTo("#rem-black", { opacity: 0 }, { opacity: 1, duration: .25, ease: "power2.in" }, 2.56);
+        scene(0);
+        window.__timelines["remate"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

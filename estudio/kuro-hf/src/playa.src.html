@@ -1,0 +1,289 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "DotGothic16"; src: url("assets/fonts/DotGothic16-Regular.ttf"); }
+        @font-face { font-family: "Zen Kaku Gothic New"; font-weight: 700; src: url("assets/fonts/ZenKakuGothicNew-Bold.ttf"); }
+        #root { position: absolute; inset: 0; overflow: hidden; background: #140d24; font-family: "DotGothic16", monospace; color: #fff6ee; }
+        #playa-cam { position: absolute; inset: 0; transform-origin: 540px 1000px; }
+        #playa-px { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; image-rendering: pixelated; }
+        #playa-dim { position: absolute; inset: 0; background: #0b0716; opacity: 0; }
+        #playa-hook { position: absolute; left: 70px; right: 70px; top: 190px; text-align: center; font-size: 60px; line-height: 1.2; color: #fff6ee;
+          text-shadow: 5px 0 0 #1a1422, -5px 0 0 #1a1422, 0 5px 0 #1a1422, 0 -5px 0 #1a1422, 5px 5px 0 #1a1422, -5px 5px 0 #1a1422, 5px -5px 0 #1a1422, -5px -5px 0 #1a1422, 8px 10px 0 #1a1422; }
+        .playa-phone { position: absolute; left: 90px; width: 900px; top: 300px; height: 1180px; border-radius: 56px; background: #120c22; overflow: hidden;
+          box-shadow: 0 0 0 8px #fff6ee, 0 0 0 16px #1a1422, 0 40px 80px rgba(0,0,0,.55); opacity: 0; }
+        .playa-head { height: 150px; display: flex; align-items: center; gap: 26px; padding: 0 34px; background: #1d1535; border-bottom: 4px solid #2c2150; }
+        .playa-ava { width: 96px; height: 96px; border-radius: 50%; flex: none; display: grid; place-items: center; font-size: 48px; overflow: hidden; }
+        .playa-ava img { width: 100%; height: 100%; object-fit: cover; }
+        .playa-name { font-size: 46px; line-height: 1.1; }
+        .playa-status { font-size: 32px; color: #8fe0a8; margin-top: 6px; }
+        .playa-msgs { position: absolute; left: 0; right: 0; top: 154px; bottom: 120px; padding: 30px 34px; display: flex; flex-direction: column; justify-content: flex-end; gap: 22px; overflow: hidden; }
+        .playa-b { max-width: 660px; padding: 22px 30px; font-size: 46px; line-height: 1.25; border-radius: 30px; display: none; }
+        .playa-b.out { align-self: flex-end; background: #C8452C; border-bottom-right-radius: 6px; }
+        .playa-b.in { align-self: flex-start; background: #2d2448; border-bottom-left-radius: 6px; }
+        .playa-dots { display: none; align-self: flex-start; background: #2d2448; border-radius: 30px; padding: 26px 34px; gap: 14px; }
+        .playa-dots i { display: block; width: 18px; height: 18px; border-radius: 50%; background: #b9aede; }
+        .playa-card { display: none; align-self: flex-start; width: 620px; background: #2d2448; border-radius: 30px; border-bottom-left-radius: 6px; overflow: hidden; }
+        .playa-card .th { height: 230px; background: #0b1410; position: relative; }
+        .playa-card .th svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+        .playa-card .tx { padding: 20px 28px 24px; font-size: 40px; }
+        .playa-card .tx small { display: block; font-size: 30px; color: #b9aede; margin-top: 6px; }
+        .playa-input { position: absolute; left: 24px; right: 24px; bottom: 20px; height: 84px; border-radius: 42px; background: #231a3c; padding: 0 30px; display: flex; align-items: center; font-size: 40px; color: #fff6ee; }
+        .playa-input .ph { color: #6f6590; }
+        .playa-input .car { display: inline-block; width: 4px; height: 44px; background: #fff6ee; margin-left: 4px; }
+        #playa-stkbub { display: none; align-self: flex-start; background: transparent; }
+        #playa-stkmini { width: 300px; height: 300px; image-rendering: pixelated; display: block; }
+        #playa-bonk { position: absolute; left: 0; right: 0; top: 560px; text-align: center; font-size: 190px; color: #f2d27a; opacity: 0;
+          text-shadow: 8px 0 0 #1a1422, -8px 0 0 #1a1422, 0 8px 0 #1a1422, 0 -8px 0 #1a1422, 8px 8px 0 #1a1422, -8px 8px 0 #1a1422, 8px -8px 0 #1a1422, -8px -8px 0 #1a1422, 12px 16px 0 #1a1422; }
+        #playa-ouch { position: absolute; left: 790px; top: 880px; font-size: 150px; color: #ff4d5e; opacity: 0;
+          text-shadow: 7px 0 0 #1a1422, -7px 0 0 #1a1422, 0 7px 0 #1a1422, 0 -7px 0 #1a1422, 10px 12px 0 #1a1422; }
+        #playa-big { position: absolute; left: 140px; top: 500px; width: 800px; height: 800px; opacity: 0; }
+        #playa-bigcv { width: 800px; height: 800px; image-rendering: pixelated; display: block; }
+        #playa-black { position: absolute; inset: 0; background: #000; opacity: 0; }
+      </style>
+
+      <div id="root" data-composition-id="playa" data-width="1080" data-height="1920" data-duration="17.11">
+        <div id="playa-cam" data-layout-allow-overflow><canvas data-layout-allow-overflow id="playa-px" width="270" height="480"></canvas></div>
+        <div id="playa-dim"></div>
+        <div id="playa-hook">POV: tu empleado y el Excel 💀</div>
+
+        <div class="playa-phone" id="playa-chatA">
+          <div class="playa-head"><div class="playa-ava" style="background:#2f8a8a">C</div><div><div class="playa-name">Carlos · Ventas</div><div class="playa-status" id="playa-stA">en línea</div></div></div>
+          <div class="playa-msgs">
+            <div class="playa-b out" id="playa-a1">¿Cuánto fueron los ingresos del mes?</div>
+            <div class="playa-dots" id="playa-a2"><i></i><i></i><i></i></div>
+            <div class="playa-b in" id="playa-a3">Jefe, mi CV no decía Excel 🙃</div>
+          </div>
+          <div class="playa-input"><span class="ph">Mensaje</span></div>
+        </div>
+
+        <div class="playa-phone" id="playa-chatB">
+          <div class="playa-head"><div class="playa-ava"><img src="assets/img/sello-maru.png" alt="" /></div><div><div class="playa-name">Maru 丸</div><div class="playa-status">en línea</div></div></div>
+          <div class="playa-msgs">
+            <div class="playa-b out" id="playa-b1">MARU NECESITO TU AYUDA</div>
+            <div class="playa-b in" id="playa-b2">Ya está.</div>
+            <div class="playa-card" id="playa-b3">
+              <div class="th"><svg viewBox="0 0 620 230" preserveAspectRatio="none">
+                <defs><linearGradient id="playa-g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2FD08A" stop-opacity=".45"/><stop offset="1" stop-color="#2FD08A" stop-opacity="0"/></linearGradient></defs>
+                <path d="M0 190 L80 170 L160 178 L240 130 L320 140 L400 92 L480 100 L560 50 L620 40 L620 230 L0 230 Z" fill="url(#playa-g1)"/>
+                <path d="M0 190 L80 170 L160 178 L240 130 L320 140 L400 92 L480 100 L560 50 L620 40" fill="none" stroke="#2FD08A" stroke-width="7"/>
+                <rect x="40" y="30" width="170" height="20" rx="10" fill="#1f3a2e"/><rect x="40" y="62" width="110" height="14" rx="7" fill="#17291f"/></svg></div>
+              <div class="tx">📊 Dashboard · KURO GYM<small>actualizado hoy · 9:00 a. m.</small></div>
+            </div>
+            <div class="playa-b out" id="playa-b4">¿¿cómo sabías??</div>
+            <div id="playa-stkbub"><canvas id="playa-stkmini" width="90" height="90"></canvas></div>
+          </div>
+          <div class="playa-input" id="playa-inp"><span id="playa-typed"></span><span class="car" id="playa-car"></span></div>
+        </div>
+
+        <div id="playa-bonk">BONK!</div>
+        <div id="playa-ouch">¡¡!!</div>
+        <div id="playa-big"><canvas id="playa-bigcv" width="90" height="90"></canvas></div>
+        <div id="playa-black"></div>
+      </div>
+
+      <script>
+        (function () {
+        /*__ENGINE__*/
+        var cv = document.getElementById("playa-px");
+        var mainCtx = cv.getContext("2d");
+        var stkMini = document.getElementById("playa-stkmini").getContext("2d");
+        var stkBig = document.getElementById("playa-bigcv").getContext("2d");
+        var cam = document.getElementById("playa-cam");
+        var typed = document.getElementById("playa-typed"), car = document.getElementById("playa-car");
+        var TYPE = "necesito sacar mi reporte de vent";
+
+        function drawSticker(c, t, glint) { setCtx(c); g.clearRect(0, 0, 90, 90); maruFace(45, 50, 2.3, { glint: glint }, t); }
+
+        function scene(t) {
+          setCtx(mainCtx);
+          g.setTransform(1, 0, 0, 1, 0, 0);
+          g.clearRect(0, 0, PW, PH);
+          var camT = "none";
+          if (t < 6.3) {
+            // Acto 1a: playa abierta, la cámara se acerca a Kuro
+            beach(t); umbrella(222, 368, t); palm(20, 480, t); chair(150, 376);
+            var sip = t < 1.6 ? Math.max(0, Math.sin(t * 2.2)) : 0;
+            kuro(150, 346, 1.25, { breath: true, rightHold: "coco", right: { x: 20, y: -38 - sip * 18 }, leftHold: "phone", left: { x: -20, y: -24 } }, t);
+            var z = 1 + .22 * outQ(pk(t, 0, 1.6));
+            camT = "scale(" + z + ")";
+            cam.style.transformOrigin = "600px 1280px";
+          } else if (t < 7.2) {
+            // Acto 1b: mirada incómoda a cámara
+            gradient(SKY, 0, 330); palmFronds(t); gradient(["#e2a57a", "#dca06f"], 330, PH);
+            kuro(135, 470, 3.6, { eyes: "deadpan", mouth: "flat", breath: true }, t);
+            camT = "scale(" + (1 + .09 * pk(t, 6.3, .9)) + ")"; cam.style.transformOrigin = "540px 760px";
+          } else if (t < 8.4) {
+            // Acto 1c: el coco (plano desde abajo)
+            gradient(SKY, 0, 480);
+            var hit = 7.62, hitK = pk(t, hit, .12);
+            var sq = t >= hit && t < hit + .18 ? .9 : 1;
+            kuro(135, 470, 2.6, { eyes: t >= hit ? "x" : "glasses", mouth: t >= hit ? "o" : "smug", squash: sq }, t);
+            palmFronds(t, true);
+            var headTop = 470 - 82 * 2.6;
+            var cy, cx = 150;
+            if (t < 7.35) cy = -20;
+            else if (t < hit) cy = lerp(-20, headTop - 10, Math.pow(pk(t, 7.35, hit - 7.35), 2));
+            else { var b = pk(t, hit, .5); cy = headTop - 10 - Math.sin(b * Math.PI) * 60 + b * 80; cx = 150 + b * 120; }
+            coconutBig(cx, cy, 2.6, t);
+            if (t >= hit) for (var s = 0; s < 5; s++) { var a = t * 7 + s * 1.26; star4(135 + Math.cos(a) * 44, headTop + 16 + Math.sin(a) * 10, 2, s % 2 ? "#fff6ee" : "#f2d27a"); }
+            camT = "rotate(-4deg) scale(1.08)"; cam.style.transformOrigin = "540px 960px";
+            if (t >= hit && t < hit + .3) { var sh = (hash(Math.floor(t * 40)) - .5) * 30; camT += " translate(" + sh + "px," + (-sh * .6) + "px)"; }
+          } else if (t < 9.7) {
+            // Acto 1d: la ola
+            beach(t); umbrella(222, 368, t); palm(20, 480, t); chair(150, 376);
+            var w = pk(t, 8.4, .5);
+            if (t < 8.95) kuro(150, 346, 1.25, { rightHold: "coco", right: { x: 20, y: -38 }, leftHold: "phone", left: { x: -20, y: -24 }, eyes: t > 8.6 ? "shock" : "glasses", mouth: t > 8.6 ? "o" : "smug" }, t);
+            else kuro(150, 346, 1.25, { wet: true, seaweed: true, glassesTilt: 1.5, glassesY: 2, mouth: "wince" }, t);
+            waveCrash(t);
+            camT = "none";
+            if (t > 8.8 && t < 9.4) { var sh2 = (hash(Math.floor(t * 36)) - .5) * 26; camT = "translate(" + sh2 + "px," + (hash(Math.floor(t * 36) + 3) - .5) * 20 + "px)"; }
+          } else if (t < 15.45) {
+            // Acto 1e: empapado, cangrejo (y de fondo durante el chat con Maru)
+            gradient(SKY, 0, 330); palmFronds(t); gradient(["#e2a57a", "#dca06f"], 330, PH);
+            var pinch = t >= 10.35 && t < 10.65;
+            kuro(135, 470, 3.6, { wet: true, seaweed: true, glassesTilt: 1.5, glassesY: 2, mouth: pinch ? "wince" : (t < 10.35 ? "flat" : "wince"), sweat: pinch }, t);
+            var headY = 470 - 64 * 3.6, crabY, crabX = 135, co = {};
+            if (t < 9.95) crabY = headY - 20 + 30;
+            else if (t < 10.3) crabY = lerp(headY - 10, headY - 52, outQ(pk(t, 9.95, .35)));
+            else if (t < 10.65) { crabY = headY - 40; crabX = lerp(135, 178, outQ(pk(t, 10.3, .15))); co.pinch = true; }
+            else { crabY = headY - 50; crabX = lerp(178, 135, outQ(pk(t, 10.65, .2))); co.wave = true; }
+            if (t >= 9.95) crab(crabX, crabY, 3.1, t, co);
+            camT = pinch ? "translate(" + (hash(Math.floor(t * 40)) - .5) * 16 + "px,0)" : "none";
+            cam.style.transformOrigin = "540px 800px";
+          } else if (t < 16.25) {
+            // Mini-drops 1 y 2: cara de Kuro sin lentes
+            gradient(["#2a1a4a", "#5e2461", "#b1435f"], 0, PH);
+            for (var rr = 0; rr < 22; rr++) { var ang = rr / 22 * Math.PI * 2 + t * .5; line(135, 240, 135 + Math.cos(ang) * 300, 240 + Math.sin(ang) * 300, rr % 2 ? "#6a2a62" : "#4a1e56", 3); }
+            head(135, 245, 6, { eyes: "shock", mouth: "o", tremble: t >= 16.15, sweat: t >= 16.15, wet: true }, t);
+            var gf = pk(t, 15.45, .4);
+            if (gf < 1) glassesFalling(135, 245 - 18 + gf * 320, 6, gf);
+            var p1 = t < 16.15 ? 1 + .18 * Math.exp(-(t - 15.45) * 9) : 1.9 + .12 * Math.exp(-(t - 16.15) * 9);
+            camT = "scale(" + p1 + ")"; cam.style.transformOrigin = "540px 940px";
+          } else {
+            gradient(["#1d1535", "#120c22"], 0, PH);
+          }
+          cam.style.transform = camT;
+        }
+        function palmFronds(t, low) {
+          var top = low ? [-20, -30] : [-40, -70];
+          [[top[0], top[1], 1], [290, top[1] + 10, -1]].forEach(function (p, j) {
+            for (var f = 0; f < 4; f++) {
+              var ang = (p[2] > 0 ? .15 : Math.PI - .15) + f * .22 * p[2] + Math.sin(t * 1.4 + f + j) * .04;
+              for (var i = 0; i < 40; i++) {
+                var k = i / 40, x = p[0] + Math.cos(ang) * 160 * k, y = p[1] + Math.sin(ang) * 60 * k + k * k * 90 + f * 14;
+                rect(x - 2, y - 2, Math.max(2, (1 - k) * 7), Math.max(2, (1 - k) * 7), "#2e6b46");
+                if (i % 3 === 0 && k > .1) { line(x, y, x + 8 * p[2], y + 14, "#3f8a55", 2); line(x, y, x - 4 * p[2], y + 14, "#1f4f33", 2); }
+              }
+            }
+          });
+        }
+        function coconutBig(x, y, k, t) {
+          blob(x, y, 7 * k, 6.5 * k, "#6b3e1f", "#3e2210", "#4e2c14", "#9a6030");
+          for (var i = 0; i < 5; i++) px(x - 3 * k + i * 1.5 * k, y - 2 * k + (i % 2) * k, "#3e2210");
+        }
+        function glassesFalling(x, y, k, f) {
+          var rot = f * 1.2;
+          g.save(); g.translate(x, y); g.rotate(rot);
+          rect(-11 * k, -1 * k, 22 * k, 1.4 * k, "#0b0915");
+          blob(-5.5 * k, 1.4 * k, 5 * k, 3.4 * k, "#07060d", "#0b0915"); blob(5.5 * k, 1.4 * k, 5 * k, 3.4 * k, "#07060d", "#0b0915");
+          line(-8 * k, .6 * k, -5 * k, -.6 * k, "#6f7fd0", 3);
+          g.restore();
+        }
+        function waveCrash(t) {
+          var rise = pk(t, 8.4, .5), crash = pk(t, 8.9, .35), rec = pk(t, 9.25, .45);
+          if (rec >= 1) return;
+          var front = lerp(300, -60, outQ(crash));
+          var h = lerp(10, 330, outQ(rise));
+          var baseY = 340;
+          for (var x = Math.max(0, Math.floor(front - 40)); x < PW; x++) {
+            var d = x - front;
+            var hh = h * (d < 0 ? Math.max(0, 1 + d / 40) : 1) * (1 - rec) + Math.sin(x * .1 + t * 8) * 6;
+            var top = baseY - hh;
+            for (var y = Math.floor(top); y < PH; y++) {
+              var depth = y - top;
+              var c = depth < 5 ? "#fff6ee" : depth < 14 ? "#bfe6ff" : depth < 60 ? "#5aa0e0" : "#2f5aa8";
+              if (depth > 14 && ((x + y) & 7) === 0) c = "#8fc6f0";
+              px(x, y, c);
+            }
+          }
+          if (crash > 0 && rec < 1) for (var i = 0; i < 60; i++) { var bx = hash(i) * PW, by = 120 + ((hash(i + 3) * 380 + t * 90) % 360); blob(bx, by, 2 + hash(i + 7) * 3, 2 + hash(i + 7) * 3, "#e8f6ff", "#8fc6f0"); }
+        }
+
+        function update(t) {
+          scene(t);
+          // tipeo en el chat de Maru
+          if (t >= 12.6 && t < 13.6) { var n = Math.floor(pk(t, 12.6, .9) * TYPE.length); typed.textContent = TYPE.slice(0, n); }
+          else typed.textContent = "";
+          car.style.opacity = (t >= 11 && Math.floor(t * 3) % 2 === 0) || (t >= 12.6 && t < 13.6) ? 1 : 0;
+          drawSticker(stkMini, t, false);
+          drawSticker(stkBig, t, t >= 16.8);
+        }
+
+        var tl = gsap.timeline({ paused: true });
+        var proxy = { t: 0 };
+        tl.to(proxy, { t: 17.11, duration: 17.11, ease: "none", onUpdate: function () { update(proxy.t); } }, 0);
+
+        // Gancho arriba
+        tl.fromTo("#playa-hook", { opacity: 1, y: 0 }, { opacity: 0, y: -30, duration: .3, ease: "power2.in" }, 6.0);
+
+        // Chat con el empleado
+        tl.set("#playa-dim", { opacity: 0 }, 0);
+        tl.to("#playa-dim", { opacity: .55, duration: .3 }, 1.55);
+        tl.fromTo("#playa-chatA", { opacity: 0, y: 260, scale: .92 }, { opacity: 1, y: 0, scale: 1, duration: .45, ease: "back.out(1.6)" }, 1.6);
+        tl.set("#playa-a1", { display: "block" }, 1.9);
+        tl.fromTo("#playa-a1", { scale: .6, opacity: 0 }, { scale: 1, opacity: 1, duration: .3, ease: "back.out(2)", transformOrigin: "100% 100%" }, 1.9);
+        tl.set("#playa-stA", { textContent: "escribiendo…" }, 3.9);
+        tl.set("#playa-a2", { display: "flex" }, 3.9);
+        tl.fromTo("#playa-a2 i", { y: 0 }, { y: -10, duration: .18, stagger: .09, yoyo: true, repeat: 4, ease: "sine.inOut" }, 3.95);
+        tl.set("#playa-a2", { display: "none" }, 4.8);
+        tl.set("#playa-stA", { textContent: "en línea" }, 4.8);
+        tl.set("#playa-a3", { display: "block" }, 4.8);
+        tl.fromTo("#playa-a3", { scale: .6, opacity: 0 }, { scale: 1, opacity: 1, duration: .32, ease: "back.out(2)", transformOrigin: "0% 100%" }, 4.8);
+        tl.to("#playa-chatA", { opacity: 0, y: 200, duration: .25, ease: "power2.in" }, 6.05);
+        tl.to("#playa-dim", { opacity: 0, duration: .25 }, 6.05);
+
+        // BONK
+        tl.fromTo("#playa-bonk", { opacity: 0, scale: .3, rotation: -12 }, { opacity: 1, scale: 1, rotation: -6, duration: .22, ease: "back.out(3)" }, 7.62);
+        tl.to("#playa-bonk", { opacity: 0, duration: .15 }, 8.25);
+        // ¡¡!! del pellizco
+        tl.fromTo("#playa-ouch", { opacity: 0, scale: .4 }, { opacity: 1, scale: 1, duration: .18, ease: "back.out(3)" }, 10.35);
+        tl.to("#playa-ouch", { opacity: 0, duration: .15 }, 10.7);
+
+        // Chat con Maru
+        tl.to("#playa-dim", { opacity: .5, duration: .3 }, 10.95);
+        tl.fromTo("#playa-chatB", { opacity: 0, y: 260, scale: .92 }, { opacity: 1, y: 0, scale: 1, duration: .45, ease: "back.out(1.6)" }, 11.0);
+        tl.set("#playa-b1", { display: "block" }, 11.3);
+        tl.fromTo("#playa-b1", { scale: .5, opacity: 0 }, { scale: 1, opacity: 1, duration: .3, ease: "back.out(2.4)", transformOrigin: "100% 100%" }, 11.3);
+        tl.fromTo("#playa-b1", { x: -8 }, { x: 8, duration: .05, repeat: 9, yoyo: true, ease: "none" }, 11.6);
+        tl.set(["#playa-b2", "#playa-b3"], { display: "block" }, 13.6);
+        tl.fromTo("#playa-b2", { scale: .4, opacity: 0 }, { scale: 1, opacity: 1, duration: .3, ease: "back.out(2.6)", transformOrigin: "0% 100%" }, 13.6);
+        tl.fromTo("#playa-b3", { scale: .4, opacity: 0 }, { scale: 1, opacity: 1, duration: .34, ease: "back.out(2)", transformOrigin: "0% 100%" }, 13.7);
+        tl.fromTo("#playa-b3 path:last-of-type", { strokeDasharray: 900, strokeDashoffset: 900 }, { strokeDashoffset: 0, duration: .7, ease: "power2.out" }, 13.8);
+        tl.set("#playa-b4", { display: "block" }, 14.6);
+        tl.fromTo("#playa-b4", { scale: .5, opacity: 0 }, { scale: 1, opacity: 1, duration: .28, ease: "back.out(2.4)", transformOrigin: "100% 100%" }, 14.6);
+        // corte a la cara (mini-drop 1) y vuelta al chat con el sticker
+        tl.set(["#playa-chatB", "#playa-dim"], { opacity: 0 }, 15.45);
+        tl.set("#playa-stkbub", { display: "block" }, 16.25);
+        tl.set("#playa-chatB", { opacity: 1 }, 16.25);
+        tl.set("#playa-dim", { opacity: .6 }, 16.25);
+        tl.fromTo("#playa-stkbub", { scale: .3, opacity: 0 }, { scale: 1, opacity: 1, duration: .2, ease: "back.out(3)", transformOrigin: "0% 100%" }, 16.25);
+        // mini-drop 3: sticker gigante; mini-drop 4: al ojo; luego a la pupila
+        tl.set("#playa-chatB", { opacity: 0 }, 16.47);
+        tl.set("#playa-dim", { opacity: 1 }, 16.47);
+        tl.fromTo("#playa-big", { opacity: 0, scale: .55 }, { opacity: 1, scale: 1, duration: .25, ease: "back.out(2)" }, 16.47);
+        tl.to("#playa-big", { scale: 3.1, transformOrigin: "65.3% 53.8%", duration: .04, ease: "expo.out" }, 16.82);
+        tl.to("#playa-big", { scale: 48, transformOrigin: "65.6% 54.2%", duration: .24, ease: "expo.in" }, 16.86);
+        tl.fromTo("#playa-black", { opacity: 0 }, { opacity: 1, duration: .1, ease: "none" }, 17.0);
+
+        update(0);
+        window.__timelines["playa"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

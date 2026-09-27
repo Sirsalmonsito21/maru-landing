@@ -1,0 +1,276 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Zen Kaku Gothic New"; font-weight: 500; src: url("assets/fonts/ZenKakuGothicNew-Medium.ttf"); }
+        @font-face { font-family: "Zen Kaku Gothic New"; font-weight: 700; src: url("assets/fonts/ZenKakuGothicNew-Bold.ttf"); }
+        @font-face { font-family: "Zen Kaku Gothic New"; font-weight: 900; src: url("assets/fonts/ZenKakuGothicNew-Black.ttf"); }
+        @font-face { font-family: "Tenor Sans"; src: url("assets/fonts/TenorSans-Regular.ttf"); }
+        #root { position: absolute; inset: 0; overflow: hidden; font-family: "Zen Kaku Gothic New", sans-serif; color: #F4F1EA; }
+        #sis-bg { position: absolute; inset: 0; background: radial-gradient(70% 45% at 50% 42%, #0f1a17 0%, #07090b 55%, #050608 100%); }
+        #sis-glow { position: absolute; left: 140px; top: 520px; width: 800px; height: 800px; border-radius: 50%; background: radial-gradient(circle, rgba(47,208,138,.18), transparent 65%); }
+        #sis-grid { position: absolute; left: -540px; right: -540px; top: 1180px; height: 1400px; transform-origin: 50% 0; opacity: .5;
+          background-image: linear-gradient(rgba(215,185,140,.18) 2px, transparent 2px), linear-gradient(90deg, rgba(215,185,140,.18) 2px, transparent 2px);
+          background-size: 90px 90px; -webkit-mask-image: linear-gradient(transparent, #000 25%, transparent 85%); mask-image: linear-gradient(transparent, #000 25%, transparent 85%); }
+        .sis-dot { position: absolute; width: 5px; height: 5px; border-radius: 50%; background: #d7f5e6; }
+        #sis-persp { position: absolute; inset: 0; perspective: 1700px; perspective-origin: 540px 900px; }
+        #sis-world { position: absolute; inset: 0; transform-style: preserve-3d; }
+        .sis-word { position: absolute; left: -200px; right: -200px; text-align: center; font-family: "Tenor Sans", serif; font-size: 175px; letter-spacing: .04em; color: rgba(215,185,140,.14); white-space: nowrap; opacity: 0; }
+        .sis-panel { position: absolute; left: 80px; width: 860px; border-radius: 30px; background: rgba(18,22,28,.62); border: 1px solid rgba(255,255,255,.13);
+          box-shadow: 0 40px 90px rgba(0,0,0,.65), inset 0 1px 0 rgba(255,255,255,.08); padding: 40px 46px; opacity: 0; overflow: hidden; }
+        .sis-lab { font-size: 30px; font-weight: 700; letter-spacing: .22em; }
+        .sis-num { font-weight: 900; font-variant-numeric: tabular-nums; line-height: 1; white-space: nowrap; }
+        .sis-g { color: #2FD08A; text-shadow: 0 0 30px rgba(47,208,138,.55); }
+        .sis-r { color: #FF4D5E; text-shadow: 0 0 30px rgba(255,77,94,.5); }
+        .sis-chip { display: inline-block; margin-top: 20px; padding: 10px 22px; border-radius: 30px; font-size: 30px; font-weight: 700; }
+        #sis-p1 { top: 560px; height: 560px; }
+        #sis-p1 .sis-num { font-size: 150px; margin-top: 34px; line-height: 1.12; }
+        #sis-p1 svg { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 220px; }
+        #sis-p2 { top: 1040px; height: 440px; }
+        #sis-p2 .sis-num { font-size: 104px; margin-top: 16px; }
+        #sis-bars2 { position: absolute; right: 46px; bottom: 44px; width: 300px; height: 250px; display: flex; align-items: flex-end; gap: 14px; }
+        #sis-bars2 div { flex: 1; display: flex; align-items: flex-end; gap: 5px; height: 100%; }
+        #sis-bars2 i { display: block; flex: 1; border-radius: 6px 6px 2px 2px; transform-origin: 50% 100%; }
+        #sis-p3 { top: 640px; height: 520px; text-align: center; border-color: rgba(47,208,138,.35); }
+        #sis-p3 .sis-num { font-size: 170px; margin-top: 30px; }
+        #sis-p4 { top: 470px; height: 900px; }
+        .sis-cat { display: flex; align-items: center; gap: 22px; margin-top: 22px; font-size: 34px; font-weight: 700; }
+        .sis-cat span { width: 250px; }
+        .sis-cat b { flex: 1; height: 26px; border-radius: 13px; background: rgba(255,77,94,.15); position: relative; overflow: hidden; }
+        .sis-cat b i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 13px; transform-origin: 0 50%; }
+        .sis-cat em { font-style: normal; width: 110px; text-align: right; font-variant-numeric: tabular-nums; color: #FFB3BA; }
+        #sis-donut { position: absolute; left: 50%; bottom: 40px; width: 360px; height: 360px; margin-left: -180px; }
+        .sis-cell { position: absolute; width: 190px; height: 70px; border: 2px solid rgba(0,0,0,.4); font-size: 32px; font-weight: 700; display: grid; place-items: center; color: #1b1b1b; opacity: 0; }
+        #sis-p5 { top: 540px; height: 820px; }
+        #sis-bars5 { position: absolute; left: 60px; right: 60px; bottom: 170px; height: 460px; display: flex; align-items: flex-end; gap: 36px; }
+        #sis-bars5 .col { flex: 1; text-align: center; font-size: 30px; font-weight: 700; color: #9aa3a0; }
+        #sis-bars5 .bar { width: 100%; border-radius: 14px 14px 4px 4px; background: linear-gradient(180deg, #2FD08A, #12704a); transform-origin: 50% 100%; box-shadow: 0 0 30px rgba(47,208,138,.3); margin-bottom: 14px; }
+        #sis-bars5 .best { background: linear-gradient(180deg, #F3DDB0, #D7B98C 60%, #a8874f); box-shadow: 0 0 40px rgba(215,185,140,.6); }
+        #sis-star { position: absolute; left: 46px; right: 46px; bottom: 40px; display: flex; align-items: center; gap: 18px; font-size: 34px; font-weight: 700; padding: 18px 26px; border-radius: 20px; background: rgba(215,185,140,.12); border: 1px solid rgba(215,185,140,.35); color: #F3DDB0; }
+        .sis-node { position: absolute; left: 190px; width: 700px; height: 150px; border-radius: 34px; background: rgba(18,22,28,.72); border: 2px solid rgba(255,255,255,.14);
+          display: flex; align-items: center; gap: 30px; padding: 0 40px; font-size: 46px; font-weight: 700; opacity: 0; }
+        .sis-node svg { width: 70px; height: 70px; flex: none; }
+        .sis-wire { position: absolute; left: 538px; width: 4px; background: rgba(47,208,138,.25); opacity: 0; }
+        .sis-pulse { position: absolute; left: 530px; width: 20px; height: 20px; border-radius: 50%; background: #2FD08A; box-shadow: 0 0 24px 8px rgba(47,208,138,.7); opacity: 0; }
+        #sis-p7 { top: 330px; height: auto; border-radius: 40px; background: rgba(40,44,52,.72); padding: 34px 40px; }
+        #sis-p7 .top { display: flex; align-items: center; gap: 22px; font-size: 30px; color: #b8bec6; font-weight: 700; }
+        #sis-p7 .top img { width: 64px; height: 64px; border-radius: 16px; }
+        #sis-p7 .ttl { font-size: 46px; font-weight: 900; margin-top: 16px; }
+        #sis-rep { margin-top: 26px; display: grid; gap: 18px; overflow: hidden; }
+        #sis-rep div { display: flex; align-items: center; justify-content: space-between; padding: 22px 26px; border-radius: 22px; font-size: 36px; font-weight: 700; }
+        .sis-card { position: absolute; width: 330px; padding: 22px 26px; border-radius: 22px; background: rgba(18,22,28,.72); border: 1px solid rgba(255,255,255,.14); font-size: 24px; font-weight: 700; letter-spacing: .12em; opacity: 0; }
+        .sis-card .sis-num { font-size: 54px; margin-top: 8px; letter-spacing: 0; }
+        #sis-core { position: absolute; left: 400px; top: 820px; width: 280px; height: 280px; border-radius: 50%; display: grid; place-items: center; text-align: center;
+          background: radial-gradient(circle, rgba(47,208,138,.25), rgba(18,22,28,.9) 70%); border: 2px solid rgba(47,208,138,.6); font-size: 40px; font-weight: 900; letter-spacing: .1em; opacity: 0; }
+        #sis-lines { position: absolute; inset: 0; width: 1080px; height: 1920px; opacity: 0; }
+        #sis-iris { position: absolute; inset: 0; background: #000; --r: 0px;
+          -webkit-mask-image: radial-gradient(circle at 50% 47%, transparent var(--r), #000 calc(var(--r) + 3px)); mask-image: radial-gradient(circle at 50% 47%, transparent var(--r), #000 calc(var(--r) + 3px)); }
+        #sis-ring { position: absolute; left: 290px; top: 652px; width: 500px; height: 500px; border-radius: 50%; border: 10px solid #2FD08A; box-shadow: 0 0 60px rgba(47,208,138,.9), inset 0 0 40px rgba(215,185,140,.7); opacity: 0; }
+        #sis-flash { position: absolute; inset: 0; background: #fff; opacity: 0; }
+        #grain-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 100; }
+        @keyframes hf-grain-noise { 0%, 100% { transform: translate(0, 0); } 10% { transform: translate(-5%, -5%); } 20% { transform: translate(-10%, 5%); } 30% { transform: translate(5%, -10%); } 40% { transform: translate(-5%, 15%); } 50% { transform: translate(-10%, 5%); } 60% { transform: translate(15%, 0); } 70% { transform: translate(0, 10%); } 80% { transform: translate(-15%, 0); } 90% { transform: translate(10%, 5%); } }
+        #grain-overlay .grain-texture { position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; opacity: .07;
+          background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+          animation: hf-grain-noise 0.5s steps(1) 40; }
+      </style>
+
+      <div id="root" data-composition-id="sistema" data-width="1080" data-height="1920" data-duration="17.1">
+        <div id="sis-bg"></div>
+        <div id="sis-glow"></div>
+        <div id="sis-grid" data-layout-allow-overflow></div>
+        <div id="sis-dots"></div>
+        <div class="sis-word" data-layout-allow-overflow data-layout-allow-occlusion id="sis-w1" style="top: 330px">Claridad</div>
+        <div class="sis-word" data-layout-allow-overflow data-layout-allow-occlusion id="sis-w2" style="top: 250px">Automático</div>
+        <div class="sis-word" data-layout-allow-overflow data-layout-allow-occlusion id="sis-w3" style="top: 420px">Control</div>
+        <div id="sis-persp"><div id="sis-world">
+          <div class="sis-panel" id="sis-p1">
+            <div class="sis-lab" style="color:#9fe8c4">INGRESOS · OCTUBRE</div>
+            <div class="sis-num sis-g" id="sis-n1">S/ 0</div>
+            <div class="sis-chip" style="background:rgba(47,208,138,.14);color:#2FD08A">▲ 18% vs. septiembre</div>
+            <svg viewBox="0 0 860 220" preserveAspectRatio="none">
+              <defs><linearGradient id="sis-ga" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2FD08A" stop-opacity=".4"/><stop offset="1" stop-color="#2FD08A" stop-opacity="0"/></linearGradient></defs>
+              <path id="sis-area1" d="M0 190 L95 176 L190 182 L285 140 L380 150 L475 108 L570 116 L665 70 L760 58 L860 26 L860 220 L0 220 Z" fill="url(#sis-ga)"/>
+              <path id="sis-line1" d="M0 190 L95 176 L190 182 L285 140 L380 150 L475 108 L570 116 L665 70 L760 58 L860 26" fill="none" stroke="#2FD08A" stroke-width="6" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="sis-panel" id="sis-p2">
+            <div class="sis-lab" style="color:#ffb3ba">EGRESOS · OCTUBRE</div>
+            <div class="sis-num sis-r" id="sis-n2">S/ 0</div>
+            <div class="sis-chip" style="background:rgba(255,77,94,.14);color:#FF4D5E">▼ controlados</div>
+            <div id="sis-bars2"></div>
+          </div>
+          <div class="sis-panel" id="sis-p3">
+            <div class="sis-lab" style="color:#D7B98C">GANANCIA NETA</div>
+            <div class="sis-num sis-g" id="sis-n3">S/ 0</div>
+            <div class="sis-chip" style="background:rgba(215,185,140,.14);color:#F3DDB0">margen 38%</div>
+          </div>
+          <div class="sis-panel" id="sis-p4">
+            <div class="sis-lab" style="color:#ffb3ba">EGRESOS POR CATEGORÍA</div>
+            <div class="sis-cat"><span>Planilla</span><b><i style="width:100%;background:#FF4D5E"></i></b><em>38%</em></div>
+            <div class="sis-cat"><span>Alquiler</span><b><i style="width:58%;background:#e8606d"></i></b><em>22%</em></div>
+            <div class="sis-cat"><span>Proveedores</span><b><i style="width:53%;background:#d0707a"></i></b><em>20%</em></div>
+            <div class="sis-cat"><span>Insumos batidos</span><b><i style="width:32%;background:#b87c84"></i></b><em>12%</em></div>
+            <div class="sis-cat"><span>Servicios</span><b><i style="width:21%;background:#9a7c80"></i></b><em>8%</em></div>
+            <svg id="sis-donut" viewBox="0 0 200 200"></svg>
+          </div>
+          <div class="sis-panel" id="sis-p5">
+            <div class="sis-lab" style="color:#9fe8c4">VENTAS POR SEMANA</div>
+            <div id="sis-bars5"></div>
+            <div id="sis-star"><svg width="54" height="54" viewBox="0 0 54 54"><circle cx="27" cy="30" r="20" fill="#6b3e1f"/><rect x="10" y="16" width="34" height="7" rx="3" fill="#F3EAD2"/><rect x="29" y="2" width="4" height="18" rx="2" fill="#f4a6c0"/></svg>Producto estrella: Batido de coco</div>
+          </div>
+          <div id="sis-flow"></div>
+          <div class="sis-panel" id="sis-p7">
+            <div class="top"><img src="assets/img/sello-maru.png" alt="" />MARU · ahora</div>
+            <div class="ttl">📊 Tu reporte semanal está listo</div>
+            <div id="sis-rep">
+              <div style="background:rgba(47,208,138,.12);color:#2FD08A">Ganancia de la semana<span>▲ 12%</span></div>
+              <div style="background:rgba(255,77,94,.12);color:#FF7a85">⚠ Gastos de proveedores<span>▲ 8%</span></div>
+            </div>
+          </div>
+          <svg id="sis-lines" viewBox="0 0 1080 1920"></svg>
+          <div id="sis-core">KURO<br />GYM</div>
+          <div class="sis-card" id="sis-c1" style="left:90px;top:360px;color:#9fe8c4">INGRESOS<div class="sis-num sis-g">S/ 48,250</div></div>
+          <div class="sis-card" id="sis-c2" style="left:640px;top:420px;color:#ffb3ba">EGRESOS<div class="sis-num sis-r">S/ 29,870</div></div>
+          <div class="sis-card" id="sis-c3" style="left:375px;top:1250px;color:#D7B98C;border-color:rgba(47,208,138,.5)">GANANCIA<div class="sis-num sis-g">S/ 18,380</div></div>
+          <div class="sis-card" id="sis-c4" style="left:80px;top:1020px;color:#ffb3ba">CATEGORÍAS<div class="sis-num" style="font-size:40px;color:#FF7a85">5 ordenadas</div></div>
+          <div class="sis-card" id="sis-c5" style="left:650px;top:980px;color:#9fe8c4">MEJOR SEMANA<div class="sis-num" style="font-size:44px;color:#F3DDB0">S3</div></div>
+          <div class="sis-card" id="sis-c6" style="left:110px;top:700px;color:#b8bec6">REPORTE<div class="sis-num" style="font-size:40px">cada lunes</div></div>
+        </div></div>
+        <div id="sis-ring"></div>
+        <div id="sis-iris"></div>
+        <div id="sis-flash"></div>
+        <div id="grain-overlay"><div class="grain-texture"></div></div>
+      </div>
+
+      <script>
+        (function () {
+        var hash = function (n) { var s = Math.sin(n * 12.9898) * 43758.5453; return s - Math.floor(s); };
+        var B = [2.04, 4.09, 6.89, 8.93, 10.97, 13.02, 15.08];
+        // partículas finas
+        var dots = document.getElementById("sis-dots");
+        for (var i = 0; i < 46; i++) { var d = document.createElement("div"); d.className = "sis-dot"; d.id = "sis-dot" + i; d.style.left = (hash(i) * 1080) + "px"; d.style.top = (hash(i + 40) * 1920) + "px"; d.style.opacity = .15 + hash(i + 80) * .45; dots.appendChild(d); }
+        // barras de egresos vs ingresos (6 meses)
+        var b2 = document.getElementById("sis-bars2");
+        [[.55, .42], [.6, .45], [.52, .47], [.7, .5], [.78, .52], [1, .62]].forEach(function (v, j) { var c = document.createElement("div"); c.innerHTML = '<i class="sis-bg2" style="height:' + v[0] * 100 + '%;background:#2FD08A"></i><i class="sis-br2" style="height:' + v[1] * 100 + '%;background:#FF4D5E"></i>'; b2.appendChild(c); });
+        // barras por semana
+        var b5 = document.getElementById("sis-bars5");
+        [["S1", "9,800", .58], ["S2", "11,400", .68], ["S3", "14,650", 1], ["S4", "12,400", .75]].forEach(function (v, j) { var c = document.createElement("div"); c.className = "col"; c.innerHTML = '<div style="color:' + (j === 2 ? "#F3DDB0" : "#d6ddd9") + ';font-size:32px;margin-bottom:10px" class="sis-v5">S/ ' + v[1] + '</div><div class="bar' + (j === 2 ? " best" : "") + '" style="height:' + v[2] * 330 + 'px"></div>' + v[0] + (j === 2 ? " · mejor" : ""); b5.appendChild(c); });
+        // dona de gastos
+        var donut = document.getElementById("sis-donut"), acc = 0, C = 2 * Math.PI * 70;
+        donut.innerHTML = '<circle cx="100" cy="100" r="70" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="30"/>' + [[.38, "#FF4D5E"], [.22, "#e8606d"], [.20, "#d0707a"], [.12, "#b87c84"], [.08, "#9a7c80"]].map(function (s, j) { var el = '<circle class="sis-seg" cx="100" cy="100" r="70" fill="none" stroke="' + s[1] + '" stroke-width="30" stroke-dasharray="' + (s[0] * C - 3) + ' ' + C + '" stroke-dashoffset="' + (-acc * C) + '" transform="rotate(-90 100 100)"/>'; acc += s[0]; return el; }).join("") + '<text x="100" y="96" text-anchor="middle" fill="#F4F1EA" font-size="22" font-weight="900" font-family="Zen Kaku Gothic New">S/ 29,870</text><text x="100" y="120" text-anchor="middle" fill="#ffb3ba" font-size="12" font-weight="700" letter-spacing="2" font-family="Zen Kaku Gothic New">EGRESOS</text>';
+        // celdas del Excel roto
+        var world = document.getElementById("sis-world");
+        var CELLS = ["####", "#¡REF!", "=SUMA(??", "####", "#¡DIV/0!", "???", "####", "=A1+B7", "#N/A", "####", "#¡VALOR!", "S/ ,,", "####", "#¡REF!"];
+        CELLS.forEach(function (tx, j) { var c = document.createElement("div"); c.className = "sis-cell"; c.id = "sis-cell" + j; c.setAttribute("data-layout-allow-overflow", ""); c.setAttribute("data-layout-allow-overlap", ""); c.textContent = tx; c.style.left = (40 + hash(j + 3) * 820) + "px"; c.style.top = (240 + hash(j + 9) * 1260) + "px"; c.dataset.dx = 445 - (40 + hash(j + 3) * 820); c.dataset.dy = 925 - (240 + hash(j + 9) * 1260); c.style.background = ["#ffe066", "#ff8fa3", "#a5f3a1", "#9ad0ff", "#ffb86b", "#e0e0e0"][j % 6]; world.appendChild(c); });
+        // flujo de automatización
+        var flow = document.getElementById("sis-flow");
+        var ICON = {
+          caja: '<svg viewBox="0 0 70 70"><rect x="8" y="26" width="54" height="34" rx="6" fill="none" stroke="#D7B98C" stroke-width="5"/><rect x="18" y="10" width="34" height="16" rx="3" fill="none" stroke="#D7B98C" stroke-width="5"/><rect x="18" y="38" width="34" height="6" rx="3" fill="#D7B98C"/></svg>',
+          ventas: '<svg viewBox="0 0 70 70"><rect x="10" y="8" width="50" height="54" rx="6" fill="none" stroke="#9fe8c4" stroke-width="5"/><path d="M20 24h30M20 36h30M20 48h18" stroke="#9fe8c4" stroke-width="5"/></svg>',
+          dash: '<svg viewBox="0 0 70 70"><path d="M10 56 L26 38 L38 46 L60 16" fill="none" stroke="#2FD08A" stroke-width="6" stroke-linejoin="round"/><circle cx="60" cy="16" r="6" fill="#2FD08A"/></svg>',
+          wsp: '<svg viewBox="0 0 70 70"><path d="M35 8a26 26 0 0 0-22 40l-4 14 14-4A26 26 0 1 0 35 8z" fill="none" stroke="#2FD08A" stroke-width="5"/><path d="M26 26c2 8 8 14 16 17l4-4" fill="none" stroke="#2FD08A" stroke-width="5" stroke-linecap="round"/></svg>'
+        };
+        [["caja", "Caja"], ["ventas", "Hoja de ventas"], ["dash", "Dashboard"], ["wsp", "WhatsApp"]].forEach(function (n, j) {
+          var el = document.createElement("div"); el.className = "sis-node"; el.id = "sis-node" + j; el.style.top = (380 + j * 270) + "px"; el.innerHTML = ICON[n[0]] + n[1]; flow.appendChild(el);
+          if (j < 3) { var w = document.createElement("div"); w.className = "sis-wire"; w.id = "sis-wire" + j; w.style.top = (530 + j * 270) + "px"; w.style.height = "120px"; flow.appendChild(w); var p = document.createElement("div"); p.className = "sis-pulse"; p.id = "sis-pulse" + j; p.style.top = (530 + j * 270) + "px"; flow.appendChild(p); }
+        });
+        // líneas de la constelación
+        var lines = document.getElementById("sis-lines");
+        lines.innerHTML = [[255, 420], [805, 480], [540, 1310], [245, 1080], [815, 1040], [275, 760]].map(function (p) { return '<line x1="540" y1="960" x2="' + p[0] + '" y2="' + p[1] + '" stroke="rgba(47,208,138,.45)" stroke-width="3" stroke-dasharray="8 10"/>'; }).join("");
+
+        var tl = gsap.timeline({ paused: true });
+        var fmt = function (v) { return "S/ " + Math.round(v).toLocaleString("en-US"); };
+        var counter = function (id, to, at, dur) { var o = { v: 0 }; tl.to(o, { v: to, duration: dur, ease: "power3.out", onUpdate: function () { document.getElementById(id).textContent = fmt(o.v); } }, at); };
+
+        // --- DROP: la pupila se abre como diafragma ---
+        tl.fromTo("#sis-iris", { "--r": "0px" }, { "--r": "1500px", duration: .75, ease: "expo.out" }, 0);
+        tl.fromTo("#sis-ring", { opacity: 1, scale: .05 }, { opacity: 0, scale: 3.4, duration: .7, ease: "expo.out" }, 0);
+        // partículas que suben lento
+        for (var k = 0; k < 46; k++) tl.fromTo("#sis-dot" + k, { y: 0 }, { y: -(120 + hash(k + 5) * 260), duration: 17.1, ease: "none" }, 0);
+        tl.fromTo("#sis-grid", { rotationX: 76, y: 0 }, { rotationX: 76, y: 90, duration: 17.1, ease: "none" }, 0);
+
+        // P1 INGRESOS
+        tl.fromTo("#sis-p1", { opacity: 0, scale: 1.5, filter: "blur(24px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: .6, ease: "expo.out" }, .05);
+        counter("sis-n1", 48250, .15, 1.5);
+        tl.fromTo("#sis-line1", { strokeDasharray: 1100, strokeDashoffset: 1100 }, { strokeDashoffset: 0, duration: 1.3, ease: "power2.out" }, .25);
+        tl.fromTo("#sis-area1", { opacity: 0 }, { opacity: 1, duration: .8 }, .6);
+        tl.to("#sis-p1", { y: -270, scale: .86, duration: .8, ease: "expo.inOut" }, 1.3);
+
+        // P2 EGRESOS (golpe 1)
+        tl.fromTo("#sis-p2", { opacity: 0, x: 700, rotationY: -35 }, { opacity: 1, x: 0, rotationY: 0, duration: .6, ease: "expo.out" }, B[0]);
+        counter("sis-n2", 29870, B[0] + .1, 1.3);
+        tl.fromTo(".sis-bg2", { scaleY: 0 }, { scaleY: 1, duration: .5, stagger: .07, ease: "back.out(1.6)", transformOrigin: "50% 100%" }, B[0] + .25);
+        tl.fromTo(".sis-br2", { scaleY: 0 }, { scaleY: 1, duration: .5, stagger: .07, ease: "back.out(1.6)", transformOrigin: "50% 100%" }, B[0] + .35);
+
+        // P3 GANANCIA (golpe 2)
+        tl.to(["#sis-p1", "#sis-p2"], { z: -700, opacity: .18, filter: "blur(6px)", duration: .5, ease: "expo.out" }, B[1]);
+        tl.fromTo("#sis-p3", { opacity: 0, scale: .6, z: 200 }, { opacity: 1, scale: 1, z: 0, duration: .55, ease: "back.out(1.5)" }, B[1]);
+        counter("sis-n3", 18380, B[1] + .1, 1.2);
+        tl.fromTo("#sis-w1", { opacity: 0, scale: 1.35, filter: "blur(12px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 1.2, ease: "expo.out" }, B[1]);
+        tl.to("#sis-glow", { scale: 1.3, opacity: 1, duration: .8 }, B[1]);
+
+        // P4 EXCEL ROTO → ORDEN (golpe 3)
+        tl.to(["#sis-p1", "#sis-p2", "#sis-p3", "#sis-w1"], { opacity: 0, duration: .25 }, B[2] - .05);
+        CELLS.forEach(function (c, j) {
+          tl.fromTo("#sis-cell" + j, { opacity: 0, rotation: (hash(j + 1) - .5) * 50, scale: .6 }, { opacity: 1, scale: 1, duration: .18, ease: "back.out(2)" }, B[2] + j * .02);
+          var ce = document.getElementById("sis-cell" + j);
+          tl.to(ce, { x: +ce.dataset.dx, y: +ce.dataset.dy, scale: .1, rotation: 360, opacity: 0, duration: .5, ease: "expo.in" }, B[2] + .45 + hash(j + 7) * .2);
+        });
+        tl.fromTo("#sis-p4", { opacity: 0, scale: .85 }, { opacity: 1, scale: 1, duration: .5, ease: "expo.out" }, B[2] + .95);
+        tl.fromTo("#sis-p4 .sis-cat", { opacity: 0, x: -60 }, { opacity: 1, x: 0, duration: .4, stagger: .08, ease: "expo.out" }, B[2] + 1.05);
+        tl.fromTo("#sis-p4 .sis-cat i", { scaleX: 0 }, { scaleX: 1, duration: .6, stagger: .08, ease: "expo.out" }, B[2] + 1.1);
+        tl.fromTo(".sis-seg", { opacity: 0, rotation: -140, transformOrigin: "100px 100px" }, { opacity: 1, rotation: -90, duration: .7, stagger: .08, ease: "expo.out" }, B[2] + 1.2);
+        tl.fromTo("#sis-w2", { opacity: 0, scale: 1.35, filter: "blur(12px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 1.2, ease: "expo.out" }, B[2] + .9);
+
+        // P5 VENTAS POR SEMANA (golpe 4)
+        tl.to(["#sis-p4", "#sis-w2"], { opacity: 0, z: -500, duration: .3 }, B[3] - .05);
+        tl.fromTo("#sis-p5", { opacity: 0, rotationX: 25, y: 120 }, { opacity: 1, rotationX: 0, y: 0, duration: .6, ease: "expo.out" }, B[3]);
+        tl.fromTo("#sis-bars5 .bar", { scaleY: 0 }, { scaleY: 1, duration: .7, stagger: .12, ease: "back.out(1.4)", transformOrigin: "50% 100%" }, B[3] + .15);
+        tl.fromTo(".sis-v5", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .4, stagger: .12 }, B[3] + .45);
+        tl.fromTo("#sis-star", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: .5, ease: "expo.out" }, B[3] + 1.0);
+
+        // P6 FLUJO (golpe 5)
+        tl.to("#sis-p5", { opacity: 0, z: -500, duration: .3 }, B[4] - .05);
+        for (var n = 0; n < 4; n++) {
+          tl.fromTo("#sis-node" + n, { opacity: 0, x: n % 2 ? 120 : -120 }, { opacity: 1, x: 0, duration: .4, ease: "expo.out" }, B[4] + n * .12);
+          tl.to("#sis-node" + n, { borderColor: "rgba(47,208,138,.9)", boxShadow: "0 0 50px rgba(47,208,138,.45)", duration: .2 }, B[4] + .6 + n * .32);
+          if (n < 3) {
+            tl.fromTo("#sis-wire" + n, { opacity: 0 }, { opacity: 1, duration: .3 }, B[4] + .3 + n * .12);
+            tl.set("#sis-pulse" + n, { opacity: 0 }, 0);
+            tl.fromTo("#sis-pulse" + n, { opacity: 1, y: 0 }, { opacity: 1, y: 110, duration: .32, ease: "none", repeat: 4, repeatDelay: .12, immediateRender: false }, B[4] + .6 + n * .32);
+          }
+        }
+
+        // P7 NOTIFICACIÓN (golpe 6)
+        tl.to(["#sis-flow .sis-node", "#sis-flow .sis-wire", "#sis-flow .sis-pulse"], { opacity: 0, duration: .25 }, B[5] - .05);
+        tl.fromTo("#sis-p7", { opacity: 0, y: -260, scale: .9 }, { opacity: 1, y: 0, scale: 1, duration: .55, ease: "back.out(1.4)" }, B[5]);
+        tl.fromTo("#sis-rep", { height: 0, opacity: 0 }, { height: 240, opacity: 1, duration: .6, ease: "expo.out" }, B[5] + .7);
+        tl.fromTo("#sis-rep div", { x: -40, opacity: 0 }, { x: 0, opacity: 1, duration: .4, stagger: .15, ease: "expo.out" }, B[5] + .85);
+
+        // P8 CONSTELACIÓN (golpe 7)
+        tl.to("#sis-p7", { opacity: 0, scale: .6, duration: .3 }, B[6] - .05);
+        tl.fromTo("#sis-core", { opacity: 0, scale: .4 }, { opacity: 1, scale: 1, duration: .5, ease: "back.out(2)" }, B[6]);
+        tl.fromTo("#sis-lines", { opacity: 0 }, { opacity: 1, duration: .6 }, B[6] + .2);
+        tl.fromTo(".sis-card", { opacity: 0, scale: .5, z: -400 }, { opacity: 1, scale: 1, z: 0, duration: .5, stagger: .07, ease: "expo.out" }, B[6] + .1);
+        tl.fromTo("#sis-w3", { opacity: 0, scale: 1.35, filter: "blur(12px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 1.2, ease: "expo.out" }, B[6] + .2);
+        tl.fromTo("#sis-world", { scale: 1.12 }, { scale: .94, duration: 2.0, ease: "power2.out" }, B[6]);
+        // match cut: la ganancia se encoge hacia el celular de Kuro
+        tl.to([".sis-card:not(#sis-c3)", "#sis-core", "#sis-lines", "#sis-w3"], { opacity: 0, duration: .25 }, 16.55);
+        tl.to("#sis-c3", { x: 45, y: -70, scale: .72, duration: .5, ease: "expo.inOut" }, 16.55);
+
+        // Golpes: punch leve + flash de 2 cuadros
+        [0].concat(B).forEach(function (b, j) {
+          tl.fromTo("#sis-persp", { scale: 1.045 }, { scale: 1, duration: .38, ease: "expo.out", immediateRender: j === 0 }, b);
+          tl.fromTo("#sis-flash", { opacity: j === 0 ? .6 : .2 }, { opacity: 0, duration: .07, ease: "none", immediateRender: false }, b);
+        });
+
+        window.__timelines["sistema"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

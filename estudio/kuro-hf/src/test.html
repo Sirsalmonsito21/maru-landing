@@ -1,0 +1,14 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><style>body{margin:0;background:#111;display:flex;flex-wrap:wrap;gap:8px;width:1680px} canvas{width:270px;height:480px;image-rendering:pixelated}</style></head>
+<body>
+<script src="pixel-engine.js"></script>
+<script>
+function mk(fn){ const c=document.createElement("canvas"); c.width=270; c.height=480; document.body.appendChild(c); setCtx(c.getContext("2d")); fn(); }
+const t=1.3;
+mk(()=>{ beach(t); umbrella(214,418,t); palm(28,480,t); chair(150,420); kuro(150,390,1.25,{breath:true,rightHold:"coco",right:{x:20,y:-40},leftHold:"phone",left:{x:-20,y:-24}},t); });
+mk(()=>{ gradient(SKY,0,480); kuro(135,520,3,{eyes:"deadpan",mouth:"flat"},t); });
+mk(()=>{ gradient(SKY,0,480); head(135,240,6,{eyes:"shock",mouth:"o",tremble:true,sweat:true},t); });
+mk(()=>{ gradient(SKY,0,480); kuro(135,520,3,{wet:true,seaweed:true,eyes:"glasses",glassesTilt:1.5,glassesY:2,mouth:"wince"},t); crab(135,300,3,t,{wave:true}); });
+mk(()=>{ g.fillStyle="#141026"; g.fillRect(0,0,270,480); maruFace(135,240,6,{glint:true},t); });
+mk(()=>{ beach(t); chair(150,420); kuro(150,392,1,{wet:true,eyes:"glasses",mouth:"grin",rightHold:"coco",right:{x:22,y:-66},cocoTilt:2,leftHold:"phone",left:{x:-20,y:-24}},t); crab(140,322,1,t,{raise:6}); });
+</script></body></html>
