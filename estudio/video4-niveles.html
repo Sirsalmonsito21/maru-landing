@@ -1,0 +1,600 @@
+<!doctype html>
+<html lang="es-PE">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maru · Tipos de clientes Nv.1–2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap">
+<style>
+  /* Tipos de clientes por WhatsApp, Nv.1 y Nv.2. Combate RPG en pixel art, lienzo 180×320 escalado ×6.
+     La historia vive en STEPS; los efectos de sonido salen de los mismos pasos (window.__mix). */
+  :root { --k: #1a1422; --w: #FFF6EE; --shu: #C8452C; --mikan: #DE9A5A; --kin: #D7B98C; --y: #f2d27a; color-scheme: dark; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: #0d0a12; color: var(--w); font-family: "DotGothic16", monospace; }
+  body { display: grid; grid-template-rows: 1fr auto; overflow: hidden; }
+  .viewport { position: relative; overflow: hidden; }
+  #stage { position: absolute; left: 50%; top: 50%; width: 1080px; height: 1920px; transform-origin: 0 0; overflow: hidden; background: #1d1633; }
+  body.rec { display: block; }
+  body.rec .viewport { position: static; overflow: visible; }
+  body.rec #stage { left: 0; top: 0; transform: none !important; }
+  body.rec .bar { display: none; }
+  #cam { position: absolute; inset: 0; transform-origin: 144px 1032px; }
+  canvas { position: absolute; inset: 0; width: 1080px; height: 1920px; image-rendering: pixelated; }
+  .abs { position: absolute; }
+  #scan { inset: 0; pointer-events: none; background: repeating-linear-gradient(to bottom, rgba(0,0,0,.10) 0 3px, transparent 3px 6px); z-index: 40; }
+  #flash { inset: 0; background: #fff; opacity: 0; z-index: 25; }
+  #blocks { z-index: 26; }
+  .ol { text-shadow: 6px 0 0 var(--k), -6px 0 0 var(--k), 0 6px 0 var(--k), 0 -6px 0 var(--k), 6px 6px 0 var(--k), -6px 6px 0 var(--k), 6px -6px 0 var(--k), -6px -6px 0 var(--k), 10px 12px 0 var(--k); }
+
+  .box { background: var(--k); color: var(--w); border: 6px solid var(--w); outline: 6px solid var(--k); box-shadow: inset 0 0 0 6px var(--k), inset 0 0 0 12px #5a4a6e; }
+  #textbox { left: 54px; right: 162px; top: 1236px; height: 246px; padding: 36px 42px; font-size: 52px; line-height: 1.32; z-index: 20; }
+  #textbox .cur { display: inline-block; width: 28px; height: 28px; background: var(--w); margin-left: 10px; clip-path: polygon(0 0, 100% 0, 50% 100%); }
+
+  .plate { padding: 22px 30px 26px; z-index: 15; }
+  .plate .nm { font-size: 44px; display: flex; justify-content: space-between; gap: 24px; white-space: nowrap; }
+  .plate .lv { color: var(--kin); font-size: 36px; }
+  .hp { margin-top: 14px; display: flex; align-items: center; gap: 14px; font-size: 32px; color: var(--mikan); }
+  .hp .track { flex: 1; height: 24px; background: #3a2f47; border: 4px solid var(--w); }
+  .hp .fill { height: 100%; background: #6fd08c; }
+  #plateE { left: 54px; top: 250px; width: 600px; }
+  #plateP { left: 540px; top: 1000px; width: 378px; }
+
+  #logo { left: 54px; top: 120px; font-size: 40px; letter-spacing: .1em; color: var(--w); z-index: 16; background: var(--k); padding: 6px 18px 6px 0; }
+  #logo b { background: var(--shu); color: var(--w); padding: 2px 12px; margin-right: 16px; }
+  #logo i { font-style: normal; color: var(--y); margin-left: 14px; }
+  #zzz { font-size: 60px; color: var(--kin); z-index: 14; }
+  #xd { font-size: 96px; color: var(--k); z-index: 14; opacity: 0; transform-origin: 50% 50%; white-space: nowrap; line-height: 1; }
+  #xd.big { color: var(--shu); }
+  #think { left: 40px; top: 760px; padding: 18px 26px; font-size: 42px; background: var(--w); color: var(--k); border: 6px solid var(--k); z-index: 14; opacity: 0; }
+  #cri { left: 640px; top: 820px; font-size: 48px; color: #e8dff0; z-index: 14; opacity: 0; }
+  #wall { left: 54px; right: 54px; top: 420px; padding: 30px 36px; font-size: 38px; line-height: 1.35; z-index: 18; opacity: 0; }
+  #wall em { font-style: normal; color: var(--shu); background: var(--w); padding: 0 8px; }
+  #word { font-size: 48px; color: var(--k); z-index: 14; white-space: nowrap; }
+  #word.bub { background: var(--w); padding: 4px 16px; border: 6px solid var(--k); }
+  .graw { font-size: 76px; color: var(--y); z-index: 14; opacity: 0; white-space: nowrap; }
+  #crit { left: 470px; top: 430px; font-size: 104px; color: var(--y); z-index: 17; opacity: 0; transform: rotate(-8deg); }
+  #timer { font-size: 64px; color: var(--w); z-index: 14; opacity: 0; }
+
+  #card { inset: 0; z-index: 27; opacity: 0; text-align: center; }
+  #card .ttl { position: absolute; left: 0; right: 0; top: 190px; font-size: 104px; line-height: 1.12; color: var(--w); }
+  #card .ttl small { display: block; font-size: 64px; color: var(--y); margin-top: 14px; }
+  #card .n { position: absolute; left: 0; right: 0; top: 1330px; font-size: 150px; color: var(--y); line-height: 1; }
+  #card .who { position: absolute; left: 0; right: 0; top: 1520px; font-size: 84px; color: var(--w); }
+  #cta { left: 54px; right: 54px; top: 380px; padding: 48px 44px 54px; z-index: 22; opacity: 0; text-align: center; }
+  #cta .q { font-size: 60px; }
+  #cta .opt { margin-top: 40px; font-size: 76px; color: var(--y); text-align: left; padding-left: 20px; }
+  #cta .opt::before { content: "▶"; color: var(--shu); margin-right: 16px; }
+  #cta .opt b { font-weight: normal; color: var(--k); background: var(--y); padding: 0 12px; }
+  #cta .sub { margin-top: 18px; font-size: 52px; color: var(--w); text-align: left; padding-left: 116px; }
+  #cta .run { margin-top: 26px; font-size: 44px; color: #8f829e; text-align: left; padding-left: 116px; }
+
+  .bar { display: flex; align-items: center; gap: 14px; padding: 12px 16px; background: #1b1622; font: 14px system-ui; }
+  .bar button { color: #F3EDE2; background: #3A342F; border: 0; border-radius: 999px; padding: 10px 16px; cursor: pointer; }
+  .bar input { flex: 1; accent-color: #C8452C; }
+  .bar output { min-width: 150px; color: #CFC5B8; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+<div class="viewport" id="viewport"><div id="stage">
+  <div id="cam">
+    <canvas id="px" width="180" height="320"></canvas>
+    <div class="abs" id="word"></div>
+    <div class="abs box plate" id="plateE"><div class="nm"><span id="eName">EL «INFO»</span><span class="lv" id="eLv">Nv.1</span></div><div class="hp"><span>PS</span><div class="track"><div class="fill" id="hpE"></div></div></div></div>
+    <div class="abs box plate" id="plateP"><div class="nm"><span>MARU</span><span class="lv">Nv.99</span></div><div class="hp"><span>PS</span><div class="track"><div class="fill" id="hpP" style="width:100%"></div></div></div></div>
+    <div class="abs" id="zzz">z Z</div>
+    <div class="abs ol" id="timer"></div>
+    <div class="abs box" id="think">¿fue el precio?</div>
+    <div class="abs ol" id="cri">cri… cri…</div>
+    <div class="abs graw ol">#@%&!</div><div class="abs graw ol">¡$#@!</div><div class="abs graw ol">%&#!!</div><div class="abs graw ol">@#$%</div>
+    <div class="abs" id="xd">XD</div>
+  </div>
+  <div class="abs" id="logo"><b>丸</b>TIPOS DE CLIENTES<i id="logoLv">Nv.1</i></div>
+  <div class="abs ol" id="crit">¡CRÍTICO!</div>
+  <div class="abs box" id="wall"></div>
+  <div class="abs box" id="textbox"><span id="txt"></span><span class="cur" id="cur"></span></div>
+  <div class="abs box" id="cta"><div class="q">¿Cuál te tocó a ti?</div><div class="opt">COMENTA <b>CLIENTE</b></div><div class="sub">y te doy una asesoría gratis</div><div class="run">HUIR (no disponible)</div></div>
+  <div class="abs" id="flash"></div>
+  <canvas id="blocks" width="180" height="320"></canvas>
+  <div class="abs" id="card"><div class="ttl ol" id="cardT">TIPOS DE CLIENTES<small>POR WHATSAPP</small></div><div class="n ol" id="cardN">Nv.1</div><div class="who ol" id="cardW">¿EL «INFO»?</div></div>
+  <div class="abs" id="scan"></div>
+</div></div>
+<div class="bar">
+  <button id="play" type="button">Pausa</button>
+  <input id="scrub" type="range" min="0" max="80" step="0.01" value="0" aria-label="Posición">
+  <output id="time">0.00 s</output>
+</div>
+<script>
+/* ======================= GUION ======================= */
+/* Sonidos: D = Kenney Digital Audio, I = Interface Sounds, R = RPG Audio (CC0). "crickets" se arma en la mezcla. */
+const HITS = ["R/chop", "R/metalPot1", "R/metalPot2", "R/metalPot3", "R/knifeSlice", "R/cloth1", "R/dropLeather", "I/drop_002", "R/chop", "R/metalPot3"];
+const STEPS = [
+  { card: { title: true, n: "Nv.1", who: "¿EL «INFO»?", sil: "info" }, from: "open", to: "reveal", dur: 2.6, scene: "ciudad",
+    sfx: [["D/threeTone1", .05, .8], ["I/maximize_006", 1.9, .7]] },
+  // Nv.1 · EL «INFO» · ciudad al atardecer
+  { scene: "ciudad", enemy: "info", dur: 2.6, text: "¡Un cliente salvaje apareció!", face: "sleep", fx: ["enter"], sfx: [["D/phaserUp3", .3, .6]] },
+  { scene: "ciudad", enemy: "info", dur: 2.4, text: "EL «INFO» usó: «info»", face: "surprised", fx: ["shake"], word: ["info", .3], sfx: [["I/pluck_002", .3, .9]] },
+  { scene: "ciudad", enemy: "info", dur: 2.8, text: "¡MARU usó RESPUESTA AUTOMÁTICA!", face: "happy", fx: ["throw:pdf"], sfx: [["D/phaseJump1", 1.0, .7], ["I/pluck_001", 1.42, .8]] },
+  { scene: "ciudad", enemy: "info", dur: 2.6, text: "EL «INFO» te dejó en visto…", face: "think", fx: ["visto", "cri", "think"], sfx: [["I/pluck_001", .6, .8], ["I/pluck_001", .72, .8], ["crickets", .95, 1]] },
+  { scene: "ciudad", enemy: "info", dur: 2.6, text: "MARU usó: «¿Sigues ahí? (^_^)»", face: "happy", fx: ["throw:bubble", "visto"], sfx: [["I/question_001", .2, .7], ["D/phaseJump1", 1.0, .7], ["crickets", 1.6, .8]] },
+  { scene: "ciudad", enemy: "info", dur: 2.4, text: "¡EL «INFO» BLOQUEÓ A MARU!", face: "surprised", fx: ["block"], sfx: [["I/error_006", .9, 1], ["I/error_008", 1.0, .9]] },
+  { scene: "ciudad", enemy: "info", dur: 2.4, text: "No fue muy efectivo…", face: "xd", fx: ["zoom", "xdbig"], sfx: [["D/zapThreeToneDown", .45, .9], ["I/glitch_002", .5, .6]] },
+  { scene: "ciudad", enemy: "info", dur: 2.2, text: "MARU está FURIOSA.", face: "angry", fx: ["aura"], sfx: [["D/powerUp2", .1, .7], ["D/phaserUp6", .7, .6]] },
+  { scene: "ciudad", enemy: "info", dur: 3.2, text: "¡MARU usó: SACARTE LA #@%&!", face: "angry", fx: ["fight"], hp: [1, .03], sfx: "fight" },
+  { scene: "ciudad", enemy: "info", dur: 3.0, text: "…y EL «INFO» usó: «info»", face: (lt) => lt < 1.3 ? "happy" : "flat", fx: ["flatE"], hp: [.03, .03], word: ["info", 1.3], sfx: [["D/lowDown", .1, .6], ["I/pluck_002", 1.3, 1]] },
+  // Transición a Nv.2
+  { card: { n: "Nv.2", who: "¿EL AUDIO ETERNO?", sil: "audio" }, from: "cover", to: "reveal", dur: 2.6, scene: "fuji",
+    sfx: [["I/minimize_006", 0, .7], ["D/threeTone2", .8, .8], ["I/maximize_006", 1.9, .7]] },
+  // Nv.2 · EL AUDIO ETERNO · Monte Fuji
+  { scene: "fuji", enemy: "audio", dur: 2.4, text: "¡Apareció EL AUDIO ETERNO!", face: "awake", fx: ["enter"], sfx: [["D/phaserUp3", .3, .6]] },
+  { scene: "fuji", enemy: "audio", dur: 2.8, text: "EL AUDIO ETERNO usó AUDIO DE 5:47", face: "dizzy", fx: ["bigwave"], timer: "5:47", sfx: "wave" },
+  { scene: "fuji", enemy: "audio", dur: 3.0, text: "¡MARU usó TRANSCRIBIR!", face: "think", fx: ["wall"], sfx: [["I/scroll_003", 1.0, .7], ["R/bookFlip2", 1.1, .8], ["R/bookFlip3", 1.35, .8]] },
+  { scene: "fuji", enemy: "audio", dur: 3.2, text: "…todo eso para preguntar: «¿cuánto el corte?»", face: "flat", fx: ["wallShrink", "tremble"], sfx: [["I/glitch_001", 1.9, .5], ["D/lowRandom", 2.1, .6]] },
+  { scene: "fuji", enemy: "audio", dur: 2.8, text: "¡MARU respondió en 1 segundo! ¡GOLPE CRÍTICO!", face: "happy", fx: ["throw:bubble", "hit", "crit"], hp: [1, .35], sfx: [["D/phaseJump1", 1.0, .7], ["D/zapTwoTone", 1.4, .8], ["R/metalPot2", 1.4, .9]] },
+  { scene: "fuji", enemy: "audio", dur: 2.4, text: "EL AUDIO ETERNO usó OTRO AUDIO DE 12:04", face: "twitch", fx: ["bigwave"], timer: "12:04", hp: [.35, .35], sfx: [["D/spaceTrash2", .6, .4], ["D/phaseJump3", 1.3, .8], ["D/phaseJump3", 1.6, .8]] },
+  { scene: "fuji", enemy: "audio", dur: 2.8, text: "¡EL AUDIO ETERNO reservó una cita!", face: "happy", fx: ["confetti", "leave"], hp: [.35, 0], sfx: [["R/handleCoins", 1.0, .9], ["D/powerUp7", 1.2, .7], ["I/confirmation_002", 1.7, .7]] },
+  // Cierre
+  { scene: "fuji", enemy: null, dur: 4.0, text: "Nv.3: muy pronto…", face: "happy", fx: ["cta"], sfx: [["I/select_002", .35, .8], ["I/confirmation_001", 1.1, .7]] },
+  { card: { title: true, n: "Nv.1", who: "¿EL «INFO»?", sil: "info" }, from: "cover", to: "hold", dur: .9, scene: "fuji", sfx: [["I/minimize_006", 0, .6]] },
+];
+let acc = 0; STEPS.forEach((s) => { s.t0 = acc; acc += s.dur; });
+const DURATION = Math.round(acc * 30) / 30;
+const ENEMIES = { info: ["EL «INFO»", "Nv.1"], audio: ["EL AUDIO ETERNO", "Nv.2"] };
+
+/* ======================= DIBUJO ======================= */
+const $ = (id) => document.getElementById(id);
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const p = (t, s, d) => clamp((t - s) / d);
+const outQ = (k) => 1 - (1 - k) ** 3;
+const hash = (n) => { const s = Math.sin(n * 12.9898) * 43758.5453; return s - Math.floor(s); };
+const C = $("px"), MAIN = C.getContext("2d"); let g = MAIN; g.imageSmoothingEnabled = false;
+const B = $("blocks"), gb = B.getContext("2d");
+const PAL = { k: "#1a1422", w: "#FFF6EE", o: "#DE9A5A", r: "#C8452C", R: "#8e2f1f", p: "#F4C6C0", y: "#f2d27a", kin: "#D7B98C", blue: "#53bdeb", red: "#e03b2c" };
+const px = (x, y, c) => { g.fillStyle = c; g.fillRect(Math.round(x), Math.round(y), 1, 1); };
+const rect = (x, y, w, h, c) => { g.fillStyle = c; g.fillRect(Math.round(x), Math.round(y), Math.round(w), Math.round(h)); };
+const BAYER = [[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]];
+const inE = (x, y, cx, cy, rx, ry) => ((x + .5 - cx) / rx) ** 2 + ((y + .5 - cy) / ry) ** 2 <= 1;
+function blob(cx, cy, rx, ry, fill, out, keep) {
+  for (let y = Math.floor(cy - ry - 1); y <= cy + ry + 1; y++) for (let x = Math.floor(cx - rx - 1); x <= cx + rx + 1; x++) {
+    if (!inE(x, y, cx, cy, rx, ry) || (keep && !keep(x, y))) continue;
+    const edge = !inE(x - 1, y, cx, cy, rx, ry) || !inE(x + 1, y, cx, cy, rx, ry) || !inE(x, y - 1, cx, cy, rx, ry) || !inE(x, y + 1, cx, cy, rx, ry);
+    px(x, y, edge && out ? out : fill);
+  }
+}
+function gradient(stops, y0, y1) {
+  for (let y = y0; y < y1; y++) {
+    const f = (y - y0) / (y1 - y0) * (stops.length - 1), i = Math.floor(f), fr = f - i;
+    for (let x = 0; x < 180; x++) px(x, y, (fr * 16 > BAYER[y % 4][x % 4]) && stops[i + 1] ? stops[i + 1] : stops[i]);
+  }
+}
+let seed = 3; const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+const BUILD = []; { seed = 11; let x = 0; while (x < 180) { const w = 8 + Math.floor(rnd() * 14), h = 10 + Math.floor(rnd() * 26); BUILD.push({ x, w, h, win: Array.from({ length: 6 }, () => [Math.floor(rnd() * (w - 2)) + 1, Math.floor(rnd() * (h - 4)) + 2]) }); x += w + 1; } }
+const PETALS = Array.from({ length: 18 }, () => ({ x: rnd() * 180, y: rnd() * 320, s: 10 + rnd() * 14, d: rnd() * 6 }));
+function petals(t, col) { PETALS.forEach((q) => { const y = (q.y + t * q.s) % 320, x = (q.x + Math.sin(t * 2 + q.d) * 4 + t * 3) % 180; px(x, y, col); }); }
+function pads(c) { blob(124, 138, 38, 7, c, "#1a1422"); blob(46, 192, 44, 8, c, "#1a1422"); }
+
+function sceneCiudad(t) {
+  gradient(["#1d1633", "#2c1b40", "#3f214a", "#5a2750", "#7a3050", "#9e3c4a", "#c65043", "#e0703f"], 0, 112);
+  for (let y = 62; y <= 118; y++) for (let x = 90; x <= 150; x++) { if (!inE(x, y, 120, 92, 27, 27)) continue; if (y > 92 && (y - 92) % 6 < (y - 92) / 9) continue; px(x, y, y < 80 ? "#e2623f" : "#C8452C"); }
+  [[20, 70, 60], [34, 74, 40], [118, 58, 52], [132, 62, 34]].forEach(([x, y, w]) => rect(x, y, w, 2, PAL.kin));
+  BUILD.forEach((b, j) => { rect(b.x, 112 - b.h, b.w, b.h, "#2a1f3d"); b.win.forEach(([wx, wy], k) => { if ((Math.floor(t * 2 + j + k) % 7) !== 0) px(b.x + wx, 112 - b.h + wy, PAL.y); }); });
+  rect(16, 84, 30, 3, PAL.R); rect(13, 82, 36, 2, PAL.R); rect(20, 90, 22, 2, PAL.R); rect(21, 84, 3, 28, PAL.R); rect(38, 84, 3, 28, PAL.R);
+  for (let y = 112; y < 320; y++) rect(0, y, 180, 1, y % 8 < 4 ? "#2b2338" : "#261f33");
+  pads("#3d3150"); petals(t, PAL.p);
+}
+function sceneFuji(t) {
+  gradient(["#7ec4e6", "#9dd3ea", "#bfe0ec", "#f3dcc8", "#f6c9a8"], 0, 112);
+  blob(118, 22, 8, 8, "#fff1c4", null);
+  [[8, 24, 30], [60, 32, 40], [150, 30, 26]].forEach(([x, y, w]) => rect(x + ((t * 2) % 8), y, w, 2, "#ffffff"));
+  for (let y = 40; y < 112; y++) { const half = (y - 40) * 1.2 + 4; for (let x = 140 - half; x <= 140 + half; x++) px(x, y, y < 54 && (x * 3 + y) % 5 ? "#ffffff" : y < 56 ? "#dfe8f0" : "#6f86a8"); }
+  for (let y = 78; y < 112; y++) { const half = (y - 78) * 2 + 12; for (let x = 24 - half; x <= 24 + half; x++) px(x, y, "#5a7a64"); }
+  [[18, 70, 10], [16, 78, 14], [14, 86, 18], [12, 94, 22]].forEach(([x, y, w]) => { rect(x - 3, y, w + 6, 2, "#8e2f1f"); rect(x, y + 2, w, 6, "#C8452C"); });
+  rect(22, 62, 2, 8, "#8e2f1f");
+  for (let y = 112; y < 320; y++) rect(0, y, 180, 1, y % 6 < 3 ? "#7fae5a" : "#6d9a4c");
+  for (let y = 116; y < 320; y += 10) for (let x = (y / 2) % 8; x < 180; x += 8) px(x, y, "#a6cf72");
+  pads("#5d8a44"); petals(t, "#ffffff");
+}
+const SCENES = { ciudad: sceneCiudad, fuji: sceneFuji };
+
+/* ---------- Enemigos (a ×2) ---------- */
+function drawInfo(x, y) {
+  for (let j = 0; j < 20; j++) for (let i = 0; i < 28; i++) {
+    const corner = (i < 2 && j < 2) || (i > 25 && j < 2) || (i < 2 && j > 17) || (i > 25 && j > 17);
+    if (corner) continue;
+    const edge = i === 0 || j === 0 || i === 27 || j === 19 || (i === 1 && (j === 1 || j === 18)) || (i === 26 && (j === 1 || j === 18));
+    px(x + i, y + j, edge ? PAL.k : PAL.w);
+  }
+  [[4, 20], [4, 21], [5, 20], [3, 22]].forEach(([i, j]) => px(x + i, y + j, PAL.k));
+  [[7, 9], [8, 10], [19, 10], [20, 9]].forEach(([i, j]) => px(x + i, y + j, PAL.k));
+  rect(x + 7, y + 12, 2, 3, PAL.k); rect(x + 19, y + 12, 2, 3, PAL.k); rect(x + 12, y + 16, 4, 1, PAL.k);
+  px(x + 5, y + 15, PAL.p); px(x + 22, y + 15, PAL.p);
+}
+function drawAudio(x, y, t) {
+  blob(x + 14, y + 8, 10, 9, "#9aa3b5", PAL.k);
+  for (let j = 0; j < 16; j += 3) for (let i = 0; i < 20; i += 3) if (inE(x + 5 + i, y + j, x + 14, y + 8, 9, 8)) px(x + 5 + i, y + j, "#6c7488");
+  rect(x + 4, y + 6, 21, 4, PAL.k); rect(x + 7, y + 7, 5, 2, "#3b4a78"); rect(x + 17, y + 7, 5, 2, "#3b4a78");
+  rect(x + 11, y + 13, 6, 1, PAL.k); px(x + 16, y + 12, PAL.k);
+  rect(x + 12, y + 17, 4, 6, "#3a2f47"); rect(x + 7, y + 23, 14, 2, "#3a2f47");
+  if (Math.floor(t * 4) % 2) { rect(x + 27, y + 3, 1, 4, PAL.kin); rect(x + 30, y + 1, 1, 8, PAL.kin); }
+}
+const DRAW = { info: (t) => drawInfo(0, 0), audio: (t) => drawAudio(0, 0, t) };
+function enemy(st, lt, t) {
+  if (!st.enemy) return null;
+  const fx = st.fx || [];
+  const inK = fx.includes("enter") ? outQ(p(lt, .3, .6)) : 1;
+  let ex = 96 + Math.round((1 - inK) * 80), ey = 92;
+  if (fx.includes("shake") && lt > .3 && lt < .9) ex += Math.floor(lt * 30) % 2 ? 3 : -3;
+  if (fx.includes("hit") && lt > 1.35 && lt < 1.75 && Math.floor(lt * 20) % 2) return { x: ex, y: ey };
+  if (fx.includes("fight") && lt > .55) return { x: ex, y: ey, hidden: true };
+  if (fx.includes("leave")) { const k = outQ(p(lt, 1.4, .8)); ex += Math.round(k * 90); ey -= lt > 1.4 ? Math.round(Math.abs(Math.sin(lt * 8)) * 3) : 0; }
+  if (fx.includes("flatE")) {
+    // Aplastado como una hojita, con estrellitas girando
+    g.setTransform(2.3, 0, 0, .7, ex - 4, ey + 30); DRAW[st.enemy](t); g.setTransform(1, 0, 0, 1, 0, 0);
+    for (let i = 0; i < 3; i++) { const a = t * 5 + i * 2.1; const sx = ex + 30 + Math.cos(a) * 16, sy = ey + 26 + Math.sin(a) * 4; px(sx, sy, PAL.y); px(sx + 1, sy, PAL.y); px(sx, sy - 1, PAL.y); px(sx, sy + 1, PAL.y); px(sx - 1, sy, PAL.y); }
+    return { x: ex, y: ey, flat: true };
+  }
+  g.setTransform(2, 0, 0, 2, ex, ey); DRAW[st.enemy](t); g.setTransform(1, 0, 0, 1, 0, 0);
+  return { x: ex, y: ey };
+}
+
+/* ---------- Mandarina ---------- */
+function face(expr, cx, cy, t) {
+  const K = PAL.k;
+  const pts = (arr) => arr.forEach(([x, y]) => px(cx + x, cy + y, K));
+  if (expr === "sleep") pts([[-14, 2], [-13, 3], [-12, 2], [-9, 2], [-8, 3], [-7, 2]]);
+  if (expr === "awake") { rect(cx - 14, cy + 1, 2, 2, K); rect(cx - 9, cy + 1, 2, 2, K); }
+  if (expr === "happy") pts([[-14, 2], [-13, 1], [-12, 2], [-9, 2], [-8, 1], [-7, 2], [-11, 5], [-10, 5]]);
+  if (expr === "surprised") { rect(cx - 15, cy, 3, 3, K); rect(cx - 10, cy, 3, 3, K); px(cx - 15, cy, "#fff"); px(cx - 10, cy, "#fff"); rect(cx - 11, cy + 5, 2, 2, K); }
+  if (expr === "think") { rect(cx - 13, cy, 2, 1, K); rect(cx - 8, cy, 2, 1, K); rect(cx - 11, cy + 5, 3, 1, K); }
+  if (expr === "dizzy") { const r = [[0, -1], [1, 0], [0, 1], [-1, 0]]; const k = Math.floor(t * 8) % 4; [[-13, 2], [-8, 2]].forEach(([ex, ey]) => r.forEach(([a, b], i) => { if (i !== k) px(cx + ex + a, cy + ey + b, K); })); }
+  if (expr === "flat") { rect(cx - 15, cy + 2, 3, 1, K); rect(cx - 10, cy + 2, 3, 1, K); rect(cx - 12, cy + 5, 2, 1, K); }
+  if (expr === "angry") {
+    pts([[-16, 0], [-15, 1], [-14, 2], [-13, 2], [-7, 0], [-8, 1], [-9, 2], [-10, 2]]);
+    pts([[-13, 6], [-12, 5], [-11, 6], [-10, 5], [-9, 6]]);
+    // venita de enojo
+    [[-1, -9], [0, -9], [-1, -8], [2, -9], [3, -9], [3, -8], [-1, -6], [-1, -5], [0, -5], [3, -6], [2, -5], [3, -5]].forEach(([x, y]) => px(cx + x, cy + y, PAL.red));
+  }
+  if (expr === "twitch") {
+    rect(cx - 14, cy + 1, 2, 2, K);
+    if (Math.floor(t * 14) % 2) rect(cx - 9, cy + 1, 2, 2, K); else rect(cx - 10, cy + 2, 3, 1, K);
+    rect(cx - 12, cy + 5, 3, 1, K);
+    [[1, -8], [2, -8], [1, -7], [4, -8], [4, -7], [1, -5], [4, -5], [3, -5]].forEach(([x, y]) => px(cx + x, cy + y, PAL.red));
+  }
+  if (expr !== "xd" && expr !== "angry") px(cx - 11, cy + 4, PAL.p);
+}
+function maru(st, lt, t, faceName) {
+  const f = faceName || "sleep", fx = st.fx || [];
+  const throwing = fx.some((x) => x.startsWith("throw")) && lt > 1.0 && lt < 1.35;
+  const jump = throwing ? -Math.round(Math.sin((lt - 1.0) / .35 * Math.PI) * 5) : 0;
+  const breathe = f === "sleep" ? Math.round(Math.sin(t * 2.6) * .6) : 0;
+  let wx = 44, wy = 168 + jump * 2;
+  if (fx.includes("aura") || f === "twitch" || fx.includes("tremble")) wx += Math.floor(t * 30) % 2 ? 1 : -1;
+  if (fx.includes("fight")) {
+    if (lt > .55) return { x: 110, y: 138, hidden: true };
+    const k = outQ(p(lt, .2, .35)); wx += Math.round(k * 42); wy -= Math.round(k * 26);
+  }
+  if (fx.includes("aura")) aura(wx, wy, t, 1);
+  g.setTransform(2, 0, 0, 2, wx, wy);
+  const cx = 0, cy = 0;
+  blob(cx + 11, cy + 7, 7, 3, PAL.w, PAL.k);
+  blob(cx, cy + breathe * .3, 15, 10, PAL.w, PAL.k);
+  blob(cx + 7, cy - 5, 7, 5, PAL.o, null, (x, y) => inE(x, y, cx, cy, 14, 9));
+  blob(cx + 13, cy + 7, 3, 2, PAL.o, null, (x, y) => inE(x, y, cx + 11, cy + 7, 6, 2));
+  [[-15, -3], [-14, -4], [-14, -3], [-13, -2], [-7, -5], [-6, -4], [-7, -4], [-8, -3]].forEach(([x, y]) => px(cx + x, cy + y, PAL.k));
+  blob(cx - 10, cy + 2, 7, 6, PAL.w, PAL.k);
+  blob(cx - 7, cy - 2, 3, 2, PAL.o, null, (x, y) => inE(x, y, cx - 10, cy + 2, 6, 5));
+  face(f, cx, cy, t);
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  if (fx.includes("fight") && lt > .2) for (let i = 0; i < 5; i++) rect(wx - 40 - hash(i + Math.floor(t * 20)) * 20, wy - 14 + i * 8, 14 + hash(i * 3) * 12, 1, PAL.w);
+  return { x: wx, y: wy };
+}
+function aura(wx, wy, t, k) {
+  const fr = Math.floor(t * 16);
+  for (let i = 0; i < 70; i++) {
+    const a = hash(i * 7.1) * Math.PI * 2, r = 1 + hash(i + fr * .37) * .35;
+    const x = wx + Math.cos(a) * 34 * r - 2, y = wy + Math.sin(a) * 22 * r - (hash(i + fr) * 10) - 2;
+    rect(x, y, 2, 2, [PAL.r, PAL.o, PAL.y, PAL.red][i % 4]);
+  }
+}
+
+/* ---------- Efectos ---------- */
+function projectile(kind, lt) {
+  const k = p(lt, 1.02, .38); if (k <= 0 || k >= 1) return;
+  const x = 64 + (122 - 64) * k, y = 160 - 46 * k - Math.sin(k * Math.PI) * 22;
+  g.setTransform(2, 0, 0, 2, Math.round(x), Math.round(y));
+  if (kind === "pdf") { rect(-4, -5, 8, 10, PAL.w); rect(-4, -5, 8, 1, PAL.k); rect(-4, 4, 8, 1, PAL.k); rect(-4, -5, 1, 10, PAL.k); rect(3, -5, 1, 10, PAL.k); rect(-2, -2, 4, 1, PAL.r); rect(-2, 0, 4, 1, PAL.k); rect(-2, 2, 3, 1, PAL.k); }
+  if (kind === "bubble") { rect(-5, -3, 10, 6, PAL.w); rect(-5, -3, 10, 1, PAL.k); rect(-5, 2, 10, 1, PAL.k); rect(-5, -3, 1, 6, PAL.k); rect(4, -3, 1, 6, PAL.k); rect(-3, 0, 1, 1, PAL.k); rect(0, 0, 1, 1, PAL.k); rect(2, 0, 1, 1, PAL.k); }
+  g.setTransform(1, 0, 0, 1, 0, 0);
+}
+function visto(lt, e, from = .6) {
+  if (!e || lt < from) return;
+  g.setTransform(2, 0, 0, 2, e.x + 58, e.y + 34);
+  [[0, 2], [1, 3], [2, 2], [3, 1], [4, 0]].forEach(([a, b]) => { px(a, b, PAL.blue); px(a + 4, b, PAL.blue); });
+  g.setTransform(1, 0, 0, 1, 0, 0);
+}
+function blockIcon(lt, e) {
+  const k = outQ(p(lt, .9, .3)); if (k <= 0) return;
+  const cx = e ? e.x + 28 : 124, cy = e ? e.y + 22 : 114, r = 22 * k;
+  for (let y = -r - 2; y <= r + 2; y++) for (let x = -r - 2; x <= r + 2; x++) {
+    const d = Math.hypot(x, y);
+    if ((d <= r && d >= r - 4) || (Math.abs(x - y) < 3 && d < r)) px(cx + x, cy + y, PAL.red);
+  }
+}
+function bigWave(lt, t) {
+  const k = p(lt, .5, 1.4); if (k <= 0) return;
+  const head = 180 - k * 280;
+  for (let x = 0; x < 180; x += 3) {
+    if (x < head) continue;
+    const h = 6 + Math.abs(Math.sin(x * .55 + t * 14) * Math.cos(x * .13 - t * 5)) * 56;
+    rect(x, 150 - h / 2, 2, h, x % 6 ? PAL.y : PAL.w);
+  }
+}
+function sparks(lt, e) {
+  const k = p(lt, 1.4, .45); if (k <= 0 || k >= 1 || !e) return;
+  for (let i = 0; i < 12; i++) { const a = i / 12 * Math.PI * 2, r = 10 + k * 30; rect(e.x + 28 + Math.cos(a) * r, e.y + 22 + Math.sin(a) * r * .8, 2, 2, i % 2 ? PAL.y : PAL.w); }
+}
+function confetti(lt) {
+  for (let i = 0; i < 44; i++) {
+    const x = (i * 37) % 180, y = ((lt * 60 + i * 23) % 200) - 40, c = [PAL.r, PAL.y, PAL.p, PAL.blue, "#6fd08c"][i % 5];
+    if (y > 0) rect(x + Math.sin(lt * 5 + i) * 3, y, 2, 2, c);
+  }
+}
+/* Nube de pelea de caricatura: bultos que cambian, patitas y esquinas asomando, estrellas */
+function fightCloud(lt, t) {
+  const inK = outQ(p(lt, .55, .15)), out = p(lt, 2.85, .35);
+  if (inK <= 0) return false;
+  const fr = Math.floor(t * 12), cx = 110 + (hash(fr) - .5) * 6, cy = 132 + (hash(fr + 9) - .5) * 5;
+  if (out > 0) {
+    for (let i = 0; i < 8; i++) { const a = i / 8 * Math.PI * 2, r = 20 + out * 40; blob(cx + Math.cos(a) * r, cy + Math.sin(a) * r * .7, 8 * (1 - out) + 1, 6 * (1 - out) + 1, "#f3ead6", "#1a1422"); }
+    return out < 1;
+  }
+  const s = inK;
+  for (let i = 0; i < 9; i++) {
+    const a = i / 9 * Math.PI * 2 + hash(fr * 3 + i) * .6, r = 16 + hash(fr + i * 5) * 8;
+    blob(cx + Math.cos(a) * r * s, cy + Math.sin(a) * r * .75 * s, (13 + hash(i + fr) * 6) * s, (10 + hash(i * 2 + fr) * 5) * s, "#f3ead6", "#1a1422");
+  }
+  blob(cx, cy, 30 * s, 22 * s, "#f3ead6", null);
+  // lo que asoma
+  const pick = fr % 4;
+  if (pick === 0) { blob(cx - 34, cy - 6, 6, 5, PAL.w, PAL.k); blob(cx - 36, cy - 8, 3, 2, PAL.o, null); }
+  if (pick === 1) { rect(cx + 24, cy + 8, 16, 11, PAL.k); rect(cx + 25, cy + 9, 14, 9, PAL.w); }
+  if (pick === 2) { blob(cx + 6, cy - 30, 5, 5, PAL.w, PAL.k); px(cx + 4, cy - 31, PAL.k); px(cx + 8, cy - 31, PAL.k); }
+  if (pick === 3) { rect(cx - 20, cy + 20, 12, 9, PAL.k); rect(cx - 19, cy + 21, 10, 7, PAL.w); blob(cx + 30, cy - 18, 5, 4, PAL.o, PAL.k); }
+  for (let i = 0; i < 4; i++) { const sx = cx + (hash(fr * 7 + i) - .5) * 90, sy = cy + (hash(fr * 11 + i) - .5) * 60; rect(sx - 3, sy, 7, 1, PAL.y); rect(sx, sy - 3, 1, 7, PAL.y); rect(sx - 1, sy - 1, 3, 3, PAL.y); }
+  return true;
+}
+
+/* ---------- Transiciones: bloques y cartel de nivel con silueta ---------- */
+const ORDER = []; { seed = 29; for (let by = 0; by < 32; by++) for (let bx = 0; bx < 18; bx++) { const d = Math.hypot(bx - 8.5, by - 15.5) / 18; ORDER.push({ bx, by, o: clamp(d * .75 + rnd() * .25) }); } }
+const RAY = document.createElement("canvas"); RAY.width = 180; RAY.height = 320; const gr = RAY.getContext("2d");
+const SIL = {};
+function silhouette(kind) {
+  if (SIL[kind]) return SIL[kind];
+  const c = document.createElement("canvas"); c.width = 180; c.height = 320; const ctx = c.getContext("2d");
+  const old = g; g = ctx; g.setTransform(2.6, 0, 0, 2.6, 90 - 14 * 2.6, 110); DRAW[kind](0); g.setTransform(1, 0, 0, 1, 0, 0); g = old;
+  ctx.globalCompositeOperation = "source-in"; ctx.fillStyle = "#1a1422"; ctx.fillRect(0, 0, 180, 320);
+  return (SIL[kind] = c);
+}
+function rays(t, kind) {
+  gr.setTransform(1, 0, 0, 1, 0, 0); gr.fillStyle = "#C8452C"; gr.fillRect(0, 0, 180, 320);
+  gr.fillStyle = "#DE9A5A";
+  const cx = 90, cy = 145, n = 14, rot = t * .35;
+  for (let i = 0; i < n; i++) { const a0 = rot + i / n * Math.PI * 2, a1 = a0 + Math.PI / n; gr.beginPath(); gr.moveTo(cx, cy); gr.lineTo(cx + Math.cos(a0) * 400, cy + Math.sin(a0) * 400); gr.lineTo(cx + Math.cos(a1) * 400, cy + Math.sin(a1) * 400); gr.closePath(); gr.fill(); }
+  gr.fillStyle = "#f2d27a"; gr.beginPath(); gr.arc(cx, cy, 44, 0, Math.PI * 2); gr.fill();
+  const s = silhouette(kind), bob = Math.round(Math.sin(t * 3) * 2);
+  gr.drawImage(s, 0, bob);
+}
+function blocks(kb, t, kind) {
+  gb.clearRect(0, 0, 180, 320);
+  if (kb <= 0 || kb >= 2) return;
+  rays(t, kind);
+  ORDER.forEach((b) => { const on = kb <= 1 ? b.o < kb : b.o >= (kb - 1); if (on) gb.drawImage(RAY, b.bx * 10, b.by * 10, 10, 10, b.bx * 10, b.by * 10, 10, 10); });
+}
+
+/* ======================= RENDER ======================= */
+const faceOf = (st, lt) => typeof st.face === "function" ? st.face(lt) : st.face;
+function stepAt(t) { let i = 0; while (i < STEPS.length - 1 && t >= STEPS[i + 1].t0) i++; return i; }
+function render(t) {
+  const i = stepAt(t), st = STEPS[i], lt = t - st.t0;
+  g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, 180, 320);
+
+  /* Cartel de nivel */
+  let show = st, showLt = lt, cardOn = 0;
+  if (st.card) {
+    const k = lt / st.dur, coverEnd = st.from === "cover" ? .28 : 0, revealStart = st.to === "reveal" ? .74 : 2;
+    const kb = k < coverEnd ? k / coverEnd : k < revealStart ? 1 : 1 + (k - revealStart) / (1 - revealStart);
+    blocks(kb, t, st.card.sil);
+    cardOn = kb >= 1 && kb < 1.02 ? 1 : 0;
+    if (st.to === "hold" && k >= coverEnd) cardOn = 1;
+    const prev = STEPS[i - 1], next = STEPS[i + 1];
+    if (kb < 1 && prev) { show = prev; showLt = prev.dur - .001; } else { show = next || st; showLt = 0; }
+    $("cardT").style.display = st.card.title ? "" : "none";
+    $("cardN").textContent = st.card.n; $("cardW").textContent = st.card.who;
+    const pop = st.from === "open" ? 1 : outQ(p(k, coverEnd, .08));
+    $("cardN").style.transform = `scale(${.6 + .4 * pop})`;
+  } else blocks(0, t, "info");
+  $("card").style.opacity = cardOn;
+
+  SCENES[show.scene](t);
+  const fx = show.fx || [], sl = showLt, face_ = faceOf(show, sl);
+  const e = enemy(show, sl, t);
+  const m = maru(show, sl, t, face_);
+  const live = st.card ? [] : fx;
+  live.forEach((f) => {
+    if (f.startsWith("throw:")) projectile(f.split(":")[1], lt);
+    if (f === "visto") visto(lt, e, i === 5 ? 1.45 : .6);
+    if (f === "block") blockIcon(lt, e);
+    if (f === "bigwave") bigWave(lt, t);
+    if (f === "hit") sparks(lt, e);
+    if (f === "confetti") confetti(lt);
+  });
+  const fighting = live.includes("fight") && fightCloud(lt, t);
+
+  /* Cámara */
+  const zk = live.includes("zoom") ? outQ(p(lt, .35, .4)) : 0, zoom = 1 + 1.2 * zk;
+  let shx = 0, shy = 0;
+  if (live.includes("block") && lt > .9 && lt < 1.5) shx = Math.floor(lt * 30) % 2 ? 8 : -8;
+  if (fighting && lt < 2.85) { shx = (hash(Math.floor(t * 24)) - .5) * 24; shy = (hash(Math.floor(t * 24) + 3) - .5) * 18; }
+  if (live.includes("aura")) shx = Math.floor(t * 30) % 2 ? 3 : -3;
+  $("cam").style.transform = `translate(${shx + 170 * zk}px, ${shy - 120 * zk}px) scale(${zoom})`;
+  $("flash").style.opacity = live.includes("hit") && lt > 1.38 && lt < 1.5 ? .85 : live.includes("fight") && lt > .55 && lt < .62 ? .7 : 0;
+
+  /* Placas */
+  const ename = ENEMIES[show.enemy] || ENEMIES[st.enemy] || ["", ""];
+  $("eName").textContent = ename[0]; $("eLv").textContent = ename[1];
+  let plate = 0;
+  if (show.enemy && !st.card) plate = (fx.includes("enter") ? outQ(p(lt, .9, .3)) : 1) * (fx.includes("leave") ? 1 - p(lt, 1.8, .3) : 1);
+  if (st.card && show === STEPS[i - 1] && show.enemy && !fx.includes("leave")) plate = 1;
+  $("plateE").style.opacity = plate;
+  const hpA = show.hp || [1, 1], hk = st.card ? 1 : fx.includes("fight") ? p(lt, 1.2, 1.4) : outQ(p(lt, 1.45, .5));
+  const hp = hpA[0] + (hpA[1] - hpA[0]) * hk;
+  $("hpE").style.width = hp * 100 + "%";
+  $("hpE").style.background = hp > .5 ? "#6fd08c" : hp > .2 ? "#f2d27a" : "#C8452C";
+  $("plateP").style.opacity = live.includes("cta") ? 0 : 1;
+  $("logoLv").textContent = show.scene === "fuji" ? "Nv.2" : "Nv.1";
+
+  /* Caras en texto y globos */
+  const zOn = face_ === "sleep" && !m.hidden;
+  $("zzz").style.opacity = zOn ? 1 : 0;
+  $("zzz").style.left = (m.x + 8) * 6 + "px"; $("zzz").style.top = (m.y - 40 + Math.round(Math.sin(t * 2) * 2)) * 6 + "px";
+  const xd = $("xd"), xdOn = face_ === "xd" && !m.hidden;
+  xd.style.opacity = xdOn ? 1 : 0;
+  const big = live.includes("xdbig") ? outQ(p(lt, .45, .3)) : 0;
+  xd.style.left = (m.x - 22) * 6 + 26 * big + "px"; xd.style.top = (m.y + 3) * 6 + "px";
+  xd.classList.toggle("big", big > 0);
+  const wob = big > 0 ? Math.sin(t * 28) * 5 : 0;
+  xd.style.transform = `translate(-50%, -50%) scale(${1 + big * 1.5}) rotate(${wob}deg)`;
+  xd.style.textShadow = big > 0 ? "5px 0 0 #FFF6EE, -5px 0 0 #FFF6EE, 0 5px 0 #FFF6EE, 0 -5px 0 #FFF6EE, 8px 9px 0 #1a1422" : "none";
+  $("think").style.opacity = live.includes("think") ? outQ(p(lt, 1.2, .3)) : 0;
+  $("cri").style.opacity = live.includes("cri") ? (Math.floor(lt * 2) % 2 ? 1 : .55) * p(lt, .9, .3) : 0;
+
+  /* Groserías censuradas en la pelea */
+  document.querySelectorAll(".graw").forEach((el, j) => {
+    const fr = Math.floor(t * 7) + j * 3, on = fighting && lt < 2.85 && hash(fr) > .35;
+    el.style.opacity = on ? 1 : 0;
+    el.style.left = (40 + hash(fr + 1) * 500) + "px"; el.style.top = (560 + hash(fr + 2) * 420) + "px";
+    el.style.transform = `rotate(${(hash(fr + 4) - .5) * 40}deg)`;
+  });
+
+  /* Temporizador del audio */
+  const tm = $("timer");
+  tm.textContent = show.timer || "";
+  tm.style.opacity = live.includes("bigwave") ? p(lt, .5, .2) : 0;
+  tm.style.left = "600px"; tm.style.top = "700px";
+
+  /* ¡CRÍTICO! */
+  const c = live.includes("crit") ? p(lt, 1.4, .12) : 0;
+  $("crit").style.opacity = c > 0 && lt < 2.6 ? 1 : 0;
+  $("crit").style.transform = `rotate(-8deg) scale(${c < 1 ? 2 - c : 1 + Math.sin(t * 20) * .03})`;
+
+  /* Lo que dice el cliente */
+  const word = $("word");
+  const w = !st.card && show.word && lt >= show.word[1] ? show.word[0] : "";
+  const label = e && !e.hidden && !e.flat && show.enemy === "info" && !w;
+  word.textContent = w || (label ? "info" : "");
+  word.className = "abs" + (w ? " bub" : "");
+  word.style.opacity = e && !e.hidden && word.textContent ? 1 : 0;
+  if (e) {
+    const pop = w ? outQ(p(lt, show.word[1], .15)) : 1;
+    word.style.transform = `scale(${w ? .5 + .5 * pop : 1})`;
+    word.style.left = (e.x + 28) * 6 - word.offsetWidth / 2 + "px";
+    word.style.top = (w ? (e.flat ? e.y + 8 : e.y - 16) : e.y + 1) * 6 + "px";
+  }
+
+  /* Muro de la transcripción */
+  $("wall").style.opacity = live.includes("wall") ? outQ(p(lt, 1.0, .3)) : live.includes("wallShrink") ? 1 - p(lt, 2.2, .3) : 0;
+  $("wall").innerHTML = live.includes("wallShrink") && lt > .9
+    ? "…mire le cuento… mi prima… en Surco… no tenía saldo… <em>¿cuánto el corte?</em>"
+    : "«hola buenas mire le cuento que mi prima la que vive en Surco me dijo que ustedes atienden bien y justo el otro día pasaba por ahí y dije voy a preguntar pero no tenía saldo y entonces mi hermano me prestó el celular y le digo mire ¿cuánto el corte?»";
+
+  /* Cierre */
+  const cta = live.includes("cta") ? outQ(p(lt, .3, .25)) : 0;
+  $("cta").style.opacity = cta;
+  $("cta").style.transform = `scale(${.94 + .06 * cta})`;
+  $("cta").querySelector(".opt").style.visibility = cta && Math.floor(lt * 3) % 3 === 2 ? "hidden" : "visible";
+
+  /* Diálogo */
+  $("textbox").style.opacity = st.card ? 0 : 1;
+  const txt = st.card ? "" : st.text || "";
+  const n = Math.floor(Math.max(0, lt - .15) * 24);
+  $("txt").textContent = txt.slice(0, n);
+  $("cur").style.opacity = txt && n >= txt.length && Math.floor(t * 3) % 2 === 0 ? 1 : 0;
+}
+
+/* ======================= SONIDO ======================= */
+function sfxTimeline() {
+  const list = [];
+  STEPS.forEach((s) => {
+    if (s.sfx === "fight") {
+      [.2, .28, .36, .44].forEach((a, k) => list.push({ n: "R/footstep0" + k, t: s.t0 + a, v: .7 }));
+      for (let a = .6, k = 0; a < 2.85; a += .09 + hash(k) * .08, k++) list.push({ n: HITS[Math.floor(hash(k * 3.3) * HITS.length)], t: s.t0 + a, v: .55 + hash(k * 1.7) * .4 });
+      list.push({ n: "I/drop_002", t: s.t0 + 2.9, v: .8 });
+    } else if (s.sfx === "wave") {
+      for (let a = .5, k = 1; a < 2.5; a += .2, k++) list.push({ n: "D/spaceTrash" + ((k % 5) + 1), t: s.t0 + a, v: .35 });
+      list.push({ n: "D/phaseJump3", t: s.t0 + 1.9, v: .7 });
+    } else (s.sfx || []).forEach(([n, at, v = 1]) => list.push({ n, t: s.t0 + at, v }));
+    if (s.text && !s.card) for (let c = 0; c < s.text.length; c += 2) if (s.text[c] !== " ") list.push({ n: "I/tick_002", t: s.t0 + .15 + c / 24, v: .12 });
+  });
+  return list.filter((x) => x.t < DURATION);
+}
+const DIRS = { D: "kenney_digital-audio", I: "kenney_interface-sounds", R: "kenney_rpg-audio" };
+window.__mix = async (base = "/videos/03-tipos-de-clientes/sonidos/") => {
+  const SR = 48000, oc = new OfflineAudioContext(2, Math.ceil(DURATION * SR), SR);
+  const list = sfxTimeline(), bufs = {};
+  await Promise.all([...new Set(list.map((x) => x.n))].filter((n) => n !== "crickets").map(async (n) => {
+    const [d, f] = n.split("/");
+    const r = await fetch(`${base}${DIRS[d]}/Audio/${f}.ogg`);
+    if (!r.ok) throw new Error("falta " + n);
+    bufs[n] = await oc.decodeAudioData(await r.arrayBuffer());
+  }));
+  const bus = oc.createGain(); bus.gain.value = .9;
+  const comp = oc.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 4;
+  bus.connect(comp).connect(oc.destination);
+  list.forEach(({ n, t, v }, k) => {
+    const gn = oc.createGain(); gn.gain.value = v;
+    const pan = oc.createStereoPanner(); pan.pan.value = n === "I/tick_002" ? 0 : (hash(k) - .5) * .5;
+    gn.connect(pan).connect(bus);
+    if (n === "crickets") {
+      // Grillo: trenes de pulsos agudos, dos grillos desfasados
+      [[4400, 0], [4750, .23]].forEach(([f, off]) => {
+        const o = oc.createOscillator(); o.frequency.value = f; const a = oc.createGain(); a.gain.value = 0; o.connect(a).connect(gn);
+        for (let c = 0; c < 3; c++) for (let q = 0; q < 3; q++) { const s0 = t + off + c * .5 + q * .045; a.gain.setValueAtTime(0, s0); a.gain.linearRampToValueAtTime(.16 * v, s0 + .008); a.gain.linearRampToValueAtTime(0, s0 + .03); }
+        o.start(t + off); o.stop(t + off + 1.6);
+      });
+      return;
+    }
+    const src = oc.createBufferSource(); src.buffer = bufs[n]; src.connect(gn); src.start(t);
+  });
+  const out = await oc.startRendering();
+  let peak = 0; for (let c = 0; c < 2; c++) { const d = out.getChannelData(c); for (let j = 0; j < d.length; j++) peak = Math.max(peak, Math.abs(d[j])); }
+  const norm = peak > 0 ? .89 / peak : 1;
+  const len = out.length, bytes = new DataView(new ArrayBuffer(44 + len * 4));
+  const W = (o, s) => [...s].forEach((ch, j) => bytes.setUint8(o + j, ch.charCodeAt(0)));
+  W(0, "RIFF"); bytes.setUint32(4, 36 + len * 4, true); W(8, "WAVE"); W(12, "fmt "); bytes.setUint32(16, 16, true); bytes.setUint16(20, 1, true); bytes.setUint16(22, 2, true);
+  bytes.setUint32(24, SR, true); bytes.setUint32(28, SR * 4, true); bytes.setUint16(32, 4, true); bytes.setUint16(34, 16, true); W(36, "data"); bytes.setUint32(40, len * 4, true);
+  const L = out.getChannelData(0), R = out.getChannelData(1);
+  for (let j = 0; j < len; j++) { bytes.setInt16(44 + j * 4, clamp(L[j] * norm, -1, 1) * 32767, true); bytes.setInt16(46 + j * 4, clamp(R[j] * norm, -1, 1) * 32767, true); }
+  window.__wav = new Uint8Array(bytes.buffer);
+  return { bytes: window.__wav.length, sounds: list.length };
+};
+window.__wavChunk = (i, size = 300000) => { let s = ""; const a = window.__wav.subarray(i * size, (i + 1) * size); for (let j = 0; j < a.length; j++) s += String.fromCharCode(a[j]); return btoa(s); };
+
+/* ---------- Reproductor ---------- */
+const REC = new URLSearchParams(location.search).has("rec");
+if (REC) document.body.classList.add("rec");
+function fit() { if (REC) return; const vp = $("viewport").getBoundingClientRect(); const s = Math.min(vp.width / 1080, vp.height / 1920) * .96; $("stage").style.transform = `translate(${-540 * s}px, ${-960 * s}px) scale(${s})`; }
+addEventListener("resize", fit);
+$("scrub").max = DURATION;
+let playing = !REC, t0 = performance.now(), now = 0;
+function show(t) { now = t; render(t); $("scrub").value = t; $("time").textContent = t.toFixed(2) + " / " + DURATION.toFixed(1) + " s"; }
+function loop(ts) { if (playing) { let t = (ts - t0) / 1000; if (t >= DURATION) { t0 = ts; t = 0; } show(t); } requestAnimationFrame(loop); }
+$("play").onclick = () => { playing = !playing; $("play").textContent = playing ? "Pausa" : "Reproducir"; t0 = performance.now() - now * 1000; };
+$("scrub").oninput = () => { playing = false; $("play").textContent = "Reproducir"; show(+$("scrub").value); };
+window.__seek = (t) => show(t);
+window.__duration = DURATION;
+window.__ready = document.fonts.load("52px DotGothic16").then(() => document.fonts.ready).then(() => { fit(); show(0); return true; });
+window.__ready.then(() => { t0 = performance.now(); requestAnimationFrame(loop); });
+</script>
+</body>
+</html>
