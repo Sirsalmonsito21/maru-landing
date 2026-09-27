@@ -1,0 +1,205 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "DotGothic16"; src: url("assets/fonts/DotGothic16-Regular.ttf"); }
+        #root { position: absolute; inset: 0; overflow: hidden; background: #0b0f1a; font-family: "DotGothic16", monospace; color: #fff6ee; }
+        #h-cam { position: absolute; inset: 0; transform-origin: 540px 1200px; }
+        #h-px { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; image-rendering: pixelated; }
+        .ol { text-shadow: 5px 0 0 #1a1422, -5px 0 0 #1a1422, 0 5px 0 #1a1422, 0 -5px 0 #1a1422, 5px 5px 0 #1a1422, -5px 5px 0 #1a1422, 5px -5px 0 #1a1422, -5px -5px 0 #1a1422, 7px 9px 0 #1a1422; }
+        #h-sign { position: absolute; left: 716px; top: 948px; width: 214px; height: 92px; display: grid; place-items: center; background: #f0e6d0; border: 6px solid #2a1810; color: #b3261e; font-size: 40px; box-shadow: 0 10px 0 #1a100a; opacity: 0; }
+        #h-sign.on { color: #1f7a3a; }
+        #h-hey { position: absolute; left: 590px; top: 880px; font-size: 130px; color: #f2d27a; opacity: 0; }
+        #h-dots { position: absolute; left: 600px; top: 900px; font-size: 90px; color: #fff6ee; opacity: 0; }
+        #h-2x1 { position: absolute; left: 8px; top: 900px; width: 140px; display: flex; flex-direction: column; align-items: center; font-size: 76px; line-height: .92; color: #ffe0ee; opacity: 0;
+          text-shadow: 0 0 10px #ff4f9a, 0 0 26px #ff4f9a, 0 0 50px #ff2f7a; }
+        #h-cal { position: absolute; left: 70px; top: 200px; width: 300px; border-radius: 14px; overflow: hidden; background: #fff6ee; color: #1a1422; box-shadow: 0 12px 0 #1a1422; opacity: 0; }
+        #h-cal .hd { background: #C8452C; color: #fff6ee; font-size: 34px; padding: 8px 0; text-align: center; }
+        #h-cal .m { font-size: 84px; text-align: center; padding: 10px 0 0; }
+        #h-cal .y { font-size: 38px; text-align: center; padding: 0 0 14px; color: #5a4a50; }
+        #h-flash { position: absolute; inset: 0; background: #fff6ee; opacity: 0; }
+        #h-cami { position: absolute; left: 150px; top: 1060px; font-size: 110px; opacity: 0; }
+        .h-bub { position: absolute; left: 90px; right: 150px; top: 1340px; padding: 22px 28px; background: #fff6ee; color: #1a1422; font-size: 56px; line-height: 1.15; text-align: center; border: 6px solid #1a1422; border-radius: 26px; opacity: 0; }
+        .h-bub::after { content: ""; position: absolute; left: 50%; top: -34px; margin-left: -20px; border: 17px solid transparent; border-bottom-color: #1a1422; }
+        #h-card { position: absolute; left: 80px; right: 150px; top: 160px; padding: 24px 32px; border-radius: 28px; background: rgba(18,14,32,.94); border: 4px solid #f2d27a; box-shadow: 0 0 60px rgba(242,210,122,.35); opacity: 0; }
+        #h-card .t { display: flex; align-items: center; gap: 18px; font-size: 40px; color: #f2d27a; }
+        #h-card .t img { width: 64px; height: 64px; border-radius: 10px; }
+        .h-row { display: flex; justify-content: space-between; margin-top: 14px; padding-top: 12px; border-top: 3px dashed #3a2f55; font-size: 46px; opacity: 0; }
+        .h-row b { font-weight: 400; color: #f2d27a; }
+        #h-found { margin-top: 22px; text-align: right; font-size: 50px; color: #fff2a8; opacity: 0; }
+        #h-dark { position: absolute; inset: 0; background: #05070c; opacity: 0; }
+      </style>
+
+      <div id="root" data-composition-id="historia" data-width="1080" data-height="1920" data-duration="19.8">
+        <div id="h-cam" data-layout-allow-overflow><canvas id="h-px" width="270" height="480" data-layout-allow-overflow></canvas></div>
+        <div id="h-sign"><span id="h-signt">CERRADO</span></div>
+        <div class="ol" id="h-hey">!</div>
+        <div class="ol" id="h-dots">…</div>
+        <div id="h-2x1"><span>2</span><span>x</span><span>1</span></div>
+        <div id="h-cal"><div class="hd">CALENDARIO</div><div class="m" id="h-calm">OCT</div><div class="y" id="h-caly">2025</div></div>
+        <div id="h-cami">📸</div>
+        <div class="h-bub" id="h-b1">¿Otra vez esperando? 😼</div>
+        <div class="h-bub" id="h-b2">No los esperes. Llámalos.</div>
+        <div id="h-card">
+          <div class="t"><img src="assets/img/sello-maru.png" alt="" />Buscando clientes que te extrañan…</div>
+          <div class="h-row" id="h-r1"><span>Carla</span><b>63 días</b></div>
+          <div class="h-row" id="h-r2"><span>Jorge</span><b>90 días</b></div>
+          <div class="h-row" id="h-r3"><span>Lucía</span><b>120 días</b></div>
+          <div id="h-found">→ 142 encontrados</div>
+        </div>
+        <div id="h-dark"></div>
+        <div id="h-flash"></div>
+      </div>
+
+      <script>
+        (function () {
+        /*__ENGINE__*/
+        var OFF = 2.333, B0 = 0.133, BT = 0.55;
+        var cv = document.getElementById("h-px"), ctx = cv.getContext("2d"), cam = document.getElementById("h-cam");
+        var io = function (k) { return k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2; };
+        var SEASONS = ["autumn", "autumn", "snow", "snow", "sakura", "sakura", "rain", "rain"];
+        function counterScene(T) {
+          // interior del puesto: pared, ventana a la calle con la estatua, mostrador
+          gradient(["#1c1218", "#2a1a16", "#24160f"], 0, PH);
+          rect(20, 50, 230, 190, "#1a1424"); gradient(["#0b0e20", "#171a38"], 54, 236, 24, 246);
+          for (var i = 0; i < 6; i++) { var bx = 24 + i * 38, bh = 60 + hash(i + 40) * 90; rect(bx, 236 - bh, 34, bh, "#10122a"); for (var r = 0; r < bh / 12; r++) if (hash(i * 9 + r) > .5) rect(bx + 6, 236 - bh + 6 + r * 12, 5, 5, "#c9a45a"); }
+          g.save(); g.globalAlpha = .6; rect(24, 222, 222, 14, "#1a1a2a"); g.restore();
+          tanuki(196, 232, .95, { beard: 1, age: 1, cane: true, hunch: 1, stone: 1 }, T);
+          pigeon(197, 173, 1.1, false, T);
+          if (T >= 19.383 && T < 20.4) { var tk = pk(T, 19.383, .9); px(193, 188 + tk * 26, "#8fd0ff"); px(193, 189 + tk * 26, "#bfe8ff"); }
+          for (var d = 0; d < 40; d++) { var dx = 24 + hash(d) * 222, dy = 54 + ((hash(d + 9) * 182 + T * 160) % 182); rect(dx, dy, 1, 3, "rgba(170,190,255,.4)"); }
+          rect(16, 46, 238, 4, "#3a2418"); rect(16, 240, 238, 6, "#3a2418"); rect(133, 50, 4, 190, "#3a2418");
+          // tablillas de menú
+          for (var m = 0; m < 6; m++) { rect(22 + m * 40, 256, 30, 52, "#d8c49a"); rect(22 + m * 40, 256, 30, 3, "#8a6a3a"); rect(33 + m * 40, 264, 8, 2, "#2a1a14"); rect(36 + m * 40, 262, 2, 30, "#2a1a14"); rect(32 + m * 40, 280, 10, 2, "#C8452C"); }
+          // lámpara cálida
+          g.save(); g.globalAlpha = .18; tri(135, 0, 20, 340, 250, 340, "#ffd98a"); g.restore();
+          // mostrador
+          rect(0, 330, PW, 150, "#5a3a22"); rect(0, 330, PW, 6, "#8a5a34"); rect(0, 336, PW, 2, "#3a2414");
+          for (var w = 0; w < 7; w++) rect(0, 350 + w * 18, PW, 1, "#4a2e1a");
+          ramenBowl(48, 344, 1.3, 0, .9, T);
+        }
+        function draw(t) {
+          var T = t + OFF;
+          setCtx(ctx); g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, PW, PH);
+          var camT = "none";
+          if (T < 6.733) {
+            // a) APERTURA — grúa bajando
+            var oy = 300 * (1 - io(pk(T, 2.333, 2.2)));
+            var lan = pk(T, 5.083, .15), pres = T >= 5.633;
+            ramenStreet(T, { oy: oy, lantern: lan });
+            g.setTransform(1, 0, 0, 1, 0, Math.round(oy));
+            var flip = T >= 4.4 && T < 5.1;
+            tanuki(135, 400, 2.4, { eyes: pres ? "happy" : "normal", mouth: pres ? "big" : "smile", arm: pres ? "present" : flip ? "up" : "down", armK: flip ? Math.sin(pk(T, 4.4, .7) * Math.PI) : 1 }, T);
+            if (pres) { ramenBowl(160, 340, 1.4, 1, 0, T); for (var s = 0; s < 3; s++) { var sp = (T * 1.4 + s * .33) % 1; star4(110 + s * 30, 300 - sp * 20, 2, sp < .5 ? "#fff2a8" : "#f2d27a"); } }
+            g.setTransform(1, 0, 0, 1, 0, 0);
+            weather(T, "rain");
+            if (pres) camT = "scale(" + (1 + .05 * io(pk(T, 5.633, 1.1))) + ")";
+          } else if (T < 11.133) {
+            // b) NADIE ENTRA
+            var neon = T >= 10.033 ? ((Math.floor((T - 10.033) * 14) % 3 === 1 && T < 10.4) ? 0 : 1) : 0;
+            ramenStreet(T, { lantern: 1, neon2x1: neon });
+            var cx = T < 8.933 ? lerp(310, 196, outQ(pk(T, 8.383, .55))) : T < 10.2 ? 196 : lerp(196, -40, pk(T, 10.2, .85));
+            var waving = T >= 8.933 && T < 11.133, lower = pk(T, 10.6, .5);
+            var sad = T >= 10.2;
+            tanuki(135, 400, 2.4, { eyes: sad ? "sad" : T >= 8.933 ? "wide" : "hopeful", mouth: sad ? "sad" : T >= 8.933 ? "big" : "smile",
+              arm: waving ? "wave" : "present", armK: waving ? 1 - lower : 1 }, T);
+            if (!waving) ramenBowl(160, 340, 1.4, 1, 0, T); else ramenBowl(176, 372, 1.2, 1 - pk(T, 10.3, .7), 0, T);
+            if (waving) rect(162, 380, 30, 20, "#4a3020");
+            walker(lerp(310, -40, pk(T, 6.733, 1.5)), 432, 2.1, { umbrella: "#4a5468", coat: "#2a3348", phone: 1, dir: -1, seed: 1 }, T);
+            walker(lerp(-40, 310, pk(T, 7.1, 1.5)), 426, 2.0, { umbrella: "#2a6a8a", coat: "#3a2a3a", phone: 1, dir: 1, seed: 2, hair: "#5a3a2a" }, T);
+            if (T >= 8.383) walker(cx, 428, 2.2, { umbrella: "#C8452C", coat: "#d8c49a", bob: 1, phone: T >= 9.483, dir: -1, still: T >= 8.933 && T < 10.2, seed: 3 }, T);
+            weather(T, "rain");
+            if (T >= 8.933 && T < 10.2) camT = "scale(" + (1.04 + .04 * Math.exp(-(T - 8.933) * 8)) + ")";
+            if (T >= 10.033 && T < 10.2) camT = "translate(" + (hash(Math.floor(T * 40)) - .5) * 10 + "px,0)";
+          } else if (T < 15.533) {
+            // c) TIMELAPSE
+            var L = T - 11.133, si = Math.min(7, Math.floor(L / BT)), p = (L / 1.1) % 1;
+            var age = pk(T, 11.133, 4.4), sea = SEASONS[si];
+            ramenStreet(T * 3, { lantern: 1 - age * .5, day: Math.max(0, Math.sin(p * Math.PI)) * .9, sunA: p * Math.PI, dust: age, snow: sea === "snow" });
+            for (var z = 0; z < 5; z++) { var zt = (L * 1.9 + z * .21) % 1; g.save(); g.globalAlpha = .35; walker(z % 2 ? lerp(-40, 310, zt) : lerp(310, -40, zt), 430, 2.1, { umbrella: ["#4a5468", "#2a6a8a", "#6a4a8a", "#3a3a3a", "#8a6a2a"][z], phone: 1, dir: z % 2 ? 1 : -1, seed: z }, T * 2); g.restore(); }
+            rect(162, 380, 30, 20, "#4a3020"); ramenBowl(176, 372, 1.2, 0, age, T);
+            tanuki(135, 400, 2.4, { eyes: age > .5 ? "old" : "sad", mouth: "sad", beard: age, age: age, cane: age > .55, hunch: pk(T, 12.8, 1.5) }, T);
+            if (T > 14.55 && T < 15.45) { var tw = pk(T, 14.55, .9), twx = lerp(300, -30, tw), twy = 392 - Math.abs(Math.sin(tw * 9)) * 10; blob(twx, twy, 9, 9, null, "#a0784a"); for (var q = 0; q < 6; q++) { var a2 = q + tw * 20; line(twx, twy, twx + Math.cos(a2) * 8, twy + Math.sin(a2) * 8, "#8a6038", 1); } }
+            weather(T, sea);
+            camT = "scale(" + (1 + .07 * pk(T, 11.133, 4.4)) + ")";
+          } else if (T < 17.733) {
+            // d) ESTATUA
+            ramenStreet(T, { lantern: .45, dust: 1 });
+            rect(162, 380, 30, 20, "#4a3020"); ramenBowl(176, 372, 1.2, 0, 1, T);
+            var o = { eyes: "old", mouth: "sad", beard: 1, age: 1, cane: true, hunch: 1 };
+            var pet = pk(T, 15.533, .55), thr = lerp(410, 250, pet);
+            tanuki(135, 400, 2.4, o, T);
+            g.save(); g.beginPath(); g.rect(0, thr, PW, PH); g.clip();
+            tanuki(135, 400, 2.4, { beard: 1, age: 1, cane: true, hunch: 1, stone: 1, cracks: 0 }, T); g.restore();
+            if (pet > 0 && pet < 1) rect(90, thr, 100, 2, "#dfe6ff");
+            var pg = pk(T, 16.083, .45);
+            if (T >= 16.083) pigeon(lerp(-10, 139, outQ(pg)), lerp(120, 274, outQ(pg)), 3, pg < 1, T);
+            if (T >= 16.633) { var tx = T < 16.95 ? lerp(-40, 62, pk(T, 16.633, .32)) : T < 17.4 ? 62 : lerp(62, -40, pk(T, 17.4, .33));
+              walker(tx, 432, 2.1, { umbrella: "#9fd8ff", coat: "#e8c04a", dir: T < 17.4 ? 1 : -1, still: T >= 16.95 && T < 17.4, seed: 5, hair: "#3a2a1a" }, T);
+              if (T >= 16.95 && T < 17.4) { rect(tx + 6, 360, 8, 6, "#1a1a22"); rect(tx + 8, 361, 3, 3, "#9fd8ff"); } }
+            weather(T, "rain");
+            camT = "scale(" + (1.07 + .08 * io(pk(T, 15.533, 2.2))) + ")";
+          } else if (T < 21.583) {
+            // e) MARU DESPIERTA
+            counterScene(T);
+            var awake = T >= 18.833, dust = 1 - pk(T, 18.833, .3);
+            if (T >= 18.0 && T < 18.283) { var dk = pk(T, 18.0, .283); blob(135, lerp(-10, 176, dk * dk), 2, 3, "#9fd8ff", "#4a7ab0"); }
+            if (T >= 18.283 && T < 18.7) for (var sp2 = 0; sp2 < 8; sp2++) { var sk = pk(T, 18.283, .4); px(135 + Math.cos(sp2 * .8 + 3.5) * sk * 18, 178 - Math.sin(sp2 * .8 + .2) * sk * 14 + sk * sk * 10, "#bfe8ff"); }
+            var shake = T >= 18.833 && T < 19.1 ? Math.sin(T * 90) * 2 : 0;
+            maneki(135 + shake, 334, 3.2, { paw: T >= 20.483 ? outQ(pk(T, 20.483, .2)) : 0, awake: awake, dust: dust, glow: awake ? .35 + .25 * Math.sin(T * 6) : 0, tremble: T >= 20.483 }, T);
+            if (T >= 18.833 && T < 19.4) for (var dp = 0; dp < 40; dp++) { var dk2 = pk(T, 18.833, .55); g.save(); g.globalAlpha = 1 - dk2; px(135 + (hash(dp) - .5) * 90 * (1 + dk2 * 2), 250 + (hash(dp + 3) - .5) * 110 + dk2 * 30, "#a89e8c"); g.restore(); }
+            camT = "scale(" + (1 + .08 * io(pk(T, 17.733, 3.8))) + ")";
+          } else {
+            pawShot(T, false);
+          }
+          cam.style.transform = camT;
+        }
+
+        var tl = gsap.timeline({ paused: true });
+        var clock = { t: 0 };
+        tl.to(clock, { t: 19.8, duration: 19.8, ease: "none", onUpdate: function () { draw(clock.t); } }, 0);
+        var at = function (T) { return T - OFF; };
+        var pop = function (sel, T, out) { tl.fromTo(sel, { opacity: 0, scale: .4 }, { opacity: 1, scale: 1, duration: .22, ease: "back.out(2.5)" }, at(T)); if (out) tl.to(sel, { opacity: 0, duration: .15 }, at(out)); };
+        // cartel ABIERTO
+        tl.fromTo("#h-sign", { opacity: 0 }, { opacity: 1, duration: .3, ease: "none" }, at(3.9));
+        tl.to("#h-sign", { scaleY: 0, duration: .09, ease: "power2.in" }, at(4.533));
+        tl.set("#h-signt", { textContent: "ABIERTO" }, at(4.623)); tl.set("#h-sign", { className: "on" }, at(4.623));
+        tl.to("#h-sign", { scaleY: 1, duration: .16, ease: "back.out(3)" }, at(4.623));
+        tl.to("#h-sign", { opacity: 0, duration: .2 }, at(11.0));
+        // Carla
+        pop("#h-hey", 8.933, 10.1);
+        tl.set("#h-2x1", { opacity: 0 }, 0);
+        [0, 1, 1, 0, 1, 0, 1].forEach(function (v, i) { tl.set("#h-2x1", { opacity: v }, at(10.033 + i * .06)); });
+        tl.to("#h-2x1", { opacity: 0, duration: .2 }, at(11.0));
+        pop("#h-dots", 10.75, 11.1);
+        // timelapse: calendario
+        var MON = [["OCT", "2025"], ["NOV", "2025"], ["DIC", "2025"], ["ENE", "2026"], ["MAR", "2026"], ["ABR", "2026"], ["JUN", "2026"], ["JUL", "2026"]];
+        tl.fromTo("#h-cal", { opacity: 0, y: -40 }, { opacity: 1, y: 0, duration: .2, ease: "back.out(2)" }, at(11.133));
+        MON.forEach(function (m, i) {
+          var T = 11.133 + i * BT;
+          tl.set("#h-calm", { textContent: m[0] }, at(T)); tl.set("#h-caly", { textContent: m[1] }, at(T));
+          tl.fromTo("#h-cal", { rotation: i % 2 ? 4 : -4 }, { rotation: 0, duration: .2, ease: "expo.out", immediateRender: false }, at(T));
+        });
+        tl.to("#h-cal", { opacity: 0, duration: .15 }, at(15.45));
+        // turista
+        tl.set("#h-flash", { opacity: 0 }, 0);
+        tl.fromTo("#h-flash", { opacity: .85 }, { opacity: 0, duration: .25, ease: "none", immediateRender: false }, at(17.183));
+        pop("#h-cami", 17.183, 17.5);
+        // Maru despierta
+        tl.fromTo("#h-flash", { opacity: .25 }, { opacity: 0, duration: .15, ease: "none", immediateRender: false }, at(18.833));
+        pop("#h-b1", 19.383, 19.9);
+        pop("#h-b2", 19.933, 20.45);
+        tl.fromTo("#h-card", { opacity: 0, y: -50 }, { opacity: 1, y: 0, duration: .25, ease: "back.out(1.8)" }, at(20.483));
+        ["#h-r1", "#h-r2", "#h-r3"].forEach(function (id, i) { tl.fromTo(id, { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: .2, ease: "expo.out" }, at(20.483 + i * BT)); });
+        tl.fromTo("#h-found", { opacity: 0, scale: .6 }, { opacity: 1, scale: 1, duration: .22, ease: "back.out(2.5)" }, at(21.583));
+        tl.to("#h-card", { opacity: 0, y: -20, duration: .12 }, at(22.0));
+        tl.set("#h-dark", { opacity: 0 }, 0);
+        draw(0);
+        window.__timelines["historia"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>
