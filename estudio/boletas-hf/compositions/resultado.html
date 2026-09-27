@@ -9,6 +9,7 @@
         @font-face { font-family: "Zen Kaku Gothic New"; font-weight: 900; src: url("assets/fonts/ZenKakuGothicNew-Black.ttf"); }
         @font-face { font-family: "Shippori Mincho"; font-weight: 800; src: url("assets/fonts/ShipporiMincho-ExtraBold.ttf"); }
         @font-face { font-family: "Tenor Sans"; src: url("assets/fonts/TenorSans-Regular.ttf"); }
+        @font-face { font-family: "Montserrat"; font-weight: 900; src: url("assets/fonts/Montserrat-Black.ttf"); }
         #root { position: absolute; inset: 0; overflow: hidden; background: #111726; color: #F4F1EA; font-family: "Zen Kaku Gothic New", sans-serif; }
         .fill { position: absolute; inset: 0; }
         .noche { background: radial-gradient(90% 60% at 50% 45%, #18203a 0%, #111726 55%, #0B0F1A 100%); }
@@ -35,7 +36,7 @@
         .bub { max-width: 380px; padding: 16px 20px; border-radius: 24px; font-size: 26px; font-weight: 700; line-height: 1.3; }
         .bub.out { align-self: flex-end; background: #2b7fd8; border-bottom-right-radius: 6px; }
         .bub.in { align-self: flex-start; background: #242d40; border-bottom-left-radius: 6px; }
-        .bub .tk { font-size: 20px; color: #bfe0ff; margin-left: 10px; }
+        .bub .tk { font-size: 20px; color: #e6f2ff; margin-left: 10px; }
         .chat .in-bar { height: 110px; padding: 20px 20px 30px; display: flex; gap: 14px; align-items: center; }
         .chat .in-bar div { flex: 1; height: 60px; border-radius: 30px; background: #1f2738; font-size: 24px; color: #6d7890; padding: 0 24px; display: flex; align-items: center; }
         .chat .in-bar i { width: 60px; height: 60px; border-radius: 50%; background: #2b7fd8; display: grid; place-items: center; font-style: normal; font-size: 28px; }
@@ -53,22 +54,44 @@
           linear-gradient(#2a2522 0 0) 0 0 / 26px 26px no-repeat, linear-gradient(#2a2522 0 0) 100% 0 / 26px 26px no-repeat, linear-gradient(#2a2522 0 0) 0 100% / 26px 26px no-repeat; }
 
 
-        #r-stack { position: absolute; left: 70px; right: 130px; top: 560px; display: grid; gap: 8px; justify-items: center; }
-        #r-stack div { font-weight: 900; line-height: .98; letter-spacing: -.02em; color: #F3EDE2; white-space: nowrap; }
-        #r-sun { left: 290px; top: 620px; width: 500px; height: 500px; filter: blur(40px); opacity: .35; }
+        #r-t { position: absolute; left: 70px; right: 130px; top: 200px; text-align: center; }
+        #r-t div { font-family: "Montserrat", sans-serif; font-weight: 900; line-height: 1.08; white-space: nowrap; letter-spacing: -.03em; text-transform: uppercase; }
+        #r-lap { position: absolute; left: 60px; top: 720px; width: 700px; }
+        #r-lap .sc { height: 430px; border-radius: 18px 18px 4px 4px; border: 12px solid #0a0d14; background: #151c2c; overflow: hidden; position: relative; box-shadow: 0 0 0 2px #3a4152; }
+        #r-lap .bs { height: 22px; margin: 0 -40px; border-radius: 3px 3px 18px 18px; background: linear-gradient(#c9ccd3, #7f848d); }
+        #r-ph { position: absolute; left: 640px; top: 820px; width: 250px; height: 500px; border-radius: 40px; background: #07090f; padding: 10px; box-shadow: 0 0 0 2px #3a4152, 0 30px 60px rgba(0,0,0,.5); }
+        #r-ph .sc { width: 100%; height: 100%; border-radius: 32px; background: #151c2c; overflow: hidden; position: relative; }
+        .mini { position: absolute; border-radius: 10px; background: rgba(255,255,255,.06); }
+        .mini b { position: absolute; left: 10px; top: 8px; font-size: 13px; color: #D7B98C; letter-spacing: .1em; }
+        .mini em { position: absolute; left: 10px; bottom: 8px; font-style: normal; font-weight: 900; font-size: 30px; color: #F4F1EA; }
+        #r-url { position: absolute; left: 60px; top: 1200px; padding: 12px 22px; border-radius: 30px; background: rgba(215,185,140,.14); border: 1px solid rgba(215,185,140,.45); font-size: 30px; font-weight: 700; color: #F3DDB0; }
       </style>
       <div id="root" data-composition-id="resultado" data-width="1080" data-height="1920" data-duration="2">
 
-        <div class="fill noche"></div><div class="hinomaru" id="r-sun"></div><div class="washi"></div>
-        <div id="r-stack"><div id="r-l1" style="font-size:150px">CERO EXCEL.</div><div id="r-l2" style="font-size:170px">CERO CAJA</div><div id="r-l3" style="font-size:136px;color:#C8452C">DE BOLETAS.</div></div>
+        <div class="fill noche"></div><div class="washi"></div>
+        <div id="r-t"><div style="font-size:92px;color:#F3EDE2">TU DASHBOARD</div><div style="font-size:82px;color:#C8452C">EN TU CELULAR</div><div style="font-size:82px;color:#F3EDE2">Y EN TU COMPU</div></div>
+        <div id="r-lap"><div class="sc">
+          <div class="mini" style="left:18px;top:18px;width:300px;height:110px"><b>TOTAL DEL MES</b><em>S/ 8,420</em></div>
+          <div class="mini" style="left:336px;top:18px;width:318px;height:110px"><b>IGV</b><em>S/ 1,284</em></div>
+          <svg viewBox="0 0 200 200" style="position:absolute;left:30px;top:150px;width:230px;height:230px"><circle cx="100" cy="100" r="70" fill="none" stroke="#C8452C" stroke-width="30" stroke-dasharray="180 440" transform="rotate(-90 100 100)"/><circle cx="100" cy="100" r="70" fill="none" stroke="#D7B98C" stroke-width="30" stroke-dasharray="94 440" stroke-dashoffset="-182" transform="rotate(-90 100 100)"/><circle cx="100" cy="100" r="70" fill="none" stroke="#F3EDE2" stroke-width="30" stroke-dasharray="66 440" stroke-dashoffset="-278" transform="rotate(-90 100 100)"/><circle cx="100" cy="100" r="70" fill="none" stroke="#8a7f78" stroke-width="30" stroke-dasharray="98 440" stroke-dashoffset="-346" transform="rotate(-90 100 100)"/></svg>
+          <div style="position:absolute;left:300px;right:20px;bottom:24px;height:210px;display:flex;align-items:flex-end;gap:16px"><i style="flex:1;height:80%;border-radius:8px 8px 2px 2px;background:linear-gradient(#e0674f,#C8452C)"></i><i style="flex:1;height:95%;border-radius:8px 8px 2px 2px;background:linear-gradient(#e0674f,#C8452C)"></i><i style="flex:1;height:84%;border-radius:8px 8px 2px 2px;background:linear-gradient(#e0674f,#C8452C)"></i><i style="flex:1;height:100%;border-radius:8px 8px 2px 2px;background:linear-gradient(#e0674f,#C8452C)"></i></div>
+        </div><div class="bs"></div></div>
+        <div id="r-ph"><div class="sc">
+          <div class="mini" style="left:12px;right:12px;top:40px;height:100px"><b>TOTAL</b><em>S/ 8,420</em></div>
+          <svg viewBox="0 0 200 200" style="position:absolute;left:35px;top:160px;width:160px;height:160px"><circle cx="100" cy="100" r="70" fill="none" stroke="#C8452C" stroke-width="30" stroke-dasharray="180 440" transform="rotate(-90 100 100)"/><circle cx="100" cy="100" r="70" fill="none" stroke="#D7B98C" stroke-width="30" stroke-dasharray="94 440" stroke-dashoffset="-182" transform="rotate(-90 100 100)"/><circle cx="100" cy="100" r="70" fill="none" stroke="#F3EDE2" stroke-width="30" stroke-dasharray="66 440" stroke-dashoffset="-278" transform="rotate(-90 100 100)"/></svg>
+          <div style="position:absolute;left:14px;right:14px;bottom:24px;height:110px;display:flex;align-items:flex-end;gap:10px"><i style="flex:1;height:80%;border-radius:6px 6px 2px 2px;background:#C8452C"></i><i style="flex:1;height:95%;border-radius:6px 6px 2px 2px;background:#C8452C"></i><i style="flex:1;height:84%;border-radius:6px 6px 2px 2px;background:#C8452C"></i><i style="flex:1;height:100%;border-radius:6px 6px 2px 2px;background:#C8452C"></i></div>
+        </div></div>
+        <div id="r-url">🔗 tu link privado · se actualiza solo</div>
       </div>
       <script>
         (function () {
         var tl = gsap.timeline({ paused: true });
 
-        ["#r-l1", "#r-l2", "#r-l3"].forEach(function (s, i) { tl.fromTo(s, { opacity: 0, scale: 1.18, filter: "blur(14px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: .15, ease: "expo.out" }, .05 + i * .45); });
-        tl.fromTo("#r-sun", { scale: .7 }, { scale: 1.1, duration: 2, ease: "none" }, 0);
-        tl.to("#r-stack", { opacity: 0, duration: .15 }, 1.85);
+        tl.fromTo("#r-t div", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: .3, stagger: .12, ease: "expo.out" }, 0);
+        tl.fromTo("#r-lap", { opacity: 0, x: -200, rotationY: 20 }, { opacity: 1, x: 0, rotationY: 0, duration: .5, ease: "expo.out" }, .25);
+        tl.fromTo("#r-ph", { opacity: 0, x: 200, rotation: 6 }, { opacity: 1, x: 0, rotation: 0, duration: .5, ease: "expo.out" }, .4);
+        tl.fromTo("#r-url", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .3, ease: "expo.out" }, .8);
+        tl.to(["#r-t", "#r-lap", "#r-ph", "#r-url"], { opacity: 0, duration: .15 }, 1.85);
         window.__timelines["resultado"] = tl;
         })();
       </script>

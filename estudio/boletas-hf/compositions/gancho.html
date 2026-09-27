@@ -9,6 +9,7 @@
         @font-face { font-family: "Zen Kaku Gothic New"; font-weight: 900; src: url("assets/fonts/ZenKakuGothicNew-Black.ttf"); }
         @font-face { font-family: "Shippori Mincho"; font-weight: 800; src: url("assets/fonts/ShipporiMincho-ExtraBold.ttf"); }
         @font-face { font-family: "Tenor Sans"; src: url("assets/fonts/TenorSans-Regular.ttf"); }
+        @font-face { font-family: "Montserrat"; font-weight: 900; src: url("assets/fonts/Montserrat-Black.ttf"); }
         #root { position: absolute; inset: 0; overflow: hidden; background: #111726; color: #F4F1EA; font-family: "Zen Kaku Gothic New", sans-serif; }
         .fill { position: absolute; inset: 0; }
         .noche { background: radial-gradient(90% 60% at 50% 45%, #18203a 0%, #111726 55%, #0B0F1A 100%); }
@@ -35,7 +36,7 @@
         .bub { max-width: 380px; padding: 16px 20px; border-radius: 24px; font-size: 26px; font-weight: 700; line-height: 1.3; }
         .bub.out { align-self: flex-end; background: #2b7fd8; border-bottom-right-radius: 6px; }
         .bub.in { align-self: flex-start; background: #242d40; border-bottom-left-radius: 6px; }
-        .bub .tk { font-size: 20px; color: #bfe0ff; margin-left: 10px; }
+        .bub .tk { font-size: 20px; color: #e6f2ff; margin-left: 10px; }
         .chat .in-bar { height: 110px; padding: 20px 20px 30px; display: flex; gap: 14px; align-items: center; }
         .chat .in-bar div { flex: 1; height: 60px; border-radius: 30px; background: #1f2738; font-size: 24px; color: #6d7890; padding: 0 24px; display: flex; align-items: center; }
         .chat .in-bar i { width: 60px; height: 60px; border-radius: 50%; background: #2b7fd8; display: grid; place-items: center; font-style: normal; font-size: 28px; }
@@ -53,35 +54,30 @@
           linear-gradient(#2a2522 0 0) 0 0 / 26px 26px no-repeat, linear-gradient(#2a2522 0 0) 100% 0 / 26px 26px no-repeat, linear-gradient(#2a2522 0 0) 0 100% / 26px 26px no-repeat; }
 
 
-        #g-sun { left: 240px; top: 330px; width: 600px; height: 600px; filter: blur(60px); opacity: .38; }
-        #g-stack { position: absolute; left: 70px; right: 130px; top: 470px; display: grid; gap: 6px; justify-items: center; text-align: center; }
-        #g-stack div { font-weight: 900; line-height: .98; letter-spacing: -.02em; white-space: nowrap; color: #F3EDE2; }
-        #g-l4 { color: #C8452C !important; }
-        #g-rule { left: 240px; right: 240px; top: 1430px; }
+        #g-bg { background: radial-gradient(75% 55% at 50% 48%, #ffffff 0%, #f4f2ee 55%, #d9d6d0 100%); }
+        .g-scr { position: absolute; left: 60px; right: 120px; top: 0; bottom: 0; display: grid; align-content: center; justify-items: center; gap: 0; opacity: 0; }
+        .g-scr div { font-family: "Montserrat", sans-serif; font-weight: 900; color: #16304a; line-height: .92; letter-spacing: -.035em; white-space: nowrap; text-transform: uppercase; }
+        .g-scr .shu { color: #C8452C; }
       </style>
       <div id="root" data-composition-id="gancho" data-width="1080" data-height="1920" data-duration="2.5">
 
-        <div class="fill noche"></div>
-        <div class="hinomaru" id="g-sun"></div>
-        <div class="washi"></div>
-        <div id="g-stack">
-          <div id="g-l1" style="font-size:132px">¿SABÍAS QUE</div>
-          <div id="g-l2" style="font-size:98px">PUEDES CONTROLAR</div>
-          <div id="g-l3" style="font-size:156px">TUS GASTOS</div>
-          <div id="g-l4" style="font-size:124px">CON UNA FOTO?</div>
-        </div>
-        <div class="goldline" id="g-rule"></div>
+        <div class="fill" id="g-bg"></div>
+        <div class="g-scr" id="g-s1" style="opacity:1"><div style="font-size:196px">¿SABÍAS</div><div style="font-size:300px">QUE?</div></div>
+        <div class="g-scr" id="g-s2"><div style="font-size:230px">PUEDES</div><div style="font-size:150px">CONTROLAR</div></div>
+        <div class="g-scr" id="g-s3"><div style="font-size:134px">TUS GASTOS</div><div style="font-size:158px">CON UNA</div><div class="shu" style="font-size:300px">FOTO</div></div>
       </div>
       <script>
         (function () {
         var tl = gsap.timeline({ paused: true });
 
-        tl.fromTo("#g-sun", { scale: .85 }, { scale: 1.05, duration: 2.5, ease: "none" }, 0);
-        tl.fromTo("#g-l1", { scale: 1.08 }, { scale: 1, duration: .25, ease: "expo.out" }, 0);
-        ["#g-l2", "#g-l3", "#g-l4"].forEach(function (s, i) { tl.fromTo(s, { opacity: 0, scale: 1.15, filter: "blur(14px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: .15, ease: "expo.out" }, .45 + i * .45); });
-        tl.fromTo("#g-l4", { x: -6 }, { x: 6, duration: .04, repeat: 5, yoyo: true, ease: "none" }, 1.5);
-        tl.fromTo("#g-rule", { scaleX: 0 }, { scaleX: 1, duration: .5, ease: "expo.out" }, 1.55);
-        tl.to("#g-stack", { opacity: 0, scale: 1.06, duration: .15, ease: "power2.in" }, 2.35);
+        var T = [0, .75, 1.55];
+        tl.fromTo("#g-s1", { scale: 1.06 }, { scale: 1, duration: .35, ease: "expo.out" }, 0);
+        ["#g-s2", "#g-s3"].forEach(function (id, i) {
+          tl.set(i === 0 ? "#g-s1" : "#g-s2", { opacity: 0 }, T[i + 1]);
+          tl.fromTo(id, { opacity: 0, scale: 1.18, filter: "blur(10px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: .16, ease: "expo.out" }, T[i + 1]);
+        });
+        tl.fromTo("#g-s3 .shu", { scale: .85 }, { scale: 1, duration: .3, ease: "back.out(2.5)" }, T[2] + .1);
+        tl.to("#g-s3", { opacity: 0, scale: 1.05, duration: .12, ease: "power2.in" }, 2.38);
         window.__timelines["gancho"] = tl;
         })();
       </script>

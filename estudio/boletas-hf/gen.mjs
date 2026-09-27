@@ -43,29 +43,24 @@ ${js}
 const dur = (id) => SCENES.find((s) => s[0] === id)[2];
 const out = {};
 
-/* 1 · GANCHO */
+/* 1 · GANCHO: tres pantallas de texto gigante, fondo claro */
 out.gancho = wrap("gancho", dur("gancho"), `
-        #g-sun { left: 240px; top: 330px; width: 600px; height: 600px; filter: blur(60px); opacity: .38; }
-        #g-stack { position: absolute; left: 70px; right: 130px; top: 470px; display: grid; gap: 6px; justify-items: center; text-align: center; }
-        #g-stack div { font-weight: 900; line-height: .98; letter-spacing: -.02em; white-space: nowrap; color: #F3EDE2; }
-        #g-l4 { color: #C8452C !important; }
-        #g-rule { left: 240px; right: 240px; top: 1430px; }`, `
-        <div class="fill noche"></div>
-        <div class="hinomaru" id="g-sun"></div>
-        <div class="washi"></div>
-        <div id="g-stack">
-          <div id="g-l1" style="font-size:132px">¿SABÍAS QUE</div>
-          <div id="g-l2" style="font-size:98px">PUEDES CONTROLAR</div>
-          <div id="g-l3" style="font-size:156px">TUS GASTOS</div>
-          <div id="g-l4" style="font-size:124px">CON UNA FOTO?</div>
-        </div>
-        <div class="goldline" id="g-rule"></div>`, `
-        tl.fromTo("#g-sun", { scale: .85 }, { scale: 1.05, duration: 2.5, ease: "none" }, 0);
-        tl.fromTo("#g-l1", { scale: 1.08 }, { scale: 1, duration: .25, ease: "expo.out" }, 0);
-        ["#g-l2", "#g-l3", "#g-l4"].forEach(function (s, i) { tl.fromTo(s, { opacity: 0, scale: 1.15, filter: "blur(14px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: .15, ease: "expo.out" }, .45 + i * .45); });
-        tl.fromTo("#g-l4", { x: -6 }, { x: 6, duration: .04, repeat: 5, yoyo: true, ease: "none" }, 1.5);
-        tl.fromTo("#g-rule", { scaleX: 0 }, { scaleX: 1, duration: .5, ease: "expo.out" }, 1.55);
-        tl.to("#g-stack", { opacity: 0, scale: 1.06, duration: .15, ease: "power2.in" }, 2.35);`);
+        #g-bg { background: radial-gradient(75% 55% at 50% 48%, #ffffff 0%, #f4f2ee 55%, #d9d6d0 100%); }
+        .g-scr { position: absolute; left: 60px; right: 120px; top: 0; bottom: 0; display: grid; align-content: center; justify-items: center; gap: 0; opacity: 0; }
+        .g-scr div { font-family: "Montserrat", sans-serif; font-weight: 900; color: #16304a; line-height: .92; letter-spacing: -.035em; white-space: nowrap; text-transform: uppercase; }
+        .g-scr .shu { color: #C8452C; }`, `
+        <div class="fill" id="g-bg"></div>
+        <div class="g-scr" id="g-s1" style="opacity:1"><div style="font-size:196px">¿SABÍAS</div><div style="font-size:300px">QUE?</div></div>
+        <div class="g-scr" id="g-s2"><div style="font-size:230px">PUEDES</div><div style="font-size:150px">CONTROLAR</div></div>
+        <div class="g-scr" id="g-s3"><div style="font-size:134px">TUS GASTOS</div><div style="font-size:158px">CON UNA</div><div class="shu" style="font-size:300px">FOTO</div></div>`, `
+        var T = [0, .75, 1.55];
+        tl.fromTo("#g-s1", { scale: 1.06 }, { scale: 1, duration: .35, ease: "expo.out" }, 0);
+        ["#g-s2", "#g-s3"].forEach(function (id, i) {
+          tl.set(i === 0 ? "#g-s1" : "#g-s2", { opacity: 0 }, T[i + 1]);
+          tl.fromTo(id, { opacity: 0, scale: 1.18, filter: "blur(10px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: .16, ease: "expo.out" }, T[i + 1]);
+        });
+        tl.fromTo("#g-s3 .shu", { scale: .85 }, { scale: 1, duration: .3, ease: "back.out(2.5)" }, T[2] + .1);
+        tl.to("#g-s3", { opacity: 0, scale: 1.05, duration: .12, ease: "power2.in" }, 2.38);`);
 
 /* 2 · PROBLEMA */
 const papers = Array.from({ length: 9 }, (_, i) => `<div class="rcpt pp" data-layout-allow-overlap id="p-r${i}" style="left:${[60, 520, 300, 700, 140, 470, 620, 20, 360][i]}px;top:0;width:${240 + (i % 3) * 30}px"><h4>${["BODEGA", "MAKRO", "TAMBO", "GRIFO", "PLAZA VEA", "SODIMAC", "MERCADO", "TAXI", "LUZ"][i]}</h4><div class="c">Boleta ${i + 1}0${i}</div><hr /><div class="r"><span>Total</span><span>S/ ${[12.5, 245.8, 8.9, 120, 64.3, 88, 35, 18, 142.6][i]}</span></div></div>`).join("");
@@ -122,7 +117,7 @@ out.bot = wrap("bot", dur("bot"), `
         .b-photo { width: 250px; height: 330px; border-radius: 18px; overflow: hidden; background: #F7F2E6; position: relative; padding: 0; }
         .b-photo .rcpt { left: 20px; top: 16px; transform: scale(.7); transform-origin: 0 0; box-shadow: none; }
         .b-file { display: flex; align-items: center; gap: 14px; }
-        .b-file i { width: 56px; height: 64px; border-radius: 8px; background: #C8452C; font-style: normal; display: grid; place-items: center; font-size: 18px; font-weight: 900; }
+        .b-file i { width: 56px; height: 64px; border-radius: 8px; background: #a8341f; font-style: normal; display: grid; place-items: center; font-size: 18px; font-weight: 900; }
         .b-dots { display: flex; gap: 8px; margin-left: 12px; }
         .b-dots i { width: 12px; height: 12px; border-radius: 50%; background: #bfc9da; display: block; }`, `
         <div class="fill noche"></div><div class="washi"></div>
@@ -267,7 +262,7 @@ out.aviso = wrap("aviso", dur("aviso"), `
           ${chatHead}
           <div class="ms">
             <div class="bub in" id="a-m1">✅ Registrado<br /><span style="color:#D7B98C">Insumos · S/ 245.80</span><div class="a-btns"><span>✅ Correcto</span><span>✏️ Corregir</span></div></div>
-            <div class="bub in" id="a-m2">📊 Llevas <b style="color:#2FD08A">S/ 8,420</b> este mes<br />Comidas subió 12 %</div>
+            <div class="bub in" id="a-m2">📊 Llevas <b style="color:#2FD08A">S/ 8,420</b> este mes<br />Comidas subió 12 %<div class="a-btns"><span style="background:#2b7fd8">🔗 Abrir mi dashboard</span></div></div>
           </div>
           <div class="in-bar"><div>Mensaje</div><i>➤</i></div>
         </div></div></div>`, `
@@ -276,16 +271,38 @@ out.aviso = wrap("aviso", dur("aviso"), `
         tl.fromTo("#a-m2", { opacity: 0, y: 60, scale: .9 }, { opacity: 1, y: 0, scale: 1, duration: .35, ease: "back.out(1.8)", transformOrigin: "0% 100%" }, 1.2);
         tl.to("#a-phone", { opacity: 0, scale: .95, duration: .15 }, 2.35);`);
 
-/* 8 · RESULTADO */
+/* 8 · DÓNDE VES TU DASHBOARD */
 out.resultado = wrap("resultado", dur("resultado"), `
-        #r-stack { position: absolute; left: 70px; right: 130px; top: 560px; display: grid; gap: 8px; justify-items: center; }
-        #r-stack div { font-weight: 900; line-height: .98; letter-spacing: -.02em; color: #F3EDE2; white-space: nowrap; }
-        #r-sun { left: 290px; top: 620px; width: 500px; height: 500px; filter: blur(40px); opacity: .35; }`, `
-        <div class="fill noche"></div><div class="hinomaru" id="r-sun"></div><div class="washi"></div>
-        <div id="r-stack"><div id="r-l1" style="font-size:150px">CERO EXCEL.</div><div id="r-l2" style="font-size:170px">CERO CAJA</div><div id="r-l3" style="font-size:136px;color:#C8452C">DE BOLETAS.</div></div>`, `
-        ["#r-l1", "#r-l2", "#r-l3"].forEach(function (s, i) { tl.fromTo(s, { opacity: 0, scale: 1.18, filter: "blur(14px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: .15, ease: "expo.out" }, .05 + i * .45); });
-        tl.fromTo("#r-sun", { scale: .7 }, { scale: 1.1, duration: 2, ease: "none" }, 0);
-        tl.to("#r-stack", { opacity: 0, duration: .15 }, 1.85);`);
+        #r-t { position: absolute; left: 70px; right: 130px; top: 200px; text-align: center; }
+        #r-t div { font-family: "Montserrat", sans-serif; font-weight: 900; line-height: 1.08; white-space: nowrap; letter-spacing: -.03em; text-transform: uppercase; }
+        #r-lap { position: absolute; left: 60px; top: 720px; width: 700px; }
+        #r-lap .sc { height: 430px; border-radius: 18px 18px 4px 4px; border: 12px solid #0a0d14; background: #151c2c; overflow: hidden; position: relative; box-shadow: 0 0 0 2px #3a4152; }
+        #r-lap .bs { height: 22px; margin: 0 -40px; border-radius: 3px 3px 18px 18px; background: linear-gradient(#c9ccd3, #7f848d); }
+        #r-ph { position: absolute; left: 640px; top: 820px; width: 250px; height: 500px; border-radius: 40px; background: #07090f; padding: 10px; box-shadow: 0 0 0 2px #3a4152, 0 30px 60px rgba(0,0,0,.5); }
+        #r-ph .sc { width: 100%; height: 100%; border-radius: 32px; background: #151c2c; overflow: hidden; position: relative; }
+        .mini { position: absolute; border-radius: 10px; background: rgba(255,255,255,.06); }
+        .mini b { position: absolute; left: 10px; top: 8px; font-size: 13px; color: #D7B98C; letter-spacing: .1em; }
+        .mini em { position: absolute; left: 10px; bottom: 8px; font-style: normal; font-weight: 900; font-size: 30px; color: #F4F1EA; }
+        #r-url { position: absolute; left: 60px; top: 1200px; padding: 12px 22px; border-radius: 30px; background: rgba(215,185,140,.14); border: 1px solid rgba(215,185,140,.45); font-size: 30px; font-weight: 700; color: #F3DDB0; }`, `
+        <div class="fill noche"></div><div class="washi"></div>
+        <div id="r-t"><div style="font-size:92px;color:#F3EDE2">TU DASHBOARD</div><div style="font-size:82px;color:#C8452C">EN TU CELULAR</div><div style="font-size:82px;color:#F3EDE2">Y EN TU COMPU</div></div>
+        <div id="r-lap"><div class="sc">
+          <div class="mini" style="left:18px;top:18px;width:300px;height:110px"><b>TOTAL DEL MES</b><em>S/ 8,420</em></div>
+          <div class="mini" style="left:336px;top:18px;width:318px;height:110px"><b>IGV</b><em>S/ 1,284</em></div>
+          <svg viewBox="0 0 200 200" style="position:absolute;left:30px;top:150px;width:230px;height:230px"><circle cx="100" cy="100" r="70" fill="none" stroke="#C8452C" stroke-width="30" stroke-dasharray="180 440" transform="rotate(-90 100 100)"/><circle cx="100" cy="100" r="70" fill="none" stroke="#D7B98C" stroke-width="30" stroke-dasharray="94 440" stroke-dashoffset="-182" transform="rotate(-90 100 100)"/><circle cx="100" cy="100" r="70" fill="none" stroke="#F3EDE2" stroke-width="30" stroke-dasharray="66 440" stroke-dashoffset="-278" transform="rotate(-90 100 100)"/><circle cx="100" cy="100" r="70" fill="none" stroke="#8a7f78" stroke-width="30" stroke-dasharray="98 440" stroke-dashoffset="-346" transform="rotate(-90 100 100)"/></svg>
+          <div style="position:absolute;left:300px;right:20px;bottom:24px;height:210px;display:flex;align-items:flex-end;gap:16px"><i style="flex:1;height:80%;border-radius:8px 8px 2px 2px;background:linear-gradient(#e0674f,#C8452C)"></i><i style="flex:1;height:95%;border-radius:8px 8px 2px 2px;background:linear-gradient(#e0674f,#C8452C)"></i><i style="flex:1;height:84%;border-radius:8px 8px 2px 2px;background:linear-gradient(#e0674f,#C8452C)"></i><i style="flex:1;height:100%;border-radius:8px 8px 2px 2px;background:linear-gradient(#e0674f,#C8452C)"></i></div>
+        </div><div class="bs"></div></div>
+        <div id="r-ph"><div class="sc">
+          <div class="mini" style="left:12px;right:12px;top:40px;height:100px"><b>TOTAL</b><em>S/ 8,420</em></div>
+          <svg viewBox="0 0 200 200" style="position:absolute;left:35px;top:160px;width:160px;height:160px"><circle cx="100" cy="100" r="70" fill="none" stroke="#C8452C" stroke-width="30" stroke-dasharray="180 440" transform="rotate(-90 100 100)"/><circle cx="100" cy="100" r="70" fill="none" stroke="#D7B98C" stroke-width="30" stroke-dasharray="94 440" stroke-dashoffset="-182" transform="rotate(-90 100 100)"/><circle cx="100" cy="100" r="70" fill="none" stroke="#F3EDE2" stroke-width="30" stroke-dasharray="66 440" stroke-dashoffset="-278" transform="rotate(-90 100 100)"/></svg>
+          <div style="position:absolute;left:14px;right:14px;bottom:24px;height:110px;display:flex;align-items:flex-end;gap:10px"><i style="flex:1;height:80%;border-radius:6px 6px 2px 2px;background:#C8452C"></i><i style="flex:1;height:95%;border-radius:6px 6px 2px 2px;background:#C8452C"></i><i style="flex:1;height:84%;border-radius:6px 6px 2px 2px;background:#C8452C"></i><i style="flex:1;height:100%;border-radius:6px 6px 2px 2px;background:#C8452C"></i></div>
+        </div></div>
+        <div id="r-url">🔗 tu link privado · se actualiza solo</div>`, `
+        tl.fromTo("#r-t div", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: .3, stagger: .12, ease: "expo.out" }, 0);
+        tl.fromTo("#r-lap", { opacity: 0, x: -200, rotationY: 20 }, { opacity: 1, x: 0, rotationY: 0, duration: .5, ease: "expo.out" }, .25);
+        tl.fromTo("#r-ph", { opacity: 0, x: 200, rotation: 6 }, { opacity: 1, x: 0, rotation: 0, duration: .5, ease: "expo.out" }, .4);
+        tl.fromTo("#r-url", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .3, ease: "expo.out" }, .8);
+        tl.to(["#r-t", "#r-lap", "#r-ph", "#r-url"], { opacity: 0, duration: .15 }, 1.85);`);
 
 /* 9 · CIERRE */
 out.cierre = wrap("cierre", dur("cierre"), `
@@ -302,7 +319,7 @@ out.cierre = wrap("cierre", dur("cierre"), `
         <div class="fill" id="c-bg"></div><div class="washi" id="c-wa"></div>
         <div class="kanji" data-layout-allow-occlusion data-layout-allow-overlap style="right:-30px;top:260px;font-size:360px;color:#C8452C;opacity:.08;writing-mode:vertical-rl">丸</div>
         <div id="c-brand"><img src="assets/img/sello-maru.png" alt="" /><span>MARU</span></div>
-        <div id="c-q">¿Lo quieres para tu negocio?</div>
+        <div id="c-q">¿Lo quieres para ti o tu negocio?</div>
         <div id="c-c">Comenta <b>BOLETA</b> ▼</div>
         <div id="c-s">y te doy una asesoría gratis</div>
         <div class="goldline" id="c-rule"></div>`, `
