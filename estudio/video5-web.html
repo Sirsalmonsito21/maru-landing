@@ -1,0 +1,816 @@
+<!doctype html>
+<html lang="es-PE">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maru · Nueva habilidad: web</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Tenor+Sans&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Bodoni+Moda:ital,opsz,wght@0,6..96,500;1,6..96,500&family=Manrope:wght@400;500;700&family=Unbounded:wght@700;800&family=Space+Grotesk:wght@400;500;700&display=swap">
+<style>
+  /* Video "Nueva habilidad: desarrollo web". 0–12 s pixel art (cueva y baile), 12 s explosión,
+     12–34.5 s edit de 3 webs dentro de dispositivos 3D, 34.5–38 s cierre. Todo depende de render(t). */
+  :root { --k: #1a1422; --w: #FFF6EE; --shu: #C8452C; --mikan: #DE9A5A; --kin: #D7B98C; --y: #f2d27a; color-scheme: dark; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: #07080c; color: var(--w); }
+  body { display: grid; grid-template-rows: 1fr auto; overflow: hidden; }
+  .viewport { position: relative; overflow: hidden; }
+  #stage { position: absolute; left: 50%; top: 50%; width: 1080px; height: 1920px; transform-origin: 0 0; overflow: hidden; background: #07080c; }
+  body.rec { display: block; }
+  body.rec .viewport { position: static; overflow: visible; }
+  body.rec #stage { left: 0; top: 0; transform: none !important; }
+  body.rec .bar { display: none; }
+  .abs { position: absolute; }
+  .px { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; image-rendering: pixelated; }
+  #pxwrap { position: absolute; inset: 0; z-index: 5; }
+  #fx { position: absolute; inset: 0; width: 1080px; height: 1920px; z-index: 30; pointer-events: none; }
+  #flash { inset: 0; background: #fff; opacity: 0; z-index: 31; }
+  .pxt { font-family: "DotGothic16", monospace; }
+  .ol { text-shadow: 6px 0 0 var(--k), -6px 0 0 var(--k), 0 6px 0 var(--k), 0 -6px 0 var(--k), 6px 6px 0 var(--k), -6px 6px 0 var(--k), 6px -6px 0 var(--k), -6px -6px 0 var(--k), 10px 12px 0 var(--k); }
+
+  /* Notificación de consola */
+  #notif { left: 50%; top: 170px; width: 780px; margin-left: -390px; z-index: 12; padding: 22px 32px 24px; background: rgba(20,14,30,.92); border: 6px solid var(--y); outline: 6px solid var(--k); box-shadow: inset 0 0 0 6px var(--k), 0 18px 0 rgba(10,6,16,.45); font-size: 50px; color: var(--w); }
+  #notif .row { display: flex; align-items: center; gap: 22px; }
+  #notif .ic { width: 64px; height: 64px; background: var(--y); color: var(--k); display: grid; place-items: center; font-size: 50px; flex: none; }
+  #notif .sub { margin-top: 10px; font-size: 38px; color: var(--kin); display: flex; justify-content: space-between; }
+  #notif .sub b { font-weight: normal; color: var(--y); }
+  #notif .meter { margin-top: 14px; height: 18px; border: 4px solid var(--kin); }
+  #notif .meter i { display: block; height: 100%; background: var(--y); }
+  #bang { font-size: 110px; color: var(--y); z-index: 11; opacity: 0; }
+
+  /* Baile */
+  #skill { left: 54px; right: 54px; top: 200px; z-index: 12; padding: 30px 38px; font-size: 56px; line-height: 1.25; text-align: center; background: var(--k); border: 6px solid var(--w); outline: 6px solid var(--k); box-shadow: inset 0 0 0 6px var(--k), inset 0 0 0 12px #5a4a6e; opacity: 0; }
+  #skill small { display: block; font-size: 38px; color: var(--y); margin-bottom: 6px; }
+  #siu { left: 0; right: 0; top: 1440px; text-align: center; font-size: 190px; color: var(--y); z-index: 12; opacity: 0; letter-spacing: .02em; }
+
+  /* ================= MUNDO PRO ================= */
+  #pro { position: absolute; inset: 0; z-index: 4; opacity: 0; overflow: hidden; font-family: "Tenor Sans", sans-serif; }
+  #bg { position: absolute; inset: 0; }
+  .leak { position: absolute; border-radius: 50%; filter: blur(90px); mix-blend-mode: screen; }
+  #grain { position: absolute; inset: -60px; z-index: 20; pointer-events: none; opacity: .09; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+  #vig { position: absolute; inset: 0; z-index: 19; pointer-events: none; background: radial-gradient(120% 80% at 50% 45%, transparent 55%, rgba(0,0,0,.55)); }
+  #kw { position: absolute; left: 0; right: 0; z-index: 2; text-align: center; white-space: nowrap; line-height: .9; pointer-events: none; }
+  #kw span { display: inline-block; }
+  #persp { position: absolute; inset: 0; perspective: 2100px; perspective-origin: 540px 880px; z-index: 5; }
+  #world { position: absolute; left: 540px; top: 880px; transform-style: preserve-3d; }
+  .dev { position: absolute; left: 0; top: 0; transform-style: preserve-3d; will-change: transform; }
+  .scr { position: relative; overflow: hidden; background: #000; }
+  .scr .site { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+  .scr .glare { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,.10) 47%, rgba(255,255,255,.02) 55%, transparent 62%); background-size: 260% 100%; }
+  .scr .off { position: absolute; inset: 0; background: #000; pointer-events: none; }
+
+  .monitor .bez { padding: 14px; background: #0c0d10; border-radius: 22px; box-shadow: 0 0 0 3px #3a3d44, 0 0 0 4px #a9adb5, 0 60px 120px rgba(0,0,0,.7); }
+  .monitor .scr { width: 880px; height: 550px; border-radius: 8px; }
+  .monitor .neck { width: 150px; height: 170px; margin: 0 auto; background: linear-gradient(90deg, #7d818a, #d3d6dc 45%, #8a8e96); clip-path: polygon(22% 0, 78% 0, 90% 100%, 10% 100%); }
+  .monitor .foot { width: 340px; height: 22px; margin: 0 auto; border-radius: 6px 6px 12px 12px; background: linear-gradient(#e2e5ea, #8b8f97); box-shadow: 0 30px 50px rgba(0,0,0,.6); }
+  .laptop .lid { transform-origin: 50% 100%; padding: 16px 16px 22px; background: #111216; border-radius: 22px 22px 6px 6px; box-shadow: 0 0 0 3px #5b5f67, 0 50px 100px rgba(0,0,0,.6); }
+  .laptop .scr { width: 820px; height: 512px; border-radius: 6px; }
+  .laptop .base { width: 1000px; height: 30px; margin-left: -74px; border-radius: 4px 4px 26px 26px; background: linear-gradient(#e7e9ed, #9da1a8 60%, #6d7078); position: relative; box-shadow: 0 40px 60px rgba(0,0,0,.6); }
+  .laptop .base::after { content: ""; position: absolute; left: 50%; top: 0; width: 160px; height: 10px; margin-left: -80px; border-radius: 0 0 12px 12px; background: #8d9199; }
+  .phone .body { padding: 14px; background: #0b0b0d; border-radius: 64px; box-shadow: 0 0 0 4px #43464d, 0 0 0 6px #b9bdc4, 0 60px 110px rgba(0,0,0,.55); position: relative; }
+  .phone .scr { width: 380px; height: 824px; border-radius: 50px; }
+  .phone .island { position: absolute; left: 50%; top: 30px; width: 118px; height: 34px; margin-left: -59px; background: #000; border-radius: 20px; z-index: 5; }
+  .tablet .body { padding: 22px; background: #0d0d10; border-radius: 42px; box-shadow: 0 0 0 4px #474a51, 0 0 0 6px #c4c8ce, 0 60px 110px rgba(0,0,0,.5); }
+  .tablet .scr { width: 640px; height: 480px; border-radius: 18px; }
+  .ultra .bez { padding: 10px; background: #09090b; border-radius: 12px; box-shadow: 0 0 0 3px #2d2f34, 0 0 0 4px #7d8189, 0 60px 120px rgba(0,0,0,.75); }
+  .ultra .scr { width: 960px; height: 408px; border-radius: 4px; }
+  .ultra .neck { width: 90px; height: 120px; margin: 0 auto; background: linear-gradient(90deg, #26282d, #55585f 50%, #26282d); }
+  .ultra .foot { width: 420px; height: 16px; margin: 0 auto; border-radius: 8px; background: linear-gradient(#5d6068, #1d1e22); }
+  .tap { position: absolute; width: 70px; height: 70px; margin: -35px 0 0 -35px; border-radius: 50%; background: rgba(255,255,255,.55); border: 3px solid rgba(255,255,255,.9); box-shadow: 0 6px 20px rgba(0,0,0,.25); opacity: 0; z-index: 10; }
+
+  #cap { left: 64px; top: 1490px; z-index: 8; font-size: 34px; letter-spacing: .08em; display: flex; gap: 22px; align-items: baseline; opacity: 0; }
+  #cap .i { color: var(--kin); font-size: 30px; }
+  #cap .line { width: 60px; height: 2px; background: currentColor; opacity: .5; align-self: center; }
+
+  #cta { position: absolute; inset: 0; z-index: 22; display: grid; place-items: center; opacity: 0; background: #050608; font-family: "Tenor Sans", sans-serif; text-align: center; }
+  #cta .in { display: grid; gap: 36px; justify-items: center; margin-top: -160px; }
+  #cta .brand { display: flex; align-items: center; gap: 30px; }
+  #cta .seal { width: 130px; height: 130px; background: var(--shu); color: var(--w); display: grid; place-items: center; font-size: 92px; font-family: "Cormorant Garamond", serif; border-radius: 8px; }
+  #cta .name { font-size: 110px; letter-spacing: .18em; color: var(--w); }
+  #cta .q { font-size: 54px; color: #cfc6bb; max-width: 860px; line-height: 1.25; }
+  #cta .c { font-size: 84px; color: var(--w); }
+  #cta .c b { font-weight: normal; background: var(--kin); color: #111; padding: 4px 26px 8px; margin: 0 8px; border-radius: 6px; }
+  #miniwrap { position: absolute; left: 100px; top: 1080px; width: 360px; height: 420px; overflow: hidden; z-index: 23; opacity: 0; }
+  #mini { position: absolute; left: 0; top: 0; width: 360px; height: 480px; image-rendering: pixelated; }
+
+  /* ================= WEB 1 · UMI ================= */
+  .umi { width: 1440px; background: #0d1321; color: #efe6d4; font-family: "Manrope", sans-serif; }
+  .umi nav { height: 96px; display: flex; align-items: center; justify-content: space-between; padding: 0 80px; border-bottom: 1px solid rgba(201,164,92,.18); }
+  .umi .logo { font-family: "Cormorant Garamond", serif; font-size: 38px; letter-spacing: .38em; color: #efe6d4; }
+  .umi .logo span { color: #c9a45c; margin-left: 10px; letter-spacing: 0; }
+  .umi nav ul { display: flex; gap: 48px; list-style: none; margin: 0; padding: 0; font-size: 17px; color: #b9ae98; letter-spacing: .06em; }
+  .umi .btn { display: inline-block; padding: 16px 30px; font-size: 16px; letter-spacing: .12em; text-transform: uppercase; border-radius: 2px; }
+  .umi .btn.o { border: 1px solid #c9a45c; color: #c9a45c; }
+  .umi .btn.g { background: #c9a45c; color: #0d1321; font-weight: 700; }
+  .umi .btn.t { color: #efe6d4; }
+  .umi .hero { height: 804px; display: grid; grid-template-columns: 1fr 1fr; align-items: center; padding: 0 80px; position: relative; overflow: hidden; }
+  .umi .eyebrow { font-size: 15px; letter-spacing: .32em; text-transform: uppercase; color: #c9a45c; margin: 0 0 28px; }
+  .umi h1 { font-family: "Cormorant Garamond", serif; font-weight: 500; font-size: 104px; line-height: .98; margin: 0; }
+  .umi h1 > span { display: block; overflow: hidden; padding-bottom: 6px; }
+  .umi h1 > span > span { display: inline-block; }
+  .umi h1 em { color: #c9a45c; }
+  .umi .lead { font-size: 20px; line-height: 1.6; color: #b9ae98; max-width: 470px; margin: 30px 0 40px; }
+  .umi .ctas { display: flex; gap: 14px; align-items: center; }
+  .umi .art { position: relative; height: 640px; }
+  .umi .art svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .umi .kanji { position: absolute; right: 10px; top: 40px; font-family: "Cormorant Garamond", serif; font-size: 180px; color: rgba(201,164,92,.10); writing-mode: vertical-rl; }
+  .umi .menu { padding: 110px 80px 120px; background: #0a0f1a; }
+  .umi .menu .hd { display: flex; justify-content: space-between; align-items: end; margin-bottom: 60px; }
+  .umi h2 { font-family: "Cormorant Garamond", serif; font-weight: 500; font-size: 84px; margin: 0; line-height: 1; }
+  .umi .menu .hd p { color: #b9ae98; font-size: 18px; margin: 0; }
+  .umi .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+  .umi .card { border: 1px solid rgba(201,164,92,.22); padding: 28px; background: linear-gradient(#111a2c, #0d1321); }
+  .umi .card svg { width: 100%; height: 280px; display: block; margin-bottom: 22px; }
+  .umi .card .row { display: flex; justify-content: space-between; align-items: baseline; }
+  .umi .card h3 { font-family: "Cormorant Garamond", serif; font-weight: 500; font-size: 36px; margin: 0; }
+  .umi .card .pr { color: #c9a45c; font-size: 20px; }
+  .umi .card p { color: #9d937f; font-size: 16px; margin: 10px 0 0; }
+  .umi .gal { padding: 90px 0 100px; overflow: hidden; }
+  .umi .gal h2 { padding: 0 80px; margin-bottom: 50px; }
+  .umi .strip { display: flex; gap: 26px; padding-left: 80px; }
+  .umi .tile { flex: none; width: 420px; height: 520px; position: relative; overflow: hidden; }
+  .umi .tile span { position: absolute; left: 24px; bottom: 22px; font-size: 15px; letter-spacing: .2em; text-transform: uppercase; color: #efe6d4; }
+  .umi .res { height: 560px; display: grid; place-items: center; text-align: center; background: radial-gradient(60% 80% at 50% 50%, #1a2439, #0a0f1a); }
+  .umi .res h2 { font-size: 110px; margin-bottom: 20px; }
+  .umi .res p { color: #b9ae98; font-size: 20px; margin: 0 0 40px; }
+  .umi .res .btn.g { font-size: 20px; padding: 22px 46px; }
+
+  /* ================= WEB 2 · AUREA ================= */
+  .aurea { width: 390px; height: 892px; background: #f4ece7; color: #2b2326; font-family: "Manrope", sans-serif; position: relative; overflow: hidden; }
+  .aurea .sb { height: 54px; display: flex; justify-content: space-between; align-items: center; padding: 14px 34px 0; font-size: 16px; font-weight: 700; }
+  .aurea .scrs { position: absolute; left: 0; top: 54px; width: 780px; height: 838px; display: flex; }
+  .aurea .s { width: 390px; height: 838px; position: relative; overflow: hidden; }
+  .aurea nav { height: 62px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; }
+  .aurea .lg { font-family: "Bodoni Moda", serif; font-size: 24px; letter-spacing: .3em; }
+  .aurea .burg { width: 26px; height: 12px; border-top: 2px solid #2b2326; border-bottom: 2px solid #2b2326; }
+  .aurea .blob { position: absolute; border-radius: 50%; filter: blur(30px); }
+  .aurea .arch { position: relative; margin: 8px 24px 0; height: 300px; border-radius: 180px 180px 18px 18px; overflow: hidden; background: linear-gradient(170deg, #e8c3b9, #d99b8f 55%, #b8766f); }
+  .aurea .arch svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .aurea h1 { font-family: "Bodoni Moda", serif; font-weight: 500; font-size: 50px; line-height: 1.02; margin: 26px 24px 0; }
+  .aurea h1 em { color: #b76e79; }
+  .aurea .lead { margin: 14px 24px 0; font-size: 15px; line-height: 1.55; color: #6d5f62; }
+  .aurea .cta { margin: 22px 24px 0; height: 58px; border-radius: 30px; background: #2b2326; color: #f4ece7; display: grid; place-items: center; font-size: 16px; font-weight: 700; letter-spacing: .06em; }
+  .aurea .chips { display: flex; gap: 8px; margin: 18px 24px 0; }
+  .aurea .chips span { padding: 9px 14px; border-radius: 20px; border: 1px solid #d8c8c1; font-size: 13px; color: #6d5f62; }
+  .aurea .bk { padding: 10px 24px 0; }
+  .aurea .bk .top { display: flex; align-items: center; gap: 14px; font-size: 20px; font-weight: 700; margin: 8px 0 18px; }
+  .aurea .svc { background: #fff; border-radius: 20px; padding: 16px 18px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 8px 24px rgba(120,80,80,.08); }
+  .aurea .svc b { display: block; font-size: 16px; }
+  .aurea .svc small { color: #8a7b7e; font-size: 13px; }
+  .aurea .svc .pr { font-family: "Bodoni Moda", serif; font-size: 22px; }
+  .aurea .mo { display: flex; justify-content: space-between; margin: 24px 4px 12px; font-family: "Bodoni Moda", serif; font-size: 24px; }
+  .aurea .cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; font-size: 14px; }
+  .aurea .cal .h { color: #a8989b; font-size: 12px; padding-bottom: 6px; }
+  .aurea .cal .d { height: 40px; display: grid; place-items: center; border-radius: 50%; color: #3d3336; position: relative; }
+  .aurea .cal .d.x { color: #cdbfc1; }
+  .aurea .cal .d .dot { position: absolute; inset: 2px; border-radius: 50%; background: #2b2326; transform: scale(0); }
+  .aurea .cal .d .n { position: relative; }
+  .aurea .times { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 18px; }
+  .aurea .times span { height: 46px; border-radius: 14px; border: 1px solid #dccdc6; display: grid; place-items: center; font-size: 14px; position: relative; overflow: hidden; }
+  .aurea .times span i { position: absolute; inset: 0; background: #b76e79; transform: scaleX(0); transform-origin: 0 50%; }
+  .aurea .times span em { font-style: normal; position: relative; }
+  .aurea .conf { margin-top: 22px; height: 58px; border-radius: 30px; background: #2b2326; color: #fff; display: grid; place-items: center; font-weight: 700; }
+  .aurea .toast { position: absolute; left: 20px; right: 20px; bottom: 30px; padding: 18px 20px; border-radius: 22px; background: #2b2326; color: #fff; display: flex; gap: 14px; align-items: center; box-shadow: 0 18px 40px rgba(40,20,20,.3); }
+  .aurea .toast .ok { width: 42px; height: 42px; border-radius: 50%; background: #9cb59a; display: grid; place-items: center; font-size: 22px; flex: none; }
+  .aurea .toast b { display: block; font-size: 16px; }
+  .aurea .toast small { color: #c9bcbe; font-size: 13px; }
+  .aureaT { width: 1024px; background: #f4ece7; color: #2b2326; font-family: "Manrope", sans-serif; }
+  .aureaT nav { height: 84px; display: flex; align-items: center; justify-content: space-between; padding: 0 56px; font-size: 15px; color: #6d5f62; }
+  .aureaT nav .lg { font-family: "Bodoni Moda", serif; font-size: 28px; letter-spacing: .3em; color: #2b2326; }
+  .aureaT .hero { height: 684px; display: grid; grid-template-columns: 1.05fr .95fr; gap: 40px; padding: 20px 56px 60px; align-items: center; }
+  .aureaT h1 { font-family: "Bodoni Moda", serif; font-weight: 500; font-size: 78px; line-height: 1; margin: 0; }
+  .aureaT h1 em { color: #b76e79; }
+  .aureaT p { color: #6d5f62; font-size: 17px; line-height: 1.6; margin: 22px 0 30px; }
+  .aureaT .cta { display: inline-block; padding: 18px 34px; border-radius: 30px; background: #2b2326; color: #fff; font-weight: 700; font-size: 15px; }
+  .aureaT .arch { height: 560px; border-radius: 260px 260px 20px 20px; overflow: hidden; position: relative; background: linear-gradient(170deg, #eccbc1, #d99b8f 55%, #b8766f); }
+  .aureaT .arch svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .aureaT .sv { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding: 40px 56px 80px; }
+  .aureaT .sv div { background: #fff; border-radius: 22px; padding: 28px; }
+  .aureaT .sv b { font-family: "Bodoni Moda", serif; font-weight: 500; font-size: 30px; display: block; margin-bottom: 8px; }
+  .aureaT .sv small { color: #8a7b7e; font-size: 15px; }
+
+  /* ================= WEB 3 · VOLT ================= */
+  .volt { width: 1600px; background: #0a0a0b; color: #f2f2f2; font-family: "Space Grotesk", sans-serif; }
+  .volt nav { height: 90px; display: flex; align-items: center; justify-content: space-between; padding: 0 70px; }
+  .volt .lg { font-family: "Unbounded", sans-serif; font-weight: 800; font-size: 30px; letter-spacing: .04em; }
+  .volt .lg i { font-style: normal; color: #ff5a1f; }
+  .volt nav ul { display: flex; gap: 44px; list-style: none; margin: 0; padding: 0; color: #8a8a90; font-size: 17px; }
+  .volt .btn { padding: 16px 30px; background: #ff5a1f; color: #0a0a0b; font-weight: 700; font-size: 16px; border-radius: 40px; display: inline-block; }
+  .volt .btn.gh { background: none; color: #f2f2f2; border: 1px solid #3a3a40; }
+  .volt .hero { height: 590px; position: relative; display: grid; grid-template-columns: 560px 1fr; align-items: center; padding: 0 70px; overflow: hidden; }
+  .volt .tag { color: #ff5a1f; font-size: 15px; letter-spacing: .3em; margin-bottom: 20px; }
+  .volt h1 { font-family: "Unbounded", sans-serif; font-weight: 800; font-size: 76px; line-height: .98; margin: 0; letter-spacing: -.01em; }
+  .volt h1 .o { color: transparent; -webkit-text-stroke: 2px #f2f2f2; }
+  .volt .hero p { color: #8a8a90; font-size: 18px; line-height: 1.55; margin: 24px 0 34px; max-width: 440px; }
+  .volt .car { position: relative; height: 420px; }
+  .volt .car svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .volt .big { position: absolute; right: 40px; top: 30px; font-family: "Unbounded", sans-serif; font-weight: 800; font-size: 260px; color: transparent; -webkit-text-stroke: 2px rgba(255,90,31,.14); line-height: 1; }
+  .volt .ba { height: 680px; padding: 60px 70px; }
+  .volt h2 { font-family: "Unbounded", sans-serif; font-weight: 800; font-size: 54px; margin: 0 0 34px; }
+  .volt h2 span { color: #ff5a1f; }
+  .volt .slider { position: relative; height: 470px; border-radius: 26px; overflow: hidden; background: #131316; }
+  .volt .slider .lay { position: absolute; inset: 0; }
+  .volt .slider svg { position: absolute; left: 50%; top: 50%; width: 900px; height: 340px; margin: -170px 0 0 -450px; overflow: visible; }
+  .volt .slider .bar { position: absolute; top: 0; bottom: 0; width: 4px; background: #fff; margin-left: -2px; }
+  .volt .slider .knob { position: absolute; top: 50%; width: 64px; height: 64px; margin: -32px 0 0 -32px; border-radius: 50%; background: #fff; color: #0a0a0b; display: grid; place-items: center; font-weight: 700; font-size: 22px; }
+  .volt .slider .lb { position: absolute; top: 24px; padding: 8px 16px; border-radius: 20px; font-size: 14px; letter-spacing: .2em; background: rgba(0,0,0,.55); }
+  .volt .packs { height: 680px; padding: 60px 70px; }
+  .volt .pk { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .volt .pk div { border: 1px solid #26262b; border-radius: 26px; padding: 34px; background: #111114; }
+  .volt .pk div.hot { border-color: #ff5a1f; background: linear-gradient(160deg, #1d130e, #111114 60%); }
+  .volt .pk b { font-family: "Unbounded", sans-serif; font-size: 26px; display: block; }
+  .volt .pk .pr { font-family: "Unbounded", sans-serif; font-weight: 800; font-size: 54px; margin: 22px 0; }
+  .volt .pk .pr small { font-size: 20px; color: #8a8a90; }
+  .volt .pk li { color: #b4b4ba; font-size: 17px; margin: 8px 0; list-style: none; }
+  .volt .pk li::before { content: "— "; color: #ff5a1f; }
+  .volt .pk ul { padding: 0; margin: 0 0 26px; }
+
+  .bar { display: flex; align-items: center; gap: 14px; padding: 12px 16px; background: #1b1622; font: 14px system-ui; }
+  .bar button { color: #F3EDE2; background: #3A342F; border: 0; border-radius: 999px; padding: 10px 16px; cursor: pointer; }
+  .bar input { flex: 1; accent-color: #C8452C; }
+  .bar output { min-width: 150px; color: #CFC5B8; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+<div class="viewport" id="viewport"><div id="stage">
+  <!-- Mundo pro -->
+  <div id="pro">
+    <div id="bg"></div>
+    <div class="leak" id="leak1"></div><div class="leak" id="leak2"></div>
+    <div id="kw"></div>
+    <div id="persp"><div id="world">
+      <div class="dev monitor" id="dMon"><div class="bez"><div class="scr"><div class="site" id="umiMon"></div><div class="glare"></div><div class="off"></div></div></div><div class="neck"></div><div class="foot"></div></div>
+      <div class="dev laptop" id="dLap"><div class="lid"><div class="scr"><div class="site" id="umiLap"></div><div class="glare"></div><div class="off"></div></div></div><div class="base"></div></div>
+      <div class="dev phone" id="dPho"><div class="body"><div class="island"></div><div class="scr"><div class="site" id="aurPho"></div><div class="glare"></div><div class="off"></div></div></div></div>
+      <div class="dev tablet" id="dTab"><div class="body"><div class="scr"><div class="site" id="aurTab"></div><div class="glare"></div><div class="off"></div></div></div></div>
+      <div class="dev ultra" id="dUlt"><div class="bez"><div class="scr"><div class="site" id="voltU"></div><div class="glare"></div><div class="off"></div></div></div><div class="neck"></div><div class="foot"></div></div>
+    </div></div>
+    <div class="abs" id="cap"><span class="i" id="capI">01 / 03</span><span class="line"></span><span id="capT">UMI · restaurante nikkei</span></div>
+    <div id="vig"></div>
+    <div id="grain"></div>
+  </div>
+  <!-- Pixel -->
+  <div id="pxwrap"><canvas class="px" id="px" width="180" height="320"></canvas></div>
+  <div class="abs pxt" id="notif"><div class="row"><span class="ic">!</span><span id="nT">¡TESORO CERCA!</span></div><div class="sub"><span>RADAR ▸ señal fuerte</span><b id="nD">12 m</b></div><div class="meter"><i id="nM"></i></div></div>
+  <div class="abs pxt ol" id="bang">!</div>
+  <div class="abs pxt" id="skill"><small>¡MARU aprendió…</small><span id="skT"></span></div>
+  <div class="abs pxt ol" id="siu">SIUUU</div>
+  <div id="cta"><div class="in"><div class="brand"><span class="seal">丸</span><span class="name">MARU</span></div><div class="q">¿Quieres una web así para tu negocio?</div><div class="c">Comenta <b>WEB</b> ▼</div></div></div>
+  <div id="miniwrap"><canvas id="mini" width="60" height="80"></canvas></div>
+  <canvas id="fx" width="1080" height="1920"></canvas>
+  <div class="abs" id="flash"></div>
+</div></div>
+<div class="bar">
+  <button id="play" type="button">Pausa</button>
+  <input id="scrub" type="range" min="0" max="38" step="0.01" value="0" aria-label="Posición">
+  <output id="time">0.00 s</output>
+</div>
+<script>
+const DURATION = 38;
+const DROP = 12;
+const BEATS = Array.from({ length: 13 }, (_, i) => DROP + i * 1.875); // intervalos de 7.5 s partidos en 4
+
+/* ======================= utilidades ======================= */
+const $ = (id) => document.getElementById(id);
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const p = (t, s, d) => clamp((t - s) / d);
+const outQ = (k) => 1 - (1 - k) ** 3;
+const outX = (k) => k >= 1 ? 1 : 1 - 2 ** (-10 * k);
+const io = (k) => k < .5 ? 4 * k * k * k : 1 - (-2 * k + 2) ** 3 / 2;
+const lerp = (a, b, k) => a + (b - a) * k;
+const hash = (n) => { const s = Math.sin(n * 12.9898) * 43758.5453; return s - Math.floor(s); };
+
+/* ======================= PIXEL ======================= */
+const C = $("px"), MAIN = C.getContext("2d"); let g = MAIN; g.imageSmoothingEnabled = false;
+const PAL = { k: "#1a1422", w: "#FFF6EE", o: "#DE9A5A", r: "#C8452C", p: "#F4C6C0", y: "#f2d27a", kin: "#D7B98C", jer: "#d4202c", jerD: "#8f1119", grn: "#138a45" };
+let SOLID = null;
+const px = (x, y, c) => { g.fillStyle = SOLID || c; g.fillRect(Math.round(x), Math.round(y), 1, 1); };
+const rect = (x, y, w, h, c) => { g.fillStyle = SOLID || c; g.fillRect(Math.round(x), Math.round(y), Math.round(w), Math.round(h)); };
+const BAYER = [[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]];
+const inE = (x, y, cx, cy, rx, ry) => ((x + .5 - cx) / rx) ** 2 + ((y + .5 - cy) / ry) ** 2 <= 1;
+function blob(cx, cy, rx, ry, fill, out, keep) {
+  for (let y = Math.floor(cy - ry - 1); y <= cy + ry + 1; y++) for (let x = Math.floor(cx - rx - 1); x <= cx + rx + 1; x++) {
+    if (!inE(x, y, cx, cy, rx, ry) || (keep && !keep(x, y))) continue;
+    const edge = !inE(x - 1, y, cx, cy, rx, ry) || !inE(x + 1, y, cx, cy, rx, ry) || !inE(x, y - 1, cx, cy, rx, ry) || !inE(x, y + 1, cx, cy, rx, ry);
+    px(x, y, edge && out ? out : fill);
+  }
+}
+function gradient(stops, y0, y1) {
+  for (let y = y0; y < y1; y++) {
+    const f = (y - y0) / (y1 - y0) * (stops.length - 1), i = Math.floor(f), fr = f - i;
+    for (let x = 0; x < 180; x++) px(x, y, (fr * 16 > BAYER[y % 4][x % 4]) && stops[i + 1] ? stops[i + 1] : stops[i]);
+  }
+}
+const GY = 236;
+const TREES = Array.from({ length: 26 }, (_, i) => ({ x: i * 19 + hash(i) * 12, h: 30 + hash(i + 40) * 34, kind: hash(i + 7) > .62 ? "sakura" : "pine" }));
+const NEAR = Array.from({ length: 14 }, (_, i) => ({ x: i * 34 + hash(i + 3) * 20, h: 48 + hash(i + 90) * 30, kind: hash(i + 17) > .5 ? "sakura" : "pine" }));
+const PET = Array.from({ length: 24 }, (_, i) => ({ x: hash(i + 1) * 180, y: hash(i + 2) * 320, s: 10 + hash(i + 3) * 16, d: hash(i + 4) * 6 }));
+function pine(x, base, h, c) { for (let j = 0; j < h; j++) { const w = Math.max(1, Math.round((j / h) * h * .42 * (1 - (j % 8) / 16))); rect(x - w, base - h + j, w * 2 + 1, 1, c); } rect(x - 1, base - 3, 3, 3, c); }
+function sakura(x, base, h, c1, c2) { rect(x - 1, base - h * .55, 3, h * .55, "#2a1b24"); blob(x, base - h * .7, h * .36, h * .26, c1, null); blob(x + h * .16, base - h * .6, h * .22, h * .18, c2, null); }
+function forest(t, camX) {
+  gradient(["#26173a", "#3e1f4c", "#6a2a55", "#a5404c", "#dc6a3f", "#f2a55a"], 0, 190);
+  blob(124 - camX * .05, 150, 22, 22, "#ffcf7a", null); blob(124 - camX * .05, 150, 16, 16, "#ffe3a0", null);
+  // montañas lejanas
+  for (let x = 0; x < 180; x++) { const wx = x + camX * .15; const h = 40 + Math.sin(wx * .045) * 14 + Math.sin(wx * .11) * 6; rect(x, 190 - h, 1, h, "#5b2a52"); }
+  for (let x = 0; x < 180; x++) { const wx = x + camX * .3; const h = 26 + Math.sin(wx * .07 + 2) * 10; rect(x, 205 - h, 1, h + 40, "#3f1f45"); }
+  TREES.forEach((tr) => { const sx = ((tr.x - camX * .55) % 500 + 500) % 500 - 20; if (sx > -30 && sx < 210) tr.kind === "pine" ? pine(sx, 214, tr.h, "#2b1838") : sakura(sx, 214, tr.h, "#8a3f64", "#a24f73"); });
+  for (let y = 205; y < 320; y++) rect(0, y, 180, 1, y < GY ? "#2a1a33" : (y % 6 < 3 ? "#241a2e" : "#20172a"));
+  // camino
+  for (let y = GY; y < 320; y++) { const w = 60 + (y - GY) * .9; rect(90 - w / 2 - camX * 0, y, w, 1, y % 6 < 3 ? "#3a2b3d" : "#35273a"); }
+  for (let y = GY + 4; y < 320; y += 9) for (let x = 0; x < 180; x += 13) px((x + y * 3 - camX) % 180 < 0 ? x : (x + y * 3 - camX * 1) % 180, y, "#4a3650");
+}
+function nearTrees(camX) { NEAR.forEach((tr) => { const sx = tr.x - camX * 1.25 - 40; if (sx > -40 && sx < 220 && Math.abs(sx - 118) > 40) tr.kind === "pine" ? pine(sx, 330, tr.h * 1.6, "#120c18") : sakura(sx, 330, tr.h * 1.5, "#4a1f37", "#5a2744"); }); }
+function petals(t) { PET.forEach((q) => { const y = (q.y + t * q.s) % 320, x = ((q.x + Math.sin(t * 2 + q.d) * 4 - t * 6) % 180 + 180) % 180; px(x, y, PAL.p); }); }
+function cave(cx, glow) {
+  blob(cx + 20, GY + 6, 62, 64, "#3b3547", PAL.k, (x, y) => y <= GY + 2);
+  for (let y = GY - 60; y < GY; y += 5) for (let x = cx - 40; x < cx + 80; x += 7) if (inE(x, y, cx + 20, GY + 6, 58, 60) && hash(x * 3 + y) > .55) rect(x, y, 3, 2, "#4a4458");
+  blob(cx + 20, GY - 44, 44, 16, "#3f6b45", null, (x, y) => inE(x, y, cx + 20, GY + 6, 61, 63));
+  for (let x = cx - 20; x < cx + 62; x += 3) if (inE(x, GY - 36, cx + 20, GY + 6, 60, 62)) rect(x, GY - 36 - (x % 5 === 0 ? 3 : 0), 2, 4, "#335a3a");
+  const hc = glow > 0 ? (glow > .6 ? "#fff6d6" : glow > .3 ? "#ffe08a" : "#c89a3c") : "#0b0710";
+  blob(cx, GY - 14, 13, 16, hc, PAL.k, (x, y) => y <= GY);
+  for (let x = cx - 17; x <= cx + 17; x++) { const y = GY - 34 + Math.round(((x - cx) / 17) ** 2 * 4); rect(x, y, 1, 2, PAL.kin); }
+  [-10, 0, 10].forEach((o) => { const x = cx + o, y = GY - 32 + Math.round((o / 17) ** 2 * 4); [[0, 2], [1, 3], [0, 4], [1, 5], [0, 6]].forEach(([a, b]) => px(x + a, y + b, "#f7f2e6")); });
+}
+
+/* ---------- Maru acostada (caminando) ---------- */
+function maruLoaf(face, t, walking) {
+  const bob = walking ? (Math.floor(t * 8) % 2) : 0;
+  const cx = 0, cy = -bob;
+  if (walking) { const f = Math.floor(t * 8) % 2; [[-10, f], [-4, 1 - f], [5, f], [10, 1 - f]].forEach(([x, s]) => { rect(x - 1, 8 + s * 1 - bob, 3, 3, PAL.k); px(x, 8 + s - bob, PAL.w); }); }
+  blob(cx + 11, cy + 7, 7, 3, PAL.w, PAL.k);
+  blob(cx, cy, 15, 10, PAL.w, PAL.k);
+  blob(cx + 7, cy - 5, 7, 5, PAL.o, null, (x, y) => inE(x, y, cx, cy, 14, 9));
+  blob(cx + 13, cy + 7, 3, 2, PAL.o, null, (x, y) => inE(x, y, cx + 11, cy + 7, 6, 2));
+  [[-15, -3], [-14, -4], [-14, -3], [-13, -2], [-7, -5], [-6, -4], [-7, -4], [-8, -3]].forEach(([x, y]) => px(cx + x, cy + y, PAL.k));
+  blob(cx - 10, cy + 2, 7, 6, PAL.w, PAL.k);
+  blob(cx - 7, cy - 2, 3, 2, PAL.o, null, (x, y) => inE(x, y, cx - 10, cy + 2, 6, 5));
+  const K = PAL.k;
+  if (face === "surprised") { rect(cx - 15, cy, 3, 3, K); rect(cx - 10, cy, 3, 3, K); px(cx - 15, cy, "#fff"); px(cx - 10, cy, "#fff"); rect(cx - 11, cy + 5, 2, 2, K); }
+  else { rect(cx - 14, cy + 1, 2, 2, K); rect(cx - 9, cy + 1, 2, 2, K); }
+  px(cx - 11, cy + 4, PAL.p);
+}
+
+/* ---------- Maru de pie con la camiseta roja #7 ---------- */
+function limb(x0, y0, x1, y1, r, fill, out) {
+  const n = Math.max(2, Math.ceil(Math.hypot(x1 - x0, y1 - y0) * 1.5));
+  if (out) for (let i = 0; i <= n; i++) blob(lerp(x0, x1, i / n), lerp(y0, y1, i / n), r + 1, r + 1, out, null);
+  for (let i = 0; i <= n; i++) blob(lerp(x0, x1, i / n), lerp(y0, y1, i / n), r, r, fill, null);
+}
+function maruStand(pose, t) {
+  const K = PAL.k, W = PAL.w;
+  const sp = pose.spread || 0, hl = pose.hl, hr = pose.hr, by = pose.by || 0;
+  // cola
+  const sw = Math.sin(t * 9) * 3;
+  limb(6, -10 + by, 13 + sw * .4, -20 + by, 1.2, PAL.o, K);
+  // piernas
+  rect(-6 - sp, -8, 5, 8, K); rect(-5 - sp, -8, 3, 7, W); rect(2 + sp, -8, 5, 8, K); rect(3 + sp, -8, 3, 7, W);
+  rect(-7 - sp, -1, 6, 2, K); rect(2 + sp, -1, 6, 2, K);
+  // camiseta
+  blob(0, -16 + by, 9, 10, PAL.jer, K);
+  rect(-8, -9 + by, 17, 2, PAL.jerD);
+  // brazos
+  const shL = [-8, -21 + by], shR = [8, -21 + by];
+  blob(shL[0], shL[1], 3, 3, PAL.jer, K); blob(shR[0], shR[1], 3, 3, PAL.jer, K);
+  limb(shL[0], shL[1] + 1, hl[0], hl[1] + by, 1.2, W, K); limb(shR[0], shR[1] + 1, hr[0], hr[1] + by, 1.2, W, K);
+  blob(hl[0], hl[1] + by, 2.2, 2.2, W, K); blob(hr[0], hr[1] + by, 2.2, 2.2, W, K);
+  // cuello verde y número 7
+  rect(-4, -26 + by, 9, 1, PAL.grn); [[-2, -25], [-1, -24], [0, -23], [1, -24], [2, -25]].forEach(([x, y]) => px(x, y + by, PAL.grn));
+  rect(-2, -20 + by, 5, 1, W); [[2, -19], [2, -18], [1, -17], [1, -16], [0, -15], [0, -14]].forEach(([x, y]) => px(x, y + by, W));
+  // cabeza
+  const hy = -33 + by + (pose.nod || 0);
+  blob(-6, hy - 6, 2.6, 3, W, K); blob(6, hy - 6, 2.6, 3, PAL.o, K);
+  blob(0, hy, 9, 7.5, W, K);
+  blob(4, hy - 4, 5, 3.4, PAL.o, null, (x, y) => inE(x, y, 0, hy, 8, 6.5));
+  // cara seria y segura
+  rect(-5, hy - 1, 3, 1, K); rect(2, hy - 1, 3, 1, K); px(-5, hy - 2, K); px(4, hy - 2, K);
+  rect(-1, hy + 3, 2, 1, K); px(-6, hy + 2, PAL.p); px(6, hy + 2, PAL.p);
+}
+function poseAt(lt, t) {
+  const b = (lt * 2.6) % 1, s = Math.sin(b * Math.PI * 2);
+  if (lt < .8) return { hl: [-13, -30 - s * 7], hr: [13, -16 + s * 7], by: Math.round(Math.abs(s) * -1.5) };
+  if (lt < 1.6) { const n = Math.floor(lt * 5) % 2; return { hl: [4, -18], hr: [-4, -20], by: n ? -1 : 0, nod: n }; }
+  if (lt < 2.2) return { hl: [-15, -24], hr: [15, -24], flip: Math.floor(lt * 12) % 2 ? -1 : 1 };
+  if (lt < 2.8) { const k = p(lt, 2.2, .6); return { hl: [-9, -44], hr: [9, -44], jump: Math.sin(k * Math.PI) * 22 }; }
+  return { hl: [-17, -12], hr: [17, -12], spread: 3, land: p(lt, 2.8, .12) };
+}
+function drawStand(cx, feet, pose, t, scale) {
+  const f = pose.flip || 1;
+  g.setTransform(scale * f, 0, 0, scale, cx, feet - (pose.jump || 0) * scale / 3);
+  maruStand(pose, t);
+  g.setTransform(1, 0, 0, 1, 0, 0);
+}
+function rays(cx, cy, t, len, alpha, c1) {
+  g.save(); g.globalAlpha = alpha; g.fillStyle = c1;
+  for (let i = 0; i < 16; i++) { const a0 = t * .5 + i / 16 * Math.PI * 2, a1 = a0 + Math.PI / 22; g.beginPath(); g.moveTo(cx, cy); g.lineTo(cx + Math.cos(a0) * len, cy + Math.sin(a0) * len); g.lineTo(cx + Math.cos(a1) * len, cy + Math.sin(a1) * len); g.closePath(); g.fill(); }
+  g.restore();
+}
+
+function renderPixel(t) {
+  g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, 180, 320);
+  if (t < 8) {
+    const camX = Math.min(t, 2.5) * 48;
+    forest(t, camX);
+    const caveX = 220 - camX;
+    const glow = p(t, 5, 2.4);
+    cave(caveX, glow);
+    // Maru
+    let mx, face = "awake", walking = true, alpha = 1;
+    if (t < 2.5) mx = 40;
+    else if (t < 3.2) mx = 40 + (t - 2.5) * 48;
+    else if (t < 3.8) { mx = 73.6; walking = false; face = "surprised"; }
+    else { mx = 73.6 + (t - 3.8) * 60; alpha = 1 - p(mx, caveX - 16, 14); }
+    if (t < 4.5 && alpha > 0) {
+      g.save(); g.globalAlpha = alpha;
+      g.setTransform(-2, 0, 0, 2, mx, GY - 21);
+      maruLoaf(face, t, walking);
+      g.restore(); g.setTransform(1, 0, 0, 1, 0, 0);
+    }
+    nearTrees(camX);
+    petals(t);
+    // oscuridad y luz
+    const dark = p(t, 4.3, .6) * (1 - p(t, 5.4, 1.2)) * .55;
+    if (dark > 0) { g.fillStyle = `rgba(8,4,14,${dark})`; g.fillRect(0, 0, 180, 320); }
+    if (glow > 0) {
+      const hx = caveX, hy = GY - 14;
+      const pulse = .75 + .25 * Math.sin(t * 16);
+      rays(hx, hy, t * 1.5, 30 + 420 * glow * glow, .35 + .3 * pulse * glow, "#ffd970");
+      rays(hx, hy, -t * 1.1, 20 + 300 * glow * glow, .25 + .25 * glow, "#fff3c4");
+      for (let i = 0; i < 26; i++) { const a = hash(i) * Math.PI * 2, r = ((t * 30 + hash(i + 5) * 80) % 90) * glow; px(hx + Math.cos(a) * r, hy + Math.sin(a) * r * .8 - r * .3, "#fff3c4"); }
+    }
+    const fill = p(t, 7.1, .9);
+    if (fill > 0) { g.fillStyle = `rgba(255,246,214,${fill})`; g.fillRect(0, 0, 180, 320); }
+    return;
+  }
+  // Evolución y baile
+  const lt = t - 8.6;
+  g.fillStyle = "#C8452C"; g.fillRect(0, 0, 180, 320);
+  rays(90, 170, t * .8, 420, 1, "#DE9A5A");
+  blob(90, 170, 52, 52, "#f2d27a", null);
+  blob(90, 170, 40, 40, "#ffe7a3", null);
+  if (t < 8.6) {
+    g.fillStyle = "rgba(255,248,226,.86)"; g.fillRect(0, 0, 180, 320);
+    const rate = lerp(6, 22, p(t, 8, .6)), which = Math.floor(t * rate) % 2;
+    SOLID = "#ffffff";
+    if (which) drawStand(90, 232, poseAt(0, t), t, 3);
+    else { g.setTransform(-4, 0, 0, 4, 90, 196); maruLoaf("awake", t, false); g.setTransform(1, 0, 0, 1, 0, 0); }
+    SOLID = null;
+    return;
+  }
+  const pose = poseAt(lt, t);
+  const land = pose.land || 0;
+  // sombra
+  blob(90, 233, 26 - (pose.jump || 0) * .4, 4, "#8e2f1f", null);
+  drawStand(90, 232, pose, t, 3);
+  if (land > 0) for (let i = 0; i < 10; i++) { const a = Math.PI + i / 9 * Math.PI, r = 20 + land * 40; rect(90 + Math.cos(a) * r, 232 + Math.sin(a) * r * .25, 3, 2, "#fff3c4"); }
+}
+
+/* ======================= MUNDO PRO ======================= */
+const SV = "http://www.w3.org/2000/svg";
+function umiHTML() {
+  const dish = (kind) => {
+    if (kind === 0) return `<svg viewBox="0 0 400 280"><circle cx="200" cy="140" r="118" fill="none" stroke="#c9a45c" stroke-width="1.5"/><circle cx="200" cy="140" r="96" fill="none" stroke="rgba(201,164,92,.35)"/>${[0, 1, 2, 3, 4, 5, 6].map((i) => `<ellipse cx="200" cy="96" rx="15" ry="40" fill="rgba(239,230,212,.12)" stroke="#efe6d4" stroke-width="1.4" transform="rotate(${i * 51} 200 140)"/>`).join("")}<circle cx="200" cy="140" r="10" fill="#C8452C"/></svg>`;
+    if (kind === 1) return `<svg viewBox="0 0 400 280"><rect x="60" y="110" width="280" height="80" rx="40" fill="none" stroke="#c9a45c" stroke-width="1.5"/>${[0, 1, 2, 3, 4].map((i) => `<circle cx="${100 + i * 50}" cy="150" r="22" fill="#0d1321" stroke="#efe6d4" stroke-width="1.5"/><circle cx="${100 + i * 50}" cy="150" r="9" fill="${i % 2 ? "#C8452C" : "#c9a45c"}"/>`).join("")}<path d="M70 220 Q200 250 330 220" fill="none" stroke="rgba(201,164,92,.5)"/></svg>`;
+    return `<svg viewBox="0 0 400 280"><circle cx="200" cy="140" r="118" fill="none" stroke="#c9a45c" stroke-width="1.5"/><path d="M130 170 C130 90 250 80 260 140 C268 185 210 200 196 168 C186 146 220 132 228 150" fill="none" stroke="#efe6d4" stroke-width="3"/><path d="M150 190 C170 210 250 214 270 180" fill="none" stroke="#C8452C" stroke-width="2"/>${[0, 1, 2].map((i) => `<circle cx="${160 + i * 40}" cy="${210 - i * 4}" r="4" fill="#c9a45c"/>`).join("")}</svg>`;
+  };
+  const tile = (i) => {
+    const bgs = ["radial-gradient(circle at 35% 40%, #c9a45c 0 18%, transparent 19%), linear-gradient(160deg, #1b2740, #0a0f1a)", "repeating-linear-gradient(90deg, #3a2a1c 0 22px, #2c2016 22px 44px)", "radial-gradient(circle at 50% 60%, #C8452C 0 22%, #0d1321 23%, #0d1321 30%, #1c2842 31%)", "linear-gradient(180deg, #0d1321 0 55%, #c9a45c 55% 56%, #121b2e 56%)", "radial-gradient(circle at 60% 30%, rgba(239,230,212,.8) 0 6%, transparent 7%), radial-gradient(circle at 40% 55%, rgba(201,164,92,.7) 0 10%, transparent 11%), #111a2c"];
+    const lb = ["El sol de la barra", "Madera y fuego", "Pesca del día", "Horizonte", "Noches nikkei"];
+    return `<div class="tile" style="background:${bgs[i]}"><span>${lb[i]}</span></div>`;
+  };
+  return `<div class="umi page">
+    <nav><div class="logo">UMI<span>海</span></div><ul><li>Carta</li><li>Experiencia</li><li>Nosotros</li><li>Eventos</li></ul><span class="btn o">Reservar</span></nav>
+    <section class="hero"><div class="copy"><p class="eyebrow">Cocina nikkei · Miraflores</p>
+      <h1><span><span>El Pacífico,</span></span><span><span>con alma</span></span><span><span><em>japonesa.</em></span></span></h1>
+      <p class="lead">Pescado del día, técnica japonesa y el sabor de Lima. Una barra de doce asientos frente al mar.</p>
+      <div class="ctas"><span class="btn g">Reservar mesa</span><span class="btn t">Ver la carta →</span></div></div>
+      <div class="art"><svg viewBox="0 0 600 640"><defs><radialGradient id="sunG" cx="50%" cy="45%"><stop offset="0" stop-color="#e7c27a"/><stop offset="1" stop-color="#a9803c"/></radialGradient></defs>
+        <circle class="sunF" cx="300" cy="280" r="190" fill="url(#sunG)"/><circle class="sunL" cx="300" cy="280" r="222" fill="none" stroke="#c9a45c" stroke-width="1.5" stroke-dasharray="1395" stroke-dashoffset="1395"/>
+        <g class="waves">${[0, 1, 2, 3, 4, 5].map((i) => `<path d="${(() => { let d = `M-600 ${420 + i * 34}`; for (let x = -600; x <= 1200; x += 60) d += ` q15 -14 30 0 t30 0`; return d; })()}" fill="none" stroke="${i % 2 ? "rgba(201,164,92,.55)" : "#efe6d4"}" stroke-width="1.6"/>`).join("")}</g>
+        <rect x="0" y="410" width="600" height="230" fill="#0d1321" opacity=".0"/></svg></div></section>
+    <section class="menu"><div class="hd"><h2>La carta</h2><p>Temporada de otoño · pesca del día</p></div><div class="cards">
+      <div class="card">${dish(0)}<div class="row"><h3>Tiradito nikkei</h3><span class="pr">S/ 42</span></div><p>Lenguado, leche de tigre de ají amarillo y aceite de sésamo.</p></div>
+      <div class="card">${dish(1)}<div class="row"><h3>Maki acevichado</h3><span class="pr">S/ 38</span></div><p>Langostino tempura, palta y salsa acevichada.</p></div>
+      <div class="card">${dish(2)}<div class="row"><h3>Pulpo al olivo</h3><span class="pr">S/ 45</span></div><p>Pulpo a la brasa, crema de aceituna botija y miso.</p></div></div></section>
+    <section class="gal"><h2>La experiencia</h2><div class="strip">${[0, 1, 2, 3, 4].map(tile).join("")}</div></section>
+    <section class="res"><div><h2>Reserva tu mesa</h2><p>Martes a domingo · 1 p. m. a 11 p. m.</p><span class="btn g">Reservar por WhatsApp</span></div></section>
+  </div>`;
+}
+function archSVG() {
+  return `<svg viewBox="0 0 400 560" preserveAspectRatio="xMidYMid slice"><circle cx="210" cy="190" r="70" fill="#f7dcc9" opacity=".85"/>
+    <path d="M-20 420 C80 360 160 390 220 350 C290 305 350 330 420 300 L420 560 L-20 560 Z" fill="#c4847b" opacity=".75"/>
+    <path d="M-20 470 C90 420 180 450 260 410 C330 380 380 400 420 390 L420 560 L-20 560 Z" fill="#a8665f" opacity=".8"/>
+    ${[0, 1, 2, 3, 4].map((i) => `<path d="M${60 + i * 26} 560 C${50 + i * 26} 480 ${80 + i * 20} 430 ${70 + i * 30} ${390 - i * 8}" fill="none" stroke="#9cb59a" stroke-width="3"/>`).join("")}</svg>`;
+}
+function aureaHTML() {
+  const days = []; for (let i = 0; i < 3; i++) days.push(`<div class="d x"><span class="n">${28 + i}</span></div>`);
+  for (let d = 1; d <= 32 - 3; d++) days.push(`<div class="d${d === 17 ? " sel" : ""}"><span class="dot"></span><span class="n">${d}</span></div>`);
+  return `<div class="aurea page"><div class="sb"><span>9:41</span><span>▂▄▆ ◔</span></div><div class="scrs">
+    <div class="s s1"><div class="blob b1" style="width:240px;height:240px;background:#f0c9c1;left:-60px;top:40px"></div><div class="blob b2" style="width:220px;height:220px;background:#e9d3b8;right:-70px;top:160px"></div>
+      <nav style="position:relative"><span class="burg" style="opacity:0"></span><span class="lg">AUREA</span><span class="burg"></span></nav>
+      <div class="arch">${archSVG()}</div>
+      <h1><span class="l1">Tu momento</span><br><em class="l2">de calma.</em></h1>
+      <p class="lead">Faciales, masajes y uñas en San Isidro. Reserva en un minuto.</p>
+      <div class="cta ctaR">Reservar cita</div>
+      <div class="chips"><span>Faciales</span><span>Masajes</span><span>Uñas</span></div></div>
+    <div class="s s2"><div class="bk"><div class="top">← Reserva tu cita</div>
+      <div class="svc"><div><b>Facial hidratante</b><small>60 min · con Valeria</small></div><span class="pr">S/ 150</span></div>
+      <div class="mo"><span>Octubre</span><span style="font-size:18px;color:#a8989b">‹ ›</span></div>
+      <div class="cal">${["L", "M", "M", "J", "V", "S", "D"].map((h) => `<div class="h">${h}</div>`).join("")}${days.join("")}</div>
+      <div class="times"><span><i></i><em>10:00</em></span><span><i></i><em>11:30</em></span><span class="t3"><i></i><em>3:00 p. m.</em></span></div>
+      <div class="conf">Confirmar reserva</div></div>
+      <div class="toast"><span class="ok">✓</span><div><b>¡Cita confirmada!</b><small>Sábado 17 · 3:00 p. m. · te llegará un WhatsApp</small></div></div></div>
+  </div><div class="tap"></div></div>`;
+}
+function aureaTHTML() {
+  return `<div class="aureaT page"><nav><span>Servicios</span><span class="lg">AUREA</span><span>Reservar</span></nav>
+    <section class="hero"><div><h1>Tu momento<br><em>de calma.</em></h1><p>Faciales, masajes y uñas en San Isidro. Elige tu hora y te confirmamos por WhatsApp.</p><span class="cta">Reservar cita</span></div><div class="arch">${archSVG()}</div></section>
+    <section class="sv"><div><b>Faciales</b><small>Limpieza, hidratación y luminosidad.</small></div><div><b>Masajes</b><small>Relajante, descontracturante y piedras.</small></div><div><b>Uñas</b><small>Manicure, pedicure y gel.</small></div></section></div>`;
+}
+const CAR = `M40,190 C60,170 110,160 170,150 L262,108 C302,90 362,82 432,84 C502,86 548,98 594,128 L684,142 C718,148 736,162 741,182 L743,200 C743,210 736,214 726,214 L662,214 A58,58 0 0 0 546,214 L250,214 A58,58 0 0 0 136,214 L62,214 C46,214 38,206 40,190 Z`;
+function carSVG(id, glossy) {
+  const wheel = (x) => `<circle cx="${x}" cy="214" r="50" fill="#050506"/><circle cx="${x}" cy="214" r="34" fill="${glossy ? "#2a2a2f" : "#3a3a3d"}" stroke="${glossy ? "#9a9aa2" : "#55555a"}" stroke-width="3"/>${[0, 1, 2, 3, 4].map((i) => `<line x1="${x}" y1="214" x2="${x + Math.cos(i * 1.2566) * 32}" y2="${214 + Math.sin(i * 1.2566) * 32}" stroke="${glossy ? "#c4c4cc" : "#5d5d62"}" stroke-width="5"/>`).join("")}<circle cx="${x}" cy="214" r="8" fill="${glossy ? "#ff5a1f" : "#444"}"/>`;
+  return `<svg viewBox="0 0 780 290"><defs>
+      <linearGradient id="${id}b" x1="0" y1="0" x2="0" y2="1">${glossy ? `<stop offset="0" stop-color="#3b3b44"/><stop offset=".35" stop-color="#16161a"/><stop offset=".62" stop-color="#26262c"/><stop offset="1" stop-color="#050506"/>` : `<stop offset="0" stop-color="#5c5c60"/><stop offset="1" stop-color="#46464a"/>`}</linearGradient>
+      <clipPath id="${id}c"><path d="${CAR}"/></clipPath>
+      <linearGradient id="${id}s" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".75"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+      <radialGradient id="${id}g" cx="50%" cy="50%"><stop offset="0" stop-color="#ff5a1f" stop-opacity=".55"/><stop offset="1" stop-color="#ff5a1f" stop-opacity="0"/></radialGradient></defs>
+    ${glossy ? `<ellipse cx="390" cy="262" rx="380" ry="26" fill="url(#${id}g)"/>` : `<ellipse cx="390" cy="262" rx="360" ry="18" fill="rgba(0,0,0,.5)"/>`}
+    <path d="${CAR}" fill="url(#${id}b)" stroke="${glossy ? "#6a6a74" : "#333"}" stroke-width="2"/>
+    <path d="M282,114 L330,94 C370,88 420,88 460,90 L470,132 L272,134 Z M480,91 C520,94 550,106 574,128 L486,132 Z" fill="${glossy ? "#0c1016" : "#2b2b2e"}" stroke="${glossy ? "#555" : "#333"}"/>
+    ${glossy ? `<path d="M120,160 C260,150 520,146 700,160" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="2"/><path d="M720,168 L740,176 L736,186 L714,182 Z" fill="#fff4d8"/><path d="M44,180 L66,176 L66,188 L46,192 Z" fill="#ff3b1f"/>` : `<path d="M720,168 L740,176 L736,186 L714,182 Z" fill="#8a8578"/>`}
+    <g clip-path="url(#${id}c)">${glossy ? `<rect class="sweep" x="-300" y="0" width="220" height="290" fill="url(#${id}s)" transform="skewX(-20)"/>` : [...Array(90)].map((_, i) => `<circle cx="${60 + hash(i) * 680}" cy="${90 + hash(i + 50) * 125}" r="${1 + hash(i + 9) * 2.5}" fill="rgba(160,140,110,.45)"/>`).join("")}</g>
+    ${wheel(193)}${wheel(604)}</svg>`;
+}
+function voltHTML() {
+  return `<div class="volt page"><nav><span class="lg">VOLT<i>.</i></span><ul><li>Servicios</li><li>Trabajos</li><li>Paquetes</li><li>Contacto</li></ul><span class="btn">Cotizar ahora</span></nav>
+    <section class="hero"><div class="big">VOLT</div><div style="position:relative"><div class="tag">DETAILING · LIMA</div><h1><span class="h1a">Brillo que</span><br><span class="o h1b">se nota.</span></h1><p>Pulido, cerámico e interiores. Tu auto como el primer día, con cita por WhatsApp.</p><span class="btn">Agenda tu cita</span> <span class="btn gh">Ver trabajos</span></div>
+      <div class="car">${carSVG("h", true)}</div></section>
+    <section class="ba"><h2>Antes <span>/</span> después</h2><div class="slider"><div class="lay dull">${carSVG("d", false)}</div><div class="lay shine" style="background:radial-gradient(70% 70% at 50% 60%, #22150f, #131316)">${carSVG("s", true)}</div><div class="bar"></div><div class="knob">⟷</div><span class="lb" style="left:24px">ANTES</span><span class="lb" style="right:24px">DESPUÉS</span></div></section>
+    <section class="packs"><h2>Paquetes</h2><div class="pk">
+      <div><b>Lavado pro</b><div class="pr">S/ 120 <small>/ auto</small></div><ul><li>Lavado a mano</li><li>Aspirado completo</li><li>Brillo de llantas</li></ul><span class="btn gh">Elegir</span></div>
+      <div class="hot"><b>Pulido</b><div class="pr">S/ 280 <small>/ auto</small></div><ul><li>Corrección de pintura</li><li>Cera de carnauba</li><li>Faros restaurados</li></ul><span class="btn">Elegir</span></div>
+      <div><b>Cerámico</b><div class="pr">S/ 890 <small>/ auto</small></div><ul><li>Protección 2 años</li><li>Efecto espejo</li><li>Repele agua y polvo</li></ul><span class="btn gh">Elegir</span></div></div></section></div>`;
+}
+/* Monta cada web en su pantalla, a escala */
+function mount(id, html, w, screenW) { const el = $(id); el.innerHTML = html; el.style.width = w + "px"; el.style.transform = `scale(${screenW / w})`; return el; }
+const SITES = {
+  umiMon: mount("umiMon", umiHTML(), 1440, 880),
+  umiLap: mount("umiLap", umiHTML(), 1440, 820),
+  aurPho: mount("aurPho", aureaHTML(), 390, 380),
+  aurTab: mount("aurTab", aureaTHTML(), 1024, 640),
+  voltU: mount("voltU", voltHTML(), 1600, 960),
+};
+const Q = (root, s) => root.querySelector(s), QA = (root, s) => [...root.querySelectorAll(s)];
+
+function updUmi(root, o, t) {
+  Q(root, ".page").style.transform = `translateY(${-o.scroll}px)`;
+  QA(root, "h1 > span > span").forEach((el, i) => { const k = outX(p(o.hero, .1 + i * .12, .45)); el.style.transform = `translateY(${(1 - k) * 110}%)`; });
+  const fade = (sel, s) => { const k = outQ(p(o.hero, s, .4)); const el = Q(root, sel); el.style.opacity = k; el.style.transform = `translateY(${(1 - k) * 24}px)`; };
+  fade(".eyebrow", 0); fade(".lead", .45); fade(".ctas", .55); fade("nav", 0);
+  Q(root, ".sunL").style.strokeDashoffset = 1395 * (1 - io(p(o.hero, .05, .9)));
+  const sf = outQ(p(o.hero, .3, .6)); Q(root, ".sunF").setAttribute("r", 190 * sf);
+  Q(root, ".waves").style.transform = `translateX(${(t * 40) % 60}px)`;
+  QA(root, ".card").forEach((el, i) => { const k = outQ(p(o.cards, i * .15, .5)); el.style.opacity = k; el.style.transform = `translateY(${(1 - k) * 80}px)`; });
+  Q(root, ".strip").style.transform = `translateX(${-o.gal}px)`;
+  const pu = o.pulse || 0; Q(root, ".res .btn.g").style.boxShadow = `0 0 0 ${pu * 24}px rgba(201,164,92,${.5 * (1 - pu)})`;
+}
+function updAurea(root, o, t) {
+  Q(root, ".scrs").style.transform = `translateX(${-390 * o.slide}px)`;
+  Q(root, ".b1").style.transform = `translate(${Math.sin(t * .9) * 40}px, ${Math.cos(t * .7) * 30}px)`;
+  Q(root, ".b2").style.transform = `translate(${Math.cos(t * .8) * 40}px, ${Math.sin(t * .6) * 40}px)`;
+  const r = (sel, s) => { const k = outX(p(o.hero, s, .5)); const el = Q(root, sel); el.style.display = "inline-block"; el.style.opacity = k; el.style.transform = `translateY(${(1 - k) * 40}px)`; };
+  r(".l1", .1); r(".l2", .22);
+  [".lead", ".ctaR", ".chips", ".arch"].forEach((s, i) => { const k = outQ(p(o.hero, i === 3 ? 0 : .35 + i * .08, .5)); const el = Q(root, s); el.style.opacity = k; el.style.transform = i === 3 ? `scale(${.92 + .08 * k})` : `translateY(${(1 - k) * 20}px)`; });
+  const sel = Q(root, ".d.sel .dot"); sel.style.transform = `scale(${outQ(o.day)})`; Q(root, ".d.sel .n").style.color = o.day > .5 ? "#fff" : "";
+  const tm = Q(root, ".t3 i"); tm.style.transform = `scaleX(${outQ(o.time)})`; Q(root, ".t3 em").style.color = o.time > .5 ? "#fff" : "";
+  Q(root, ".conf").style.transform = `scale(${1 - .05 * Math.sin(Math.PI * o.press)})`;
+  const ts = Q(root, ".toast"); ts.style.opacity = o.toast; ts.style.transform = `translateY(${(1 - outQ(o.toast)) * 60}px)`;
+  const tap = Q(root, ".tap"); tap.style.opacity = o.tap ? o.tap[2] : 0; if (o.tap) { tap.style.left = o.tap[0] + "px"; tap.style.top = o.tap[1] + "px"; tap.style.transform = `scale(${o.tap[3] || 1})`; }
+}
+function updAureaT(root, o) { Q(root, ".page").style.transform = `translateY(${-o.scroll}px)`; }
+function updVolt(root, o, t) {
+  Q(root, ".page").style.transform = `translateY(${-o.scroll}px)`;
+  const sw = ((t - 27.2) / 1.25) % 1;
+  QA(root, ".sweep").forEach((el) => el.setAttribute("x", -300 + sw * 1300));
+  const hk = o.hero;
+  [".h1a", ".h1b"].forEach((s, i) => { const k = outX(p(hk, .1 + i * .15, .45)); const el = Q(root, s); el.style.display = "inline-block"; el.style.opacity = k; el.style.transform = `translateX(${(1 - k) * -60}px)`; });
+  const car = Q(root, ".hero .car"); const ck = outX(p(hk, 0, .7)); car.style.transform = `translateX(${(1 - ck) * 500}px)`; car.style.opacity = ck;
+  const s = o.slider; Q(root, ".shine").style.clipPath = `inset(0 0 0 ${s * 100}%)`; Q(root, ".slider .bar").style.left = s * 100 + "%"; Q(root, ".slider .knob").style.left = s * 100 + "%";
+  QA(root, ".pk > div").forEach((el, i) => { const k = outQ(p(o.packs, i * .14, .45)); el.style.opacity = k; el.style.transform = `translateY(${(1 - k) * 90}px) scale(${.94 + .06 * k})`; });
+}
+
+function setDev(id, o) {
+  const el = $(id);
+  if (!o || o.op <= 0) { el.style.display = "none"; return el; }
+  el.style.display = "block";
+  el.style.opacity = o.op ?? 1;
+  el.style.transform = `translate(-50%, -50%) translate3d(${o.x || 0}px, ${o.y || 0}px, ${o.z || 0}px) rotateX(${o.rx || 0}deg) rotateY(${o.ry || 0}deg) rotateZ(${o.rz || 0}deg) scale(${o.s || 1})`;
+  el.style.filter = o.blur > .3 ? `blur(${o.blur}px)` : "none";
+  const gl = el.querySelector(".glare"); gl.style.backgroundPosition = `${50 + (o.ry || 0) * 3}% 0`;
+  el.querySelector(".off").style.opacity = o.off || 0;
+  return el;
+}
+const punch = (t) => { let v = 0; BEATS.forEach((b) => { if (t >= b && t < b + .5) v = Math.max(v, Math.exp(-(t - b) * 9)); }); return v; };
+
+function renderPro(t) {
+  const pr = $("pro");
+  pr.style.opacity = t >= DROP ? 1 : 0;
+  if (t < DROP) return;
+  const seg = t < 19.5 ? 0 : t < 27 ? 1 : t < 34.5 ? 2 : 3;
+  const pk = punch(t);
+  $("world").style.transform = `scale(${1 + pk * .045})`;
+  $("grain").style.transform = `translate(${Math.floor(hash(Math.floor(t * 30)) * 60) - 30}px, ${Math.floor(hash(Math.floor(t * 30) + 1) * 60) - 30}px)`;
+
+  // Fondo y luces por web
+  const bg = $("bg"), l1 = $("leak1"), l2 = $("leak2");
+  const light = seg === 1;
+  if (seg === 0) bg.style.background = "radial-gradient(90% 60% at 50% 42%, #1b2640 0%, #0b101c 55%, #05070c 100%)";
+  if (seg === 1) bg.style.background = "radial-gradient(90% 60% at 50% 42%, #fbf3ee 0%, #efe1da 55%, #dcc7bf 100%)";
+  if (seg >= 2) bg.style.background = "radial-gradient(90% 60% at 50% 45%, #1c1210 0%, #0b0908 50%, #030303 100%)";
+  const lc = seg === 0 ? ["#c9a45c", "#C8452C"] : seg === 1 ? ["#f0b8b0", "#e9d3b8"] : ["#ff5a1f", "#ff9a3c"];
+  Object.assign(l1.style, { width: "700px", height: "700px", left: `${-200 + Math.sin(t * .6) * 120}px`, top: `${300 + Math.cos(t * .5) * 100}px`, background: lc[0], opacity: light ? .5 : .28 });
+  Object.assign(l2.style, { width: "600px", height: "600px", left: `${620 + Math.cos(t * .4) * 120}px`, top: `${1000 + Math.sin(t * .7) * 100}px`, background: lc[1], opacity: light ? .45 : .22 });
+  $("vig").style.opacity = light ? .35 : 1;
+
+  // Palabra gigante detrás
+  const kw = $("kw"); let word = "", wk = 0, wStyle = {};
+  if (t >= 15.75 && t < 19.5) { word = "ELEGANTE"; wk = outX(p(t, 15.75, .6)); wStyle = { font: "150px 'Tenor Sans'", color: "transparent", stroke: "2px rgba(201,164,92,.75)", top: 330 }; }
+  if (t >= 21.375 && t < 25.125) { word = "RESERVAS"; wk = outX(p(t, 21.375, .6)); wStyle = { font: "150px 'Bodoni Moda'", color: "rgba(183,110,121,.34)", stroke: "0", top: 150 }; }
+  if (t >= 28.875 && t < 32.625) { word = "QUE<br>VENDEN"; wk = outX(p(t, 28.875, .5)); wStyle = { font: "800 150px 'Unbounded'", color: "transparent", stroke: "3px rgba(255,90,31,.8)", top: 190 }; }
+  kw.innerHTML = word ? `<span>${word}</span>` : "";
+  if (word) {
+    Object.assign(kw.style, { font: wStyle.font, color: wStyle.color, webkitTextStroke: wStyle.stroke, top: wStyle.top + "px", opacity: wk, letterSpacing: `${lerp(.4, .06, wk)}em`, transform: `scale(${1 + pk * .06})` });
+    kw.style.textShadow = pk > .2 ? `${6 * pk}px 0 rgba(255,40,40,.5), ${-6 * pk}px 0 rgba(40,200,255,.5)` : "none";
+  }
+
+  // Etiqueta
+  const cap = $("cap");
+  const capTxt = ["UMI · restaurante nikkei", "AUREA · salón y spa", "VOLT · detailing de autos"];
+  if (seg < 3 && t < 32.4) { const segStart = [12, 19.5, 27][seg]; const k = outQ(p(t, segStart + .5, .5)) * (1 - p(t, [19.2, 26.7, 32.2][seg], .25)); cap.style.opacity = k; cap.style.color = light ? "#2b2326" : "#efe6d4"; $("capI").textContent = `0${seg + 1} / 03`; $("capT").textContent = capTxt[seg]; cap.style.transform = `translateX(${(1 - k) * -30}px)`; }
+  else cap.style.opacity = 0;
+
+  // Dispositivos
+  const none = null;
+  let mon = none, lap = none, pho = none, tab = none, ult = none;
+  if (seg === 0) {
+    if (t < 15.75) {
+      const e = outX(p(t, 12, 1.1)), push = io(p(t, 13.875, 1.0));
+      mon = { x: 0, y: lerp(60, 20, e) - push * 40, z: lerp(-1800, 0, e) + push * 330, rx: 4, ry: lerp(42, -10, e) + (t - 12) * 1.5 + push * 6, s: 1, blur: (1 - e) * 16 };
+      updUmi(SITES.umiMon, { hero: p(t, 12.25, 1.5), scroll: 900 * io(p(t, 14.0, 1.2)), cards: p(t, 14.55, 1.0), gal: 0 }, t);
+    } else {
+      const o = outQ(p(t, 15.75, .75)), orb = p(t, 15.75, 3.75), push = io(p(t, 17.625, 1.2));
+      lap = { x: 0, y: 150 - push * 60, z: lerp(-500, -150, orb) + push * 260, rx: 16 - push * 8, ry: lerp(-28, 14, io(orb)), s: 1.0, blur: 0 };
+      $("dLap").querySelector(".lid").style.transform = `rotateX(${-100 * (1 - o)}deg)`;
+      updUmi(SITES.umiLap, { hero: 1, scroll: lerp(1735, 2440, io(p(t, 17.7, .9))), cards: 1, gal: (t - 15.75) * 170, pulse: (t * 1.2) % 1 * p(t, 18.5, .1) }, t);
+    }
+  }
+  if (seg === 1) {
+    const e = outX(p(t, 19.5, 1.0));
+    const side = io(p(t, 25.125, .9));
+    pho = { x: lerp(0, 190, side), y: lerp(420, -10, e) + Math.sin(t * 1.6) * 10, z: lerp(-600, 0, e) - side * 120, rx: 4, ry: lerp(-30, -12, e) + Math.sin(t * .8) * 4 - side * 8, rz: lerp(-6, 0, e), s: lerp(1.3, 1.1, side), blur: (1 - e) * 10 };
+    // pantalla del celular
+    const slide = io(p(t, 21.375, .5)) * (1 - io(p(t, 25.125, .5)));
+    let tap = null;
+    const tapAt = (tt, x, y) => { const k = p(t, tt - .15, .45); if (k > 0 && k < 1) tap = [x, y, Math.sin(k * Math.PI), 1.3 - .5 * Math.sin(k * Math.PI)]; };
+    tapAt(21.2, 195, 710);
+    tapAt(22.1, 390 + 24 + 6 * 49 + 20, 54 + 10 + 280 + 4 * 44 + 18);
+    tapAt(22.65, 390 + 24 + 2 * 119 + 50, 54 + 590 + 20);
+    tapAt(23.05, 390 + 195, 54 + 680);
+    if (tap && tap[0] > 390) tap[0] -= 390 * slide;
+    updAurea(SITES.aurPho, { hero: p(t, 19.6, 1.4), slide, day: p(t, 22.1, .3), time: p(t, 22.65, .3), press: p(t, 23.0, .25), toast: p(t, 23.25, .4) * (1 - p(t, 25.0, .3)), tap }, t);
+    if (t >= 25.125) {
+      const te = outX(p(t, 25.125, .9));
+      tab = { x: lerp(-700, -170, te), y: 40 + Math.sin(t * 1.3) * 8, z: -60, rx: 4, ry: lerp(40, 14, te), s: 1.05, blur: (1 - te) * 10 };
+      updAureaT(SITES.aurTab, { scroll: 320 * io(p(t, 25.7, 1.1)) });
+    }
+  }
+  if (seg === 2) {
+    if (t < 32.625) {
+      const e = outX(p(t, 27, 1.0)), push = io(p(t, 28.875, 1.0));
+      ult = { x: lerp(500, 0, e), y: 0, z: lerp(-1400, 0, e) + push * 120, rx: 3, ry: lerp(-60, 8, e) - push * 6 + (t - 27) * -.8, s: 1.02, blur: (1 - e) * 14 };
+      updVolt(SITES.voltU, { hero: p(t, 27.15, 1.2), scroll: io(p(t, 28.95, .7)) * 590 + io(p(t, 30.8, .7)) * 680, slider: lerp(.12, .88, io(p(t, 29.5, 1.2))), packs: p(t, 31.2, .9) }, t);
+    } else {
+      // Pared final con las 3 webs
+      const w = io(p(t, 32.625, .9)), back = p(t, 32.625, 1.9);
+      ult = { x: 0, y: lerp(0, -420, w), z: -back * 160, rx: 2, ry: 0, s: lerp(1.02, .9, w) };
+      mon = { x: lerp(-800, -230, w), y: 250, z: -back * 160, rx: 2, ry: 16, s: .58, off: 1 - p(t, 33.0, .25) };
+      pho = { x: lerp(800, 280, w), y: 230, z: -back * 160, rx: 2, ry: -16, s: .52, off: 1 - p(t, 33.4, .25) };
+      updVolt(SITES.voltU, { hero: 1, scroll: 0, slider: .88, packs: 1 }, t);
+      updUmi(SITES.umiMon, { hero: 1, scroll: 0, cards: 1, gal: 0 }, t);
+      updAurea(SITES.aurPho, { hero: 1, slide: 0, day: 1, time: 1, press: 0, toast: 0, tap: null }, t);
+    }
+  }
+  setDev("dMon", mon); setDev("dLap", lap); setDev("dPho", pho); setDev("dTab", tab); setDev("dUlt", ult);
+}
+
+/* ======================= EXPLOSIÓN DE PÍXELES ======================= */
+const FX = $("fx"), gf = FX.getContext("2d");
+let SNAP = null;
+function snapshot() {
+  if (SNAP) return SNAP;
+  renderPixel(11.99);
+  const d = MAIN.getImageData(0, 0, 180, 320).data, parts = [];
+  for (let y = 0; y < 320; y += 2) for (let x = 0; x < 180; x += 2) { const i = (y * 180 + x) * 4; parts.push({ x: x * 6 + 6, y: y * 6 + 6, c: `rgb(${d[i]},${d[i + 1]},${d[i + 2]})`, r: hash(x * 7 + y * 13), q: hash(x * 3 + y * 5 + 1) }); }
+  return (SNAP = parts);
+}
+function renderFx(t) {
+  gf.clearRect(0, 0, 1080, 1920);
+  if (t < DROP || t > DROP + .9) return;
+  const k = p(t, DROP, .85), parts = snapshot();
+  parts.forEach((q) => {
+    const kk = clamp((k - q.q * .15) / .85); if (kk <= 0) { gf.fillStyle = q.c; gf.fillRect(q.x - 6, q.y - 6, 12, 12); return; }
+    const z = 1 + kk * kk * (5 + q.r * 9), dx = q.x - 540, dy = q.y - 900;
+    const x = 540 + dx * z + (q.r - .5) * 300 * kk, y = 900 + dy * z + (q.q - .5) * 300 * kk, s = 12 * (1 + kk * 3 * q.r);
+    gf.globalAlpha = 1 - kk; gf.fillStyle = q.c; gf.fillRect(x - s / 2, y - s / 2, s, s);
+  });
+  gf.globalAlpha = 1;
+}
+
+/* ======================= mini Maru del cierre ======================= */
+const MINI = $("mini").getContext("2d");
+function renderMini(t) {
+  const w = $("miniwrap");
+  const up = io(p(t, 35.6, .45)) * (1 - io(p(t, 37.5, .4)));
+  w.style.opacity = t > 35.4 ? 1 : 0;
+  if (t <= 35.4) return;
+  const old = g; g = MINI; g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, 60, 80);
+  const lt = t < 36.9 ? (t * 1) % .8 : 2.9;
+  drawStand(30, 78 + (1 - up) * 70, t < 36.9 ? poseAt(lt, t) : poseAt(3.0, t), t, 1.5);
+  g = old;
+}
+
+/* ======================= RENDER ======================= */
+function render(t) {
+  // pixel
+  const pxOn = t < DROP;
+  $("pxwrap").style.display = pxOn ? "block" : "none";
+  if (pxOn) renderPixel(t);
+  let shx = 0, shy = 0;
+  if (t > 5 && t < 8) { const a = p(t, 5, 3) * 7; shx = (hash(Math.floor(t * 30)) - .5) * a * 2; shy = (hash(Math.floor(t * 30) + 7) - .5) * a * 2; }
+  if (t > 11.7 && t < 12) { const a = 10; shx = (hash(Math.floor(t * 40)) - .5) * a; }
+  const squeeze = t > 11.7 && t < 12 ? 1 + p(t, 11.7, .3) * .06 : 1;
+  $("pxwrap").style.transform = `translate(${shx}px, ${shy}px) scale(${squeeze})`;
+
+  // Notificación: visible desde el primer cuadro hasta que entra a la cueva
+  const nOut = p(t, 4.1, .3), n = $("notif");
+  n.style.opacity = t < 4.4 ? 1 - nOut : 0;
+  n.style.transform = `translateY(${-nOut * 40 + (t < .25 ? Math.sin(t * 60) * 6 : 0)}px)`;
+  const dist = Math.max(0, Math.round(12 - 12 * p(t, 0, 3.2)));
+  $("nD").textContent = dist > 0 ? dist + " m" : "¡AQUÍ!";
+  $("nM").style.width = (8 + 92 * p(t, 0, 3.2)) + "%";
+  n.querySelector(".ic").style.background = Math.floor(t * 4) % 2 ? "#f2d27a" : "#C8452C";
+  // "!" sobre Maru
+  const bang = $("bang"); const bOn = t > 3.2 && t < 3.8;
+  bang.style.opacity = bOn ? 1 : 0; bang.style.left = (73.6 - 4) * 6 - 30 + "px"; bang.style.top = (GY - 60) * 6 + "px";
+  bang.style.transform = `scale(${bOn ? 1 + .3 * Math.exp(-(t - 3.2) * 10) : 1})`;
+
+  // Baile: textos
+  const sk = $("skill"), skOn = t >= 8.6 && t < 12;
+  sk.style.opacity = skOn ? 1 : 0;
+  const full = "¡NUEVA HABILIDAD: DESARROLLO WEB!";
+  $("skT").textContent = full.slice(0, Math.floor(Math.max(0, t - 8.75) * 30));
+  const siu = $("siu"); siu.style.opacity = skOn ? 1 : 0;
+  const land = p(t, 11.4, .15);
+  const beat = Math.abs(Math.sin((t - 8.6) * Math.PI * 2.6));
+  siu.style.transform = `scale(${(.85 + beat * .08) * (1 + land * .35)}) rotate(${land ? -4 : Math.sin(t * 5) * 2}deg)`;
+  siu.textContent = t < 11.4 ? "SIUUU" : "SIUUUU!";
+
+  // flash del drop y entre webs
+  let fl = 0;
+  if (t >= DROP && t < DROP + .12) fl = 1 - p(t, DROP, .12);
+  [19.5, 27].forEach((b) => { if (t >= b && t < b + .14) fl = Math.max(fl, .9 * (1 - p(t, b, .14))); });
+  if (t >= 7.9 && t < 8.6) fl = Math.max(fl, .0);
+  $("flash").style.opacity = fl;
+
+  renderPro(t);
+  renderFx(t);
+
+  // Cierre
+  const c = $("cta"), ck = outQ(p(t, 34.5, .45));
+  c.style.opacity = ck;
+  const inn = c.querySelector(".in").children;
+  [...inn].forEach((el, i) => { const k = outX(p(t, 34.7 + i * .3, .5)); el.style.opacity = k; el.style.transform = `translateY(${(1 - k) * 40}px)`; });
+  const pulse = p(t, 35.6, 2.4); c.querySelector(".c b").style.boxShadow = `0 0 0 ${((t * 1.4) % 1) * 22 * (pulse > 0 ? 1 : 0)}px rgba(215,185,140,${.5 * (1 - (t * 1.4) % 1)})`;
+  renderMini(t);
+}
+
+/* ---------- Reproductor ---------- */
+const REC = new URLSearchParams(location.search).has("rec");
+if (REC) document.body.classList.add("rec");
+function fit() { if (REC) return; const vp = $("viewport").getBoundingClientRect(); const s = Math.min(vp.width / 1080, vp.height / 1920) * .96; $("stage").style.transform = `translate(${-540 * s}px, ${-960 * s}px) scale(${s})`; }
+addEventListener("resize", fit);
+$("scrub").max = DURATION;
+let playing = !REC, t0 = performance.now(), now = 0;
+function show(t) { now = t; render(t); $("scrub").value = t; $("time").textContent = t.toFixed(2) + " / " + DURATION.toFixed(1) + " s"; }
+function loop(ts) { if (playing) { let t = (ts - t0) / 1000; if (t >= DURATION) { t0 = ts; t = 0; } show(t); } requestAnimationFrame(loop); }
+$("play").onclick = () => { playing = !playing; $("play").textContent = playing ? "Pausa" : "Reproducir"; t0 = performance.now() - now * 1000; };
+$("scrub").oninput = () => { playing = false; $("play").textContent = "Reproducir"; show(+$("scrub").value); };
+window.__seek = (t) => show(t);
+window.__duration = DURATION;
+const FONTS = ["52px DotGothic16", "40px 'Tenor Sans'", "500 40px 'Cormorant Garamond'", "italic 500 40px 'Cormorant Garamond'", "500 40px 'Bodoni Moda'", "italic 500 40px 'Bodoni Moda'", "400 20px Manrope", "700 20px Manrope", "800 40px Unbounded", "400 20px 'Space Grotesk'", "700 20px 'Space Grotesk'"];
+window.__ready = Promise.all(FONTS.map((f) => document.fonts.load(f))).then(() => document.fonts.ready).then(() => { fit(); snapshot(); show(0); return true; });
+window.__ready.then(() => { t0 = performance.now(); requestAnimationFrame(loop); });
+</script>
+</body>
+</html>
