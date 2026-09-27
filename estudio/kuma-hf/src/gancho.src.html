@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Montserrat"; font-weight: 900; src: url("assets/fonts/Montserrat-Black.ttf"); }
+        #root { position: absolute; inset: 0; overflow: hidden; background: #0B0F1A; }
+        #g-bg { position: absolute; inset: 0; background: radial-gradient(75% 55% at 50% 48%, #151c30 0%, #0B0F1A 60%, #05070C 100%); }
+        .g-s { position: absolute; left: 60px; right: 120px; top: 0; bottom: 0; display: grid; align-content: center; justify-items: center; opacity: 0; }
+        .g-s div { font-family: "Montserrat", sans-serif; font-weight: 900; color: #C8452C; line-height: .92; letter-spacing: -.035em; white-space: nowrap; text-shadow: 0 0 60px rgba(200,69,44,.35); }
+      </style>
+      <div id="root" data-composition-id="gancho" data-width="1080" data-height="1920" data-duration="2.1">
+        <div id="g-bg"></div>
+        <div class="g-s" id="g-s1" style="opacity:1"><div style="font-size:230px">¿Y SI</div><div style="font-size:178px">TUVIERAS</div></div>
+        <div class="g-s" id="g-s2"><div style="font-size:196px">UN</div><div style="font-size:170px">SEGUNDO</div></div>
+        <div class="g-s" id="g-s3"><div style="font-size:152px">CEREBRO</div><div style="font-size:430px;line-height:.85">?</div></div>
+      </div>
+      <script>
+        (function () {
+        var tl = gsap.timeline({ paused: true });
+        tl.fromTo("#g-s1", { scale: 1.06 }, { scale: 1, duration: .3, ease: "expo.out" }, 0);
+        tl.set("#g-s1", { opacity: 0 }, .7);
+        tl.fromTo("#g-s2", { opacity: 0, scale: 1.15, filter: "blur(10px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: .15, ease: "expo.out" }, .7);
+        tl.set("#g-s2", { opacity: 0 }, 1.4);
+        tl.fromTo("#g-s3", { opacity: 0, scale: 1.3, filter: "blur(12px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: .16, ease: "expo.out" }, 1.4);
+        tl.fromTo("#g-s3", { x: -5 }, { x: 5, duration: .04, repeat: 5, yoyo: true, ease: "none", immediateRender: false }, 1.6);
+        window.__timelines["gancho"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

@@ -1,0 +1,10 @@
+<!doctype html><html><head><meta charset="utf-8"><style>body{margin:0;background:#111;display:flex;gap:8px;width:1700px} canvas{width:270px;height:480px;image-rendering:pixelated}</style></head><body>
+<script src="pixel-engine.js"></script><script src="kuma-pixel.js"></script><script>
+function mk(fn){const c=document.createElement("canvas");c.width=270;c.height=480;document.body.appendChild(c);setCtx(c.getContext("2d"));fn();}
+const t=3.2;
+mk(()=>{office(t);kuma(118,400,2,{eyes:"stress",mouth:"wave",sweat:true,faceNote:true,left:[-20,-30],right:[20,-30]},t);desk(t);});
+mk(()=>{street(t);car(135,380,t);kumaHead(92,318,1.6,{eyes:"panic",mouth:"o",foreheadNote:true},t);});
+mk(()=>{gradient(["#2a1a4a","#1a1624"],0,480);kumaHead(135,250,6,{eyes:"twitch",mouth:"wave",steam:true},t);});
+mk(()=>{office(t);g.fillStyle="rgba(10,6,20,.45)";g.fillRect(0,0,270,480);kuma(135,330,2.4,{eyes:"panic",mouth:"o",spikes:true,left:[-14,-66],right:[14,-66],armsFront:true,looseTie:1},t);tornadoNotes(135,260,10,40,1.1,0);});
+mk(()=>{office(t);kuma(135,330,2.4,{eyes:"wink",mouth:"smile",looseTie:1,right:[20,-36]},t);});
+</script></body></html>

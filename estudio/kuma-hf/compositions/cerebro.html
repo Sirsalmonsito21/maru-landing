@@ -1,0 +1,339 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Zen Kaku Gothic New"; font-weight: 500; src: url("assets/fonts/ZenKakuGothicNew-Medium.ttf"); }
+        @font-face { font-family: "Zen Kaku Gothic New"; font-weight: 700; src: url("assets/fonts/ZenKakuGothicNew-Bold.ttf"); }
+        @font-face { font-family: "Zen Kaku Gothic New"; font-weight: 900; src: url("assets/fonts/ZenKakuGothicNew-Black.ttf"); }
+        #root { position: absolute; inset: 0; overflow: hidden; background: #05070C; font-family: "Zen Kaku Gothic New", sans-serif; color: #F4F1EA; }
+        #c-gl { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; display: block; }
+        #c-vig { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(85% 60% at 50% 48%, transparent 55%, rgba(0,0,0,.7)); }
+        .glass { background: rgba(20,22,30,.55); border: 1px solid rgba(243,221,176,.28); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: 0 20px 60px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.08); }
+        .c-lab { position: absolute; left: 0; top: 0; padding: 12px 22px; border-radius: 40px; font-size: 32px; font-weight: 700; white-space: nowrap; opacity: 0; }
+        #c-cls { position: absolute; left: 0; top: 0; width: 380px; padding: 22px 26px; border-radius: 24px; opacity: 0; }
+        #c-cls .a { font-size: 36px; font-weight: 900; } #c-cls .b { margin-top: 12px; height: 10px; border-radius: 5px; background: rgba(255,255,255,.1); overflow: hidden; }
+        #c-cls .b i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #D7B98C, #F3DDB0); box-shadow: 0 0 14px #F3DDB0; }
+        #c-cls .c { margin-top: 8px; font-size: 24px; color: #D7B98C; letter-spacing: .12em; }
+        .c-chip { position: absolute; left: 0; top: 0; padding: 14px 20px; border-radius: 18px; font-size: 30px; font-weight: 700; white-space: nowrap; opacity: 0; min-width: 230px; }
+        .c-chip .b { margin-top: 10px; height: 6px; border-radius: 3px; background: rgba(255,255,255,.12); overflow: hidden; }
+        .c-chip .b i { display: block; height: 100%; width: 0; background: #F3DDB0; }
+        .c-chip .ok { color: #2FD08A; margin-left: 10px; opacity: 0; }
+        #c-notes { position: absolute; left: 70px; right: 150px; top: 330px; display: grid; gap: 22px; }
+        .c-note { padding: 26px 30px; border-radius: 26px; font-size: 38px; font-weight: 700; opacity: 0; display: flex; gap: 18px; align-items: center; }
+        .c-note small { display: block; font-size: 26px; color: #D7B98C; font-weight: 500; margin-top: 4px; }
+        #c-q { position: absolute; left: 70px; right: 150px; top: 250px; padding: 26px 30px; border-radius: 26px; font-size: 42px; font-weight: 700; opacity: 0; }
+        #c-q .cur { display: inline-block; width: 4px; height: 44px; background: #F3DDB0; margin-left: 6px; vertical-align: middle; }
+        #c-sum { position: absolute; left: 90px; right: 170px; top: 620px; padding: 46px 44px; border-radius: 36px; opacity: 0; }
+        #c-sum .h { font-size: 56px; font-weight: 900; } #c-sum .h span { color: #F3DDB0; }
+        #c-sum .r { display: flex; justify-content: space-between; align-items: baseline; margin-top: 26px; padding-top: 22px; border-top: 1px solid rgba(243,221,176,.2); font-size: 36px; font-weight: 700; }
+        #c-sum .r b { font-size: 48px; font-weight: 900; font-variant-numeric: tabular-nums; }
+        #c-flash { position: absolute; inset: 0; background: #fff; opacity: 0; }
+        #grain-overlay { position: absolute; inset: 0; pointer-events: none; z-index: 100; }
+        @keyframes hf-grain-noise { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(-5%, 5%); } 50% { transform: translate(5%, -5%); } 75% { transform: translate(-5%, -5%); } }
+        #grain-overlay .grain-texture { position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; opacity: .06;
+          background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+          animation: hf-grain-noise .5s steps(1) 32; }
+      </style>
+
+      <div id="root" data-composition-id="cerebro" data-width="1080" data-height="1920" data-duration="15.8">
+        <canvas id="c-gl" width="1080" height="1920" data-layout-allow-overflow></canvas>
+        <div id="c-vig"></div>
+        <div class="c-lab glass" id="c-l0">📅 Citas</div><div class="c-lab glass" id="c-l1">💸 Cobros</div><div class="c-lab glass" id="c-l2">💡 Ideas</div><div class="c-lab glass" id="c-l3">📦 Proveedores</div><div class="c-lab glass" id="c-l4">📊 Ventas</div>
+        <div id="c-cls" class="glass"><div class="a">📅 Cita · 97 %</div><div class="b"><i id="c-clsb"></i></div><div class="c">CLASIFICADO AL INSTANTE</div></div>
+        <div class="c-chip glass" id="c-k0">🎙 Audio<div class="b"><i></i></div></div>
+        <div class="c-chip glass" id="c-k1">✍ Transcribe<div class="b"><i></i></div></div>
+        <div class="c-chip glass" id="c-k2">⟡ Clasifica<div class="b"><i></i></div></div>
+        <div class="c-chip glass" id="c-k3">📅 Calendario<span class="ok">✓</span><div class="b"><i></i></div></div>
+        <div class="c-chip glass" id="c-k4">💸 Cobro<span class="ok">✓</span><div class="b"><i></i></div></div>
+        <div class="c-chip glass" id="c-k5">💡 Nota<span class="ok">✓</span><div class="b"><i></i></div></div>
+        <div id="c-notes">
+          <div class="c-note glass" id="c-n0">📅<div>Agendado: jueves 3 p. m.<small>Reunión con proveedor</small></div></div>
+          <div class="c-note glass" id="c-n1">💸<div>Recordatorio enviado a Rosa<small>S/ 380 · pago pendiente</small></div></div>
+          <div class="c-note glass" id="c-n2">💡<div>Idea guardada en Promos<small>"promo 2x1 martes"</small></div></div>
+        </div>
+        <div id="c-q" class="glass"><span id="c-qt"></span><span class="cur"></span></div>
+        <div id="c-sum" class="glass">
+          <div class="h">Buenos días, <span>Kuma</span> ☀️</div>
+          <div class="r"><span>Reuniones hoy</span><b>2</b></div>
+          <div class="r"><span>Por cobrar</span><b style="color:#F3DDB0">S/ 380</b></div>
+          <div class="r"><span>Ayer vendiste</span><b style="color:#2FD08A">S/ 1,240</b></div>
+        </div>
+        <div id="c-flash"></div>
+        <div id="grain-overlay"><div class="grain-texture"></div></div>
+      </div>
+
+      <script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/shaders/CopyShader.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/shaders/BokehShader.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/shaders/RGBShiftShader.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/postprocessing/EffectComposer.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/postprocessing/RenderPass.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/postprocessing/ShaderPass.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/postprocessing/MaskPass.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/postprocessing/BokehPass.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/environments/RoomEnvironment.js"></script>
+      <script>
+        (function () {
+        var W = 1080, H = 1920;
+        var hash = function (n) { var s = Math.sin(n * 12.9898) * 43758.5453; return s - Math.floor(s); };
+        var clamp = function (v, a, b) { return Math.min(b === undefined ? 1 : b, Math.max(a || 0, v)); };
+        var pk = function (t, s, d) { return clamp((t - s) / d); };
+        var lerp = function (a, b, k) { return a + (b - a) * k; };
+        var eio = function (k) { return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
+        var eout = function (k) { return 1 - Math.pow(1 - k, 3); };
+        var G = [1.8, 3.8, 5.8, 7.8, 9.8, 11.8, 13.8];   // golpes: 20.10 … 32.10 (tiempo local desde el drop 18.30)
+        var BEATS = [0].concat(G);
+
+        var canvas = document.getElementById("c-gl");
+        var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, preserveDrawingBuffer: true });
+        renderer.setPixelRatio(1); renderer.setSize(W, H, false); renderer.setClearColor(0x05070c, 1);
+        renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = .9;
+        var scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x05070c, 0.06);
+        var camera = new THREE.PerspectiveCamera(36, W / H, 0.05, 200);
+        var pmrem = new THREE.PMREMGenerator(renderer);
+        scene.environment = pmrem.fromScene(new THREE.RoomEnvironment(), 0.04).texture;
+        scene.add(new THREE.AmbientLight(0xffffff, .25));
+        var key = new THREE.DirectionalLight(0xfff0d8, 1.2); key.position.set(3, 5, 4); scene.add(key);
+        var rim = new THREE.DirectionalLight(0x8fb4ff, .6); rim.position.set(-4, 2, -5); scene.add(rim);
+
+        function glowTex() { var c = document.createElement("canvas"); c.width = c.height = 64; var x = c.getContext("2d"); var gr = x.createRadialGradient(32, 32, 0, 32, 32, 32);
+          gr.addColorStop(0, "rgba(255,255,255,1)"); gr.addColorStop(.3, "rgba(255,255,255,.6)"); gr.addColorStop(1, "rgba(255,255,255,0)"); x.fillStyle = gr; x.fillRect(0, 0, 64, 64); return new THREE.CanvasTexture(c); }
+        var GLOW = glowTex();
+
+        /* ================= CEREBRO ================= */
+        var brain = new THREE.Group(); scene.add(brain);
+        var N = 560, POS = [], REG = [];
+        var RC = [new THREE.Vector3(-.9, -.1, .9), new THREE.Vector3(.9, -.1, .9), new THREE.Vector3(0, 1.05, .1), new THREE.Vector3(-.9, 0, -1.0), new THREE.Vector3(.9, 0, -1.0)];
+        for (var i = 0; i < N; i++) {
+          var s = i % 2 ? 1 : -1, u = hash(i + 1) * 2 - 1, th = hash(i + 2) * 6.283, rr = .72 + .28 * Math.pow(hash(i + 3), .35);
+          var q = Math.sqrt(1 - u * u), x = q * Math.cos(th), y = u, z = q * Math.sin(th);
+          var gy = Math.sin(x * 9 + z * 7) * .05 + Math.sin(z * 11) * .04; // surcos
+          var p = new THREE.Vector3(s * .6 + x * 1.0 * rr, y * .95 * rr + gy, z * 1.45 * rr);
+          if (i > N - 60) p = new THREE.Vector3((hash(i + 4) - .5) * 1.1, -.75 + (hash(i + 5) - .5) * .35, -1.05 + (hash(i + 6) - .5) * .5); // cerebelo
+          POS.push(p);
+          var best = 0, bd = 99; for (var r = 0; r < 5; r++) { var d = p.distanceTo(RC[r]); if (d < bd) { bd = d; best = r; } } REG.push(best);
+        }
+        var REGC = [new THREE.Color(0xF3DDB0), new THREE.Color(0xFFD08A), new THREE.Color(0xFFF4DE), new THREE.Color(0xD7B98C), new THREE.Color(0xF6E7C6)];
+        var nodeGeo = new THREE.SphereGeometry(.015, 12, 8);
+        var nodeMat = new THREE.MeshBasicMaterial({ color: 0xffffff, toneMapped: false });
+        var nodes = new THREE.InstancedMesh(nodeGeo, nodeMat, N); brain.add(nodes);
+        var colorAttr = new THREE.InstancedBufferAttribute(new Float32Array(N * 3), 3); nodes.instanceColor = colorAttr;
+        // vidrio: esferas grandes translúcidas en algunos nodos
+        var glassMat = new THREE.MeshPhysicalMaterial({ color: 0xffffff, metalness: 0, roughness: .08, transmission: .9, thickness: .3, clearcoat: 1, transparent: true, opacity: .28, ior: 1.4, envMapIntensity: .35 });
+        var glassN = 60, glassM = new THREE.InstancedMesh(new THREE.SphereGeometry(.032, 20, 14), glassMat, glassN); brain.add(glassM);
+        // conexiones
+        var EDGES = [];
+        for (var a = 0; a < N; a++) { var near = []; for (var b = 0; b < N; b++) if (b !== a) near.push([POS[a].distanceToSquared(POS[b]), b]); near.sort(function (m, n) { return m[0] - n[0]; });
+          for (var k = 0; k < 3; k++) if (a < near[k][1]) EDGES.push([a, near[k][1]]); }
+        var lp = new Float32Array(EDGES.length * 6), lc = new Float32Array(EDGES.length * 6);
+        var lineGeo = new THREE.BufferGeometry(); lineGeo.setAttribute("position", new THREE.BufferAttribute(lp, 3)); lineGeo.setAttribute("color", new THREE.BufferAttribute(lc, 3));
+        var lines = new THREE.LineSegments(lineGeo, new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: .55, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); brain.add(lines);
+        // pulsos sinápticos
+        var PN = 220, pg = new THREE.BufferGeometry(), pp = new Float32Array(PN * 3); pg.setAttribute("position", new THREE.BufferAttribute(pp, 3));
+        var pulses = new THREE.Points(pg, new THREE.PointsMaterial({ size: .05, map: GLOW, color: 0xFFE7B0, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false })); brain.add(pulses);
+        // polvo alrededor
+        var DN = 700, dg = new THREE.BufferGeometry(), dp = new Float32Array(DN * 3);
+        for (var d0 = 0; d0 < DN; d0++) { var R = 2.2 + hash(d0 + 900) * 3.5, a1 = hash(d0 + 901) * 6.283, b1 = Math.acos(2 * hash(d0 + 902) - 1); dp[d0 * 3] = R * Math.sin(b1) * Math.cos(a1); dp[d0 * 3 + 1] = R * Math.cos(b1); dp[d0 * 3 + 2] = R * Math.sin(b1) * Math.sin(a1); }
+        dg.setAttribute("position", new THREE.BufferAttribute(dp, 3));
+        var dust = new THREE.Points(dg, new THREE.PointsMaterial({ size: .025, map: GLOW, color: 0xD7B98C, transparent: true, opacity: .5, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false })); brain.add(dust);
+        // núcleo: el post-it "Relájate"
+        var nc = document.createElement("canvas"); nc.width = nc.height = 256; var nx = nc.getContext("2d");
+        var ngr = nx.createLinearGradient(0, 0, 256, 256); ngr.addColorStop(0, "#fff3b8"); ngr.addColorStop(1, "#d9b04a"); nx.fillStyle = ngr; nx.fillRect(0, 0, 256, 256);
+        nx.fillStyle = "#3a2a08"; nx.font = "900 44px 'Zen Kaku Gothic New'"; nx.textAlign = "center"; nx.fillText("Relájate.", 128, 138); nx.fillStyle = "#C8452C"; nx.fillRect(186, 186, 46, 46);
+        nx.fillStyle = "#fff6ee"; nx.font = "900 36px serif"; nx.fillText("丸", 209, 222);
+        var core = new THREE.Mesh(new THREE.PlaneGeometry(.34, .34), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(nc), toneMapped: false, side: THREE.DoubleSide })); brain.add(core);
+        var coreGlow = new THREE.Sprite(new THREE.SpriteMaterial({ map: GLOW, color: 0xFFD98A, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); coreGlow.scale.set(.6, .6, 1); brain.add(coreGlow);
+        // onda de audio
+        var waveCurve = new THREE.CatmullRomCurve3([new THREE.Vector3(0, -3.2, 2.6), new THREE.Vector3(-.3, -2.2, 2.2), new THREE.Vector3(-.9, -1.1, 1.8), new THREE.Vector3(-.95, -.3, 1.2), RC[0].clone()]);
+        var waveGeo = new THREE.TubeGeometry(waveCurve, 200, .035, 10, false);
+        var wave = new THREE.Mesh(waveGeo, new THREE.MeshBasicMaterial({ color: 0xFFE9B8, toneMapped: false, transparent: true })); brain.add(wave);
+        var waveCount = waveGeo.index.count;
+        // idea nueva
+        var ideaNode = new THREE.Mesh(new THREE.SphereGeometry(.05, 20, 14), new THREE.MeshBasicMaterial({ color: 0xFFFFFF, toneMapped: false })); brain.add(ideaNode);
+        var IDEA_T = RC[2].clone().add(new THREE.Vector3(.25, .15, .2)), IDEA_NB = [];
+        (function () { var arr = []; for (var n = 0; n < N; n++) if (REG[n] === 2) arr.push([POS[n].distanceToSquared(IDEA_T), n]); arr.sort(function (m, o) { return m[0] - o[0]; }); for (var j = 0; j < 5; j++) IDEA_NB.push(arr[j][1]); })();
+        var ilp = new Float32Array(IDEA_NB.length * 6), ilGeo = new THREE.BufferGeometry(); ilGeo.setAttribute("position", new THREE.BufferAttribute(ilp, 3));
+        var ideaLines = new THREE.LineSegments(ilGeo, new THREE.LineBasicMaterial({ color: 0xFFF1CF, transparent: true, blending: THREE.AdditiveBlending, toneMapped: false })); brain.add(ideaLines);
+
+        /* ================= CIRCUITO (dentro del cerebro) ================= */
+        var circ = new THREE.Group(); scene.add(circ);
+        var metal = new THREE.MeshStandardMaterial({ color: 0x9aa0ab, metalness: 1, roughness: .28, envMapIntensity: .55 });
+        var dark = new THREE.MeshStandardMaterial({ color: 0x0b0d12, metalness: .2, roughness: .85, envMapIntensity: .12 });
+        var base = new THREE.Mesh(new THREE.PlaneGeometry(40, 40), dark); base.rotation.x = -Math.PI / 2; circ.add(base);
+        var railGeo = new THREE.BoxGeometry(1, .06, .06), RAILS = [];
+        for (var gx = -12; gx <= 12; gx++) for (var gz = -14; gz <= 8; gz++) {
+          var hh = hash(gx * 57 + gz * 13); if (hh < .38) RAILS.push([gx * .5 + .25, (Math.floor(hash(gx + gz * 3) * 3)) * .09 + .05, gz * .5, 0]);
+          if (hash(gx * 11 + gz * 91) < .38) RAILS.push([gx * .5, (Math.floor(hash(gx * 7 + gz) * 3)) * .09 + .05, gz * .5 + .25, 1]);
+        }
+        var rails = new THREE.InstancedMesh(railGeo, metal, RAILS.length); var mtx = new THREE.Matrix4(), qt = new THREE.Quaternion(), sc = new THREE.Vector3(.5, 1, 1);
+        RAILS.forEach(function (r, i) { qt.setFromAxisAngle(new THREE.Vector3(0, 1, 0), r[3] ? Math.PI / 2 : 0); mtx.compose(new THREE.Vector3(r[0], r[1], r[2]), qt, sc); rails.setMatrixAt(i, mtx); }); circ.add(rails);
+        var postGeo = new THREE.CylinderGeometry(.035, .035, .3, 12), POSTS = [];
+        for (var pi = 0; pi < 180; pi++) POSTS.push([Math.round((hash(pi + 300) - .5) * 24) * .5, Math.round((hash(pi + 301) - .5) * 22 - 3) * .5]);
+        var posts = new THREE.InstancedMesh(postGeo, metal, POSTS.length); POSTS.forEach(function (p, i) { mtx.compose(new THREE.Vector3(p[0], .15, p[1]), new THREE.Quaternion(), new THREE.Vector3(1, 1, 1)); posts.setMatrixAt(i, mtx); }); circ.add(posts);
+        // chips del flujo
+        var CHIP = [[-2, 0], [0, 0], [2, 0], [4, -1.5], [4, 0], [4, 1.5]];
+        var chipMat = function () { return new THREE.MeshStandardMaterial({ color: 0x14161c, metalness: .7, roughness: .35, emissive: 0xFFD08A, emissiveIntensity: 0 }); };
+        var chips = CHIP.map(function (c) { var m = new THREE.Mesh(new THREE.BoxGeometry(.9, .16, .9), chipMat()); m.position.set(c[0], .12, c[1]); circ.add(m);
+          var top = new THREE.Mesh(new THREE.PlaneGeometry(.5, .5), new THREE.MeshBasicMaterial({ color: 0xE9CF9E, toneMapped: false, transparent: true, opacity: 0 })); top.rotation.x = -Math.PI / 2; top.position.set(c[0], .205, c[1]); circ.add(top); m.userData.top = top; return m; });
+        // pistas de luz entre chips
+        var PATHS = [[[-2, 0], [0, 0]], [[0, 0], [2, 0]], [[2, 0], [3, 0], [3, -1.5], [4, -1.5]], [[2, 0], [4, 0]], [[2, 0], [3, 0], [3, 1.5], [4, 1.5]]];
+        var trace = function (path) { var pts = path.map(function (p) { return new THREE.Vector3(p[0], .21, p[1]); }); return new THREE.CurvePath(); };
+        var CURVES = PATHS.map(function (path) { var cp = new THREE.CurvePath(); for (var j = 0; j < path.length - 1; j++) cp.add(new THREE.LineCurve3(new THREE.Vector3(path[j][0], .22, path[j][1]), new THREE.Vector3(path[j + 1][0], .22, path[j + 1][1]))); return cp; });
+        var traceMeshes = CURVES.map(function (cp) { var geo = new THREE.TubeGeometry(cp, 80, .018, 6, false); var m = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ color: 0xD7B98C, toneMapped: false, transparent: true, opacity: .35 })); circ.add(m); return m; });
+        var CP = 40, cpg = new THREE.BufferGeometry(), cpp = new Float32Array(CP * 3); cpg.setAttribute("position", new THREE.BufferAttribute(cpp, 3));
+        var cPulses = new THREE.Points(cpg, new THREE.PointsMaterial({ size: .22, map: GLOW, color: 0xFFF1CF, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false })); circ.add(cPulses);
+
+        /* ================= POSTPROCESADO ================= */
+        var composer = new THREE.EffectComposer(renderer);
+        composer.setPixelRatio(1); composer.setSize(W, H);
+        composer.addPass(new THREE.RenderPass(scene, camera));
+        var bokeh = new THREE.BokehPass(scene, camera, { focus: 5, aperture: .0022, maxblur: .012, width: W, height: H }); composer.addPass(bokeh);
+        var bloom = new THREE.UnrealBloomPass(new THREE.Vector2(W, H), .8, .5, .45); composer.addPass(bloom);
+        var rgb = new THREE.ShaderPass(THREE.RGBShiftShader); rgb.uniforms.amount.value = .0012; composer.addPass(rgb);
+
+        /* ================= ANIMACIÓN ================= */
+        var tmpC = new THREE.Color(), dummy = new THREE.Object3D();
+        var burst = function (i) { var a = hash(i + 11) * 6.283, b = Math.acos(2 * hash(i + 12) - 1), R = 2.5 + hash(i + 13) * 4; return new THREE.Vector3(R * Math.sin(b) * Math.cos(a), R * Math.cos(b), R * Math.sin(b) * Math.sin(a) + 3); };
+        var BURST = POS.map(function (p, i) { return burst(i); });
+        function regionOn(t, r) {
+          var v = 0;
+          if (t >= G[0] && t < G[1]) v = Math.max(v, pk(t, G[0] + r * .25, .25) * (1 - pk(t, G[0] + r * .25 + .6, .4)) * 1.2);
+          if (r === 0 && t >= G[1]) v = Math.max(v, pk(t, G[1] + 1.0, .2) * 1.6);
+          if (r === 2 && t >= G[5]) v = Math.max(v, pk(t, G[5] + 1.2, .3) * 1.6);
+          return v;
+        }
+        function brainAt(t) {
+          var form = eio(pk(t, .35, 1.4)), exp = eout(pk(t, 0, .45));
+          for (var i = 0; i < N; i++) {
+            var target = POS[i], bp = BURST[i];
+            var p = t < .45 ? new THREE.Vector3(0, 0, 0).lerp(bp, exp) : bp.clone().lerp(target, form);
+            var s = 1 + Math.sin(t * 3 + i) * .15;
+            dummy.position.copy(p); dummy.scale.setScalar(s); dummy.updateMatrix(); nodes.setMatrixAt(i, dummy.matrix);
+            var on = regionOn(t, REG[i]);
+            tmpC.setRGB(.95, .85, .66).lerp(REGC[REG[i]], .5).multiplyScalar(.72 + on * 1.1);
+            if (t < .45) tmpC.setRGB(1.4, 1.25, .95);
+            colorAttr.setXYZ(i, tmpC.r, tmpC.g, tmpC.b);
+          }
+          nodes.instanceMatrix.needsUpdate = true; colorAttr.needsUpdate = true;
+          for (var gi = 0; gi < glassN; gi++) { var gidx = Math.floor(hash(gi + 500) * N); var gp = new THREE.Vector3(); nodes.getMatrixAt(gidx, mtx); gp.setFromMatrixPosition(mtx); dummy.position.copy(gp); dummy.scale.setScalar(form); dummy.updateMatrix(); glassM.setMatrixAt(gi, dummy.matrix); }
+          glassM.instanceMatrix.needsUpdate = true;
+          var lk = pk(t, 1.0, .9), shown = Math.floor(EDGES.length * lk);
+          var pos3 = new THREE.Vector3(), pos4 = new THREE.Vector3();
+          for (var e = 0; e < EDGES.length; e++) {
+            nodes.getMatrixAt(EDGES[e][0], mtx); pos3.setFromMatrixPosition(mtx); nodes.getMatrixAt(EDGES[e][1], mtx); pos4.setFromMatrixPosition(mtx);
+            lp[e * 6] = pos3.x; lp[e * 6 + 1] = pos3.y; lp[e * 6 + 2] = pos3.z; lp[e * 6 + 3] = pos4.x; lp[e * 6 + 4] = pos4.y; lp[e * 6 + 5] = pos4.z;
+            var on2 = Math.max(regionOn(t, REG[EDGES[e][0]]), 0) , br = .16 + on2 * .45;
+            lc[e * 6] = .95 * br; lc[e * 6 + 1] = .8 * br; lc[e * 6 + 2] = .55 * br; lc[e * 6 + 3] = .95 * br; lc[e * 6 + 4] = .8 * br; lc[e * 6 + 5] = .55 * br;
+          }
+          lineGeo.setDrawRange(0, shown * 2); lineGeo.attributes.position.needsUpdate = true; lineGeo.attributes.color.needsUpdate = true;
+          for (var q = 0; q < PN; q++) { var ed = EDGES[Math.floor(hash(q + 700) * EDGES.length)], f = (t * (1.2 + hash(q) * 1.5) + hash(q + 1)) % 1;
+            nodes.getMatrixAt(ed[0], mtx); pos3.setFromMatrixPosition(mtx); nodes.getMatrixAt(ed[1], mtx); pos4.setFromMatrixPosition(mtx); pos3.lerp(pos4, f);
+            pp[q * 3] = pos3.x; pp[q * 3 + 1] = pos3.y; pp[q * 3 + 2] = pos3.z; }
+          pg.attributes.position.needsUpdate = true; pulses.visible = t > 1.2;
+          core.lookAt(camera.position); coreGlow.material.opacity = .3 + .12 * Math.sin(t * 5);
+          // onda de audio (G2)
+          var wk = pk(t, G[1] + .1, .9); wave.visible = t >= G[1] && t < G[2]; wave.geometry.setDrawRange(0, Math.floor(waveCount * wk / 3) * 3); wave.material.opacity = 1 - pk(t, G[1] + 1.4, .4);
+          // idea nueva (G6)
+          var ik = eio(pk(t, G[5] + .2, .8)); ideaNode.visible = t >= G[5] && t < G[6]; ideaNode.position.copy(new THREE.Vector3(2.6, 1.8, 1.4).lerp(IDEA_T, ik));
+          var ilk = pk(t, G[5] + 1.0, .6);
+          IDEA_NB.forEach(function (n, j) { var a2 = ideaNode.position, b2 = POS[n].clone().lerp(a2, 1 - Math.min(1, ilk * 1.2 - j * .08));
+            ilp[j * 6] = a2.x; ilp[j * 6 + 1] = a2.y; ilp[j * 6 + 2] = a2.z; ilp[j * 6 + 3] = b2.x; ilp[j * 6 + 4] = b2.y; ilp[j * 6 + 5] = b2.z; });
+          ilGeo.attributes.position.needsUpdate = true; ideaLines.visible = ideaNode.visible && ilk > 0;
+        }
+        function circuitAt(t) {
+          var lt = t - G[2];
+          chips.forEach(function (m, i) {
+            var on = i < 3 ? pk(lt, .6 + i * .35, .25) : pk(t, G[3] + .2 + (i - 3) * .25, .25);
+            m.material.emissiveIntensity = on * .18; m.userData.top.material.opacity = on * .5;
+          });
+          traceMeshes.forEach(function (m, i) { var on = i < 2 ? pk(lt, .8 + i * .35, .3) : pk(t, G[3] + .1, .3); m.material.opacity = .25 + on * .75; });
+          for (var q = 0; q < CP; q++) { var pi2 = q % 5, curve = CURVES[pi2]; var act = pi2 < 2 ? lt > .8 : t > G[3];
+            var f = ((t * .9 + hash(q) ) % 1); var p = curve.getPoint(f); cpp[q * 3] = p.x; cpp[q * 3 + 1] = act ? p.y : -5; cpp[q * 3 + 2] = p.z; }
+          cpg.attributes.position.needsUpdate = true;
+        }
+
+        var inCircuit = function (t) { return t >= G[2] + .75 && t < G[5]; };
+        function cameraAt(t) {
+          var focus = 5.2;
+          if (!inCircuit(t)) {
+            var R = 9, ang = .35 + t * .22, y = .5;
+            if (t < G[0]) { R = lerp(12, 9, eio(pk(t, 0, 1.8))); }
+            if (t >= G[2] && t < G[2] + .75) { var dk = eio(pk(t, G[2], .75)); R = lerp(9, .15, dk); camera.fov = lerp(36, 70, dk); }
+            if (t >= G[5]) { ang = .35 + t * .22; R = 8.4; }
+            if (t >= G[6]) { R = lerp(8.4, 10, pk(t, G[6], 1)); }
+            camera.up.set(0, 1, 0);
+            camera.position.set(Math.sin(ang) * R, y + Math.sin(t * .4) * .2, Math.cos(ang) * R);
+            camera.lookAt(0, 0, 0);
+            if (!(t >= G[2] && t < G[2] + .75)) camera.fov = 36;
+            focus = t >= G[6] ? 3 : R;
+          } else {
+            var lt = t - G[2] - .75;
+            var cx = lerp(-.6, 1.8, eio(clamp(lt / 5.25))), sw = Math.sin(lt * .35) * .35;
+            camera.up.set(1, 0, 0);
+            camera.position.set(cx - 2.6, 6.6 - lt * .12, sw);
+            camera.lookAt(cx + .4, 0, 0);
+            camera.fov = 55; focus = 6.8;
+          }
+          var punch = 0; BEATS.forEach(function (b) { if (t >= b && t < b + .45) punch = Math.max(punch, Math.exp(-(t - b) * 10)); });
+          camera.fov -= punch * 3; camera.updateProjectionMatrix();
+          bokeh.uniforms.focus.value = focus;
+          rgb.uniforms.amount.value = .0012 + punch * .006;
+          bloom.strength = .75 + punch * .35 + (t < .45 ? .9 * (1 - t / .45) : 0);
+        }
+        var project = function (v) { camera.updateMatrixWorld(); var p = v.clone().project(camera); return [(p.x + 1) / 2 * W, (1 - p.y) / 2 * H, p.z]; };
+        var labs = [0, 1, 2, 3, 4].map(function (i) { return document.getElementById("c-l" + i); }), LABW = [180, 200, 170, 260, 200];
+        var ks = [0, 1, 2, 3, 4, 5].map(function (i) { return document.getElementById("c-k" + i); });
+        var cls = document.getElementById("c-cls");
+        function domAt(t) {
+          labs.forEach(function (el, i) { var on = t >= G[0] && t < G[2] ? pk(t, G[0] + i * .25, .3) : 0; var p = project(RC[i].clone().multiplyScalar(1.25).applyMatrix4(brain.matrixWorld));
+            el.style.opacity = on * (p[2] < 1 ? 1 : 0); el.style.transform = "translate(" + Math.min(1080 - 150 - LABW[i], Math.max(60, p[0] - LABW[i] / 2)) + "px," + Math.min(1480, Math.max(180, p[1] - 30)) + "px)"; });
+          var cp = project(RC[0].clone()), con = t >= G[1] + 1.0 && t < G[2] ? pk(t, G[1] + 1.0, .25) : 0;
+          cls.style.opacity = con; cls.style.transform = "translate(" + Math.min(560, Math.max(70, cp[0] - 190)) + "px," + (cp[1] + 70) + "px)";
+          document.getElementById("c-clsb").style.width = (97 * pk(t, G[1] + 1.05, .5)) + "%";
+          ks.forEach(function (el, i) {
+            var on = inCircuit(t) ? (i < 3 ? pk(t - G[2], .6 + i * .35, .25) : pk(t, G[3] + .2 + (i - 3) * .25, .25)) : 0;
+            var c = CHIP[i], p = project(new THREE.Vector3(c[0], .4, c[1])); el.style.opacity = on * (1 - pk(t, G[4] - .1, .2));
+            el.style.transform = "translate(" + Math.min(700, Math.max(60, p[0] - 125)) + "px," + (p[1] + 70) + "px)";
+            var load = i < 3 ? pk(t - G[2], .7 + i * .35, .5) : pk(t, G[3] + .4 + (i - 3) * .25, .9);
+            el.querySelector(".b i").style.width = (load * 100) + "%"; var ok = el.querySelector(".ok"); if (ok) ok.style.opacity = load >= 1 ? 1 : 0;
+          });
+        }
+        function renderAt(t) {
+          var inC = inCircuit(t);
+          brain.visible = !inC; circ.visible = inC;
+          scene.fog.density = inC ? .12 : .05;
+          var sh = t >= G[6] + 1.2 ? eio(pk(t, G[6] + 1.2, .8)) : 0; brain.scale.setScalar(Math.max(.01, 1 - sh));
+          if (!inC) brainAt(t); else circuitAt(t);
+          cameraAt(t); brain.updateMatrixWorld(); domAt(t);
+          composer.render();
+        }
+
+        var tl = gsap.timeline({ paused: true });
+        var clock = { t: 0 };
+        tl.to(clock, { t: 15.8, duration: 15.8, ease: "none", onUpdate: function () { renderAt(clock.t); } }, 0);
+        tl.set("#c-flash", { opacity: 0 }, 0);
+        [[0, .8], [G[2] + .75, .7], [G[5], .6]].forEach(function (f) { tl.fromTo("#c-flash", { opacity: f[1] }, { opacity: 0, duration: .12, ease: "none", immediateRender: false }, f[0]); });
+        [1, 2, 3, 4, 6].forEach(function (i) { if (G[i]) tl.fromTo("#c-flash", { opacity: .12 }, { opacity: 0, duration: .06, ease: "none", immediateRender: false }, G[i]); });
+        // notificaciones (G5)
+        ["#c-n0", "#c-n1", "#c-n2"].forEach(function (id, i) { tl.fromTo(id, { opacity: 0, y: -40, scale: .95 }, { opacity: 1, y: 0, scale: 1, duration: .4, ease: "expo.out" }, G[4] + i * .35); tl.to(id, { opacity: 0, y: -20, duration: .2 }, G[5] - .15); });
+        // pregunta (G6)
+        var Qs = "¿Qué ideas tengo de promos?", qo = { n: 0 };
+        tl.fromTo("#c-q", { opacity: 0, y: -30 }, { opacity: 1, y: 0, duration: .35, ease: "expo.out" }, G[5] + .1);
+        tl.fromTo(qo, { n: 0 }, { n: Qs.length, duration: .8, ease: "none", onUpdate: function () { document.getElementById("c-qt").textContent = Qs.slice(0, Math.round(qo.n)); } }, G[5] + .3);
+        tl.to("#c-q", { opacity: 0, duration: .2 }, G[6] - .15);
+        // resumen (G7)
+        tl.fromTo("#c-sum", { opacity: 0, scale: .9, y: 40 }, { opacity: 1, scale: 1, y: 0, duration: .5, ease: "expo.out" }, G[6]);
+        tl.fromTo("#c-sum .r", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: .35, stagger: .12, ease: "expo.out" }, G[6] + .25);
+        tl.to("#c-sum", { opacity: 0, scale: .96, duration: .25 }, 15.0);
+        renderAt(0);
+        window.__timelines["cerebro"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>
