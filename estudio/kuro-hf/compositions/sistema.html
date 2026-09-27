@@ -9,266 +9,351 @@
         @font-face { font-family: "Zen Kaku Gothic New"; font-weight: 500; src: url("assets/fonts/ZenKakuGothicNew-Medium.ttf"); }
         @font-face { font-family: "Zen Kaku Gothic New"; font-weight: 700; src: url("assets/fonts/ZenKakuGothicNew-Bold.ttf"); }
         @font-face { font-family: "Zen Kaku Gothic New"; font-weight: 900; src: url("assets/fonts/ZenKakuGothicNew-Black.ttf"); }
-        @font-face { font-family: "Tenor Sans"; src: url("assets/fonts/TenorSans-Regular.ttf"); }
-        #root { position: absolute; inset: 0; overflow: hidden; font-family: "Zen Kaku Gothic New", sans-serif; color: #F4F1EA; }
-        #sis-bg { position: absolute; inset: 0; background: radial-gradient(70% 45% at 50% 42%, #0f1a17 0%, #07090b 55%, #050608 100%); }
-        #sis-glow { position: absolute; left: 140px; top: 520px; width: 800px; height: 800px; border-radius: 50%; background: radial-gradient(circle, rgba(47,208,138,.18), transparent 65%); }
-        #sis-grid { position: absolute; left: -540px; right: -540px; top: 1180px; height: 1400px; transform-origin: 50% 0; opacity: .5;
-          background-image: linear-gradient(rgba(215,185,140,.18) 2px, transparent 2px), linear-gradient(90deg, rgba(215,185,140,.18) 2px, transparent 2px);
-          background-size: 90px 90px; -webkit-mask-image: linear-gradient(transparent, #000 25%, transparent 85%); mask-image: linear-gradient(transparent, #000 25%, transparent 85%); }
-        .sis-dot { position: absolute; width: 5px; height: 5px; border-radius: 50%; background: #d7f5e6; }
-        #sis-persp { position: absolute; inset: 0; perspective: 1700px; perspective-origin: 540px 900px; }
-        #sis-world { position: absolute; inset: 0; transform-style: preserve-3d; }
-        .sis-word { position: absolute; left: -200px; right: -200px; text-align: center; font-family: "Tenor Sans", serif; font-size: 175px; letter-spacing: .04em; color: rgba(215,185,140,.14); white-space: nowrap; opacity: 0; }
-        .sis-panel { position: absolute; left: 80px; width: 860px; border-radius: 30px; background: rgba(18,22,28,.62); border: 1px solid rgba(255,255,255,.13);
-          box-shadow: 0 40px 90px rgba(0,0,0,.65), inset 0 1px 0 rgba(255,255,255,.08); padding: 40px 46px; opacity: 0; overflow: hidden; }
-        .sis-lab { font-size: 30px; font-weight: 700; letter-spacing: .22em; }
-        .sis-num { font-weight: 900; font-variant-numeric: tabular-nums; line-height: 1; white-space: nowrap; }
-        .sis-g { color: #2FD08A; text-shadow: 0 0 30px rgba(47,208,138,.55); }
-        .sis-r { color: #FF4D5E; text-shadow: 0 0 30px rgba(255,77,94,.5); }
-        .sis-chip { display: inline-block; margin-top: 20px; padding: 10px 22px; border-radius: 30px; font-size: 30px; font-weight: 700; }
-        #sis-p1 { top: 560px; height: 560px; }
-        #sis-p1 .sis-num { font-size: 150px; margin-top: 34px; line-height: 1.12; }
-        #sis-p1 svg { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 220px; }
-        #sis-p2 { top: 1040px; height: 440px; }
-        #sis-p2 .sis-num { font-size: 104px; margin-top: 16px; }
-        #sis-bars2 { position: absolute; right: 46px; bottom: 44px; width: 300px; height: 250px; display: flex; align-items: flex-end; gap: 14px; }
-        #sis-bars2 div { flex: 1; display: flex; align-items: flex-end; gap: 5px; height: 100%; }
-        #sis-bars2 i { display: block; flex: 1; border-radius: 6px 6px 2px 2px; transform-origin: 50% 100%; }
-        #sis-p3 { top: 640px; height: 520px; text-align: center; border-color: rgba(47,208,138,.35); }
-        #sis-p3 .sis-num { font-size: 170px; margin-top: 30px; }
-        #sis-p4 { top: 470px; height: 900px; }
-        .sis-cat { display: flex; align-items: center; gap: 22px; margin-top: 22px; font-size: 34px; font-weight: 700; }
-        .sis-cat span { width: 250px; }
-        .sis-cat b { flex: 1; height: 26px; border-radius: 13px; background: rgba(255,77,94,.15); position: relative; overflow: hidden; }
-        .sis-cat b i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 13px; transform-origin: 0 50%; }
-        .sis-cat em { font-style: normal; width: 110px; text-align: right; font-variant-numeric: tabular-nums; color: #FFB3BA; }
-        #sis-donut { position: absolute; left: 50%; bottom: 40px; width: 360px; height: 360px; margin-left: -180px; }
-        .sis-cell { position: absolute; width: 190px; height: 70px; border: 2px solid rgba(0,0,0,.4); font-size: 32px; font-weight: 700; display: grid; place-items: center; color: #1b1b1b; opacity: 0; }
-        #sis-p5 { top: 540px; height: 820px; }
-        #sis-bars5 { position: absolute; left: 60px; right: 60px; bottom: 170px; height: 460px; display: flex; align-items: flex-end; gap: 36px; }
-        #sis-bars5 .col { flex: 1; text-align: center; font-size: 30px; font-weight: 700; color: #9aa3a0; }
-        #sis-bars5 .bar { width: 100%; border-radius: 14px 14px 4px 4px; background: linear-gradient(180deg, #2FD08A, #12704a); transform-origin: 50% 100%; box-shadow: 0 0 30px rgba(47,208,138,.3); margin-bottom: 14px; }
-        #sis-bars5 .best { background: linear-gradient(180deg, #F3DDB0, #D7B98C 60%, #a8874f); box-shadow: 0 0 40px rgba(215,185,140,.6); }
-        #sis-star { position: absolute; left: 46px; right: 46px; bottom: 40px; display: flex; align-items: center; gap: 18px; font-size: 34px; font-weight: 700; padding: 18px 26px; border-radius: 20px; background: rgba(215,185,140,.12); border: 1px solid rgba(215,185,140,.35); color: #F3DDB0; }
-        .sis-node { position: absolute; left: 190px; width: 700px; height: 150px; border-radius: 34px; background: rgba(18,22,28,.72); border: 2px solid rgba(255,255,255,.14);
-          display: flex; align-items: center; gap: 30px; padding: 0 40px; font-size: 46px; font-weight: 700; opacity: 0; }
-        .sis-node svg { width: 70px; height: 70px; flex: none; }
-        .sis-wire { position: absolute; left: 538px; width: 4px; background: rgba(47,208,138,.25); opacity: 0; }
-        .sis-pulse { position: absolute; left: 530px; width: 20px; height: 20px; border-radius: 50%; background: #2FD08A; box-shadow: 0 0 24px 8px rgba(47,208,138,.7); opacity: 0; }
-        #sis-p7 { top: 330px; height: auto; border-radius: 40px; background: rgba(40,44,52,.72); padding: 34px 40px; }
+        #root { position: absolute; inset: 0; overflow: hidden; background: #050608; font-family: "Zen Kaku Gothic New", sans-serif; color: #F4F1EA; }
+        #sis-gl { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; display: block; }
+        #sis-vig { position: absolute; inset: 0; background: radial-gradient(90% 60% at 50% 50%, transparent 55%, rgba(0,0,0,.65)); pointer-events: none; }
+        .sis-head { position: absolute; left: 70px; right: 150px; top: 200px; opacity: 0; }
+        .sis-lab { font-size: 30px; font-weight: 700; letter-spacing: .24em; }
+        .sis-num { font-weight: 900; font-variant-numeric: tabular-nums; line-height: 1.08; white-space: nowrap; }
+        .sis-g { color: #2FD08A; text-shadow: 0 0 34px rgba(47,208,138,.6); }
+        .sis-r { color: #FF4D5E; text-shadow: 0 0 34px rgba(255,77,94,.55); }
+        .sis-chip { display: inline-block; margin-top: 16px; padding: 10px 22px; border-radius: 30px; font-size: 28px; font-weight: 700; }
+        #sis-h1 .sis-num { font-size: 132px; margin-top: 30px; line-height: 1.2; }
+        #sis-h2 { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; }
+        #sis-h2 .sis-num { font-size: 76px; margin-top: 10px; }
+        #sis-h3 { text-align: center; left: 60px; right: 60px; }
+        #sis-h3 .sis-num { font-size: 150px; margin-top: 30px; line-height: 1.2; }
+        #sis-legend { position: absolute; left: 70px; right: 150px; top: 1330px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px 22px; opacity: 0; }
+        #sis-legend div { display: flex; align-items: center; gap: 14px; font-size: 30px; font-weight: 700; }
+        #sis-legend i { width: 22px; height: 22px; border-radius: 6px; flex: none; }
+        #sis-legend em { font-style: normal; margin-left: auto; color: #ffb3ba; font-variant-numeric: tabular-nums; }
+        #sis-star { position: absolute; left: 70px; right: 150px; top: 420px; display: flex; align-items: center; gap: 18px; font-size: 34px; font-weight: 700; padding: 20px 28px; border-radius: 22px;
+          background: rgba(215,185,140,.12); border: 1px solid rgba(215,185,140,.4); color: #F3DDB0; opacity: 0; }
+        .sis-tag { position: absolute; left: 0; top: 0; padding: 12px 22px; border-radius: 18px; background: rgba(12,16,18,.78); border: 1px solid rgba(47,208,138,.5); font-size: 32px; font-weight: 700; white-space: nowrap; opacity: 0; }
+        #sis-p7 { position: absolute; left: 70px; right: 150px; top: 330px; border-radius: 40px; background: rgba(34,38,46,.82); border: 1px solid rgba(255,255,255,.14);
+          box-shadow: 0 40px 90px rgba(0,0,0,.65); padding: 34px 40px; opacity: 0; }
         #sis-p7 .top { display: flex; align-items: center; gap: 22px; font-size: 30px; color: #b8bec6; font-weight: 700; }
         #sis-p7 .top img { width: 64px; height: 64px; border-radius: 16px; }
-        #sis-p7 .ttl { font-size: 46px; font-weight: 900; margin-top: 16px; }
-        #sis-rep { margin-top: 26px; display: grid; gap: 18px; overflow: hidden; }
-        #sis-rep div { display: flex; align-items: center; justify-content: space-between; padding: 22px 26px; border-radius: 22px; font-size: 36px; font-weight: 700; }
-        .sis-card { position: absolute; width: 330px; padding: 22px 26px; border-radius: 22px; background: rgba(18,22,28,.72); border: 1px solid rgba(255,255,255,.14); font-size: 24px; font-weight: 700; letter-spacing: .12em; opacity: 0; }
-        .sis-card .sis-num { font-size: 54px; margin-top: 8px; letter-spacing: 0; }
-        #sis-core { position: absolute; left: 400px; top: 820px; width: 280px; height: 280px; border-radius: 50%; display: grid; place-items: center; text-align: center;
-          background: radial-gradient(circle, rgba(47,208,138,.25), rgba(18,22,28,.9) 70%); border: 2px solid rgba(47,208,138,.6); font-size: 40px; font-weight: 900; letter-spacing: .1em; opacity: 0; }
-        #sis-lines { position: absolute; inset: 0; width: 1080px; height: 1920px; opacity: 0; }
+        #sis-p7 .ttl { font-size: 44px; font-weight: 900; margin-top: 16px; }
+        #sis-rep { margin-top: 24px; display: grid; gap: 16px; overflow: hidden; }
+        #sis-rep div { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-radius: 20px; font-size: 34px; font-weight: 700; }
+        #sis-core { position: absolute; left: 0; top: 0; font-size: 40px; font-weight: 900; letter-spacing: .14em; white-space: nowrap; opacity: 0; color: #F4F1EA; text-shadow: 0 0 24px rgba(47,208,138,.9); }
         #sis-iris { position: absolute; inset: 0; background: #000; --r: 0px;
           -webkit-mask-image: radial-gradient(circle at 50% 47%, transparent var(--r), #000 calc(var(--r) + 3px)); mask-image: radial-gradient(circle at 50% 47%, transparent var(--r), #000 calc(var(--r) + 3px)); }
         #sis-ring { position: absolute; left: 290px; top: 652px; width: 500px; height: 500px; border-radius: 50%; border: 10px solid #2FD08A; box-shadow: 0 0 60px rgba(47,208,138,.9), inset 0 0 40px rgba(215,185,140,.7); opacity: 0; }
         #sis-flash { position: absolute; inset: 0; background: #fff; opacity: 0; }
         #grain-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 100; }
         @keyframes hf-grain-noise { 0%, 100% { transform: translate(0, 0); } 10% { transform: translate(-5%, -5%); } 20% { transform: translate(-10%, 5%); } 30% { transform: translate(5%, -10%); } 40% { transform: translate(-5%, 15%); } 50% { transform: translate(-10%, 5%); } 60% { transform: translate(15%, 0); } 70% { transform: translate(0, 10%); } 80% { transform: translate(-15%, 0); } 90% { transform: translate(10%, 5%); } }
-        #grain-overlay .grain-texture { position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; opacity: .07;
+        #grain-overlay .grain-texture { position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; opacity: .06;
           background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
           animation: hf-grain-noise 0.5s steps(1) 40; }
       </style>
 
       <div id="root" data-composition-id="sistema" data-width="1080" data-height="1920" data-duration="17.1">
-        <div id="sis-bg"></div>
-        <div id="sis-glow"></div>
-        <div id="sis-grid" data-layout-allow-overflow></div>
-        <div id="sis-dots"></div>
-        <div class="sis-word" data-layout-allow-overflow data-layout-allow-occlusion id="sis-w1" style="top: 330px">Claridad</div>
-        <div class="sis-word" data-layout-allow-overflow data-layout-allow-occlusion id="sis-w2" style="top: 250px">Automático</div>
-        <div class="sis-word" data-layout-allow-overflow data-layout-allow-occlusion id="sis-w3" style="top: 420px">Control</div>
-        <div id="sis-persp"><div id="sis-world">
-          <div class="sis-panel" id="sis-p1">
-            <div class="sis-lab" style="color:#9fe8c4">INGRESOS · OCTUBRE</div>
-            <div class="sis-num sis-g" id="sis-n1">S/ 0</div>
-            <div class="sis-chip" style="background:rgba(47,208,138,.14);color:#2FD08A">▲ 18% vs. septiembre</div>
-            <svg viewBox="0 0 860 220" preserveAspectRatio="none">
-              <defs><linearGradient id="sis-ga" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2FD08A" stop-opacity=".4"/><stop offset="1" stop-color="#2FD08A" stop-opacity="0"/></linearGradient></defs>
-              <path id="sis-area1" d="M0 190 L95 176 L190 182 L285 140 L380 150 L475 108 L570 116 L665 70 L760 58 L860 26 L860 220 L0 220 Z" fill="url(#sis-ga)"/>
-              <path id="sis-line1" d="M0 190 L95 176 L190 182 L285 140 L380 150 L475 108 L570 116 L665 70 L760 58 L860 26" fill="none" stroke="#2FD08A" stroke-width="6" stroke-linejoin="round"/>
-            </svg>
+        <canvas id="sis-gl" width="1080" height="1920" data-layout-allow-overflow></canvas>
+        <div id="sis-vig"></div>
+        <div class="sis-head" id="sis-h1">
+          <div class="sis-lab" style="color:#9fe8c4">INGRESOS · OCTUBRE</div>
+          <div class="sis-num sis-g" id="sis-n1">S/ 0</div>
+          <div class="sis-chip" style="background:rgba(47,208,138,.14);color:#2FD08A">▲ 18% vs. septiembre</div>
+        </div>
+        <div class="sis-head" id="sis-h2">
+          <div><div class="sis-lab" style="color:#9fe8c4">INGRESOS</div><div class="sis-num sis-g">S/ 48,250</div></div>
+          <div><div class="sis-lab" style="color:#ffb3ba">EGRESOS</div><div class="sis-num sis-r" id="sis-n2">S/ 0</div></div>
+        </div>
+        <div class="sis-head" id="sis-h3">
+          <div class="sis-lab" style="color:#D7B98C">GANANCIA NETA · OCTUBRE</div>
+          <div class="sis-num sis-g" id="sis-n3">S/ 0</div>
+          <div class="sis-chip" style="background:rgba(215,185,140,.14);color:#F3DDB0">margen 38% · ▲ 12% vs. septiembre</div>
+        </div>
+        <div class="sis-head" id="sis-h4"><div class="sis-lab" style="color:#ffb3ba">EGRESOS POR CATEGORÍA</div><div class="sis-num" style="font-size:64px;margin-top:10px">Ordenados solos.</div></div>
+        <div id="sis-legend">
+          <div><i style="background:#FF4D5E"></i>Planilla<em>38%</em></div>
+          <div><i style="background:#ff7a5c"></i>Alquiler<em>22%</em></div>
+          <div><i style="background:#ff9f7a"></i>Proveedores<em>20%</em></div>
+          <div><i style="background:#c9587a"></i>Insumos<em>12%</em></div>
+          <div><i style="background:#8e4a6a"></i>Servicios<em>8%</em></div>
+        </div>
+        <div class="sis-head" id="sis-h5"><div class="sis-lab" style="color:#9fe8c4">VENTAS POR SEMANA</div><div class="sis-num" style="font-size:64px;margin-top:10px">Tu mejor semana: <span style="color:#F3DDB0">S3</span></div></div>
+        <div id="sis-star"><svg width="54" height="54" viewBox="0 0 54 54"><circle cx="27" cy="30" r="20" fill="#6b3e1f"/><rect x="10" y="16" width="34" height="7" rx="3" fill="#F3EAD2"/><rect x="29" y="2" width="4" height="18" rx="2" fill="#f4a6c0"/></svg>Producto estrella: Batido de coco</div>
+        <div class="sis-head" id="sis-h6"><div class="sis-lab" style="color:#9fe8c4">AUTOMÁTICO</div><div class="sis-num" style="font-size:64px;margin-top:10px">Sin tocar un Excel.</div></div>
+        <div class="sis-tag" id="sis-t0">Caja</div><div class="sis-tag" id="sis-t1">Hoja de ventas</div><div class="sis-tag" id="sis-t2">Dashboard</div><div class="sis-tag" id="sis-t3">WhatsApp</div>
+        <div id="sis-p7">
+          <div class="top"><img src="assets/img/sello-maru.png" alt="" />MARU · ahora</div>
+          <div class="ttl">📊 Tu reporte semanal está listo</div>
+          <div id="sis-rep">
+            <div style="background:rgba(47,208,138,.12);color:#2FD08A">Ganancia de la semana<span>▲ 12%</span></div>
+            <div style="background:rgba(255,77,94,.12);color:#FF7a85">⚠ Gastos de proveedores<span>▲ 8%</span></div>
           </div>
-          <div class="sis-panel" id="sis-p2">
-            <div class="sis-lab" style="color:#ffb3ba">EGRESOS · OCTUBRE</div>
-            <div class="sis-num sis-r" id="sis-n2">S/ 0</div>
-            <div class="sis-chip" style="background:rgba(255,77,94,.14);color:#FF4D5E">▼ controlados</div>
-            <div id="sis-bars2"></div>
-          </div>
-          <div class="sis-panel" id="sis-p3">
-            <div class="sis-lab" style="color:#D7B98C">GANANCIA NETA</div>
-            <div class="sis-num sis-g" id="sis-n3">S/ 0</div>
-            <div class="sis-chip" style="background:rgba(215,185,140,.14);color:#F3DDB0">margen 38%</div>
-          </div>
-          <div class="sis-panel" id="sis-p4">
-            <div class="sis-lab" style="color:#ffb3ba">EGRESOS POR CATEGORÍA</div>
-            <div class="sis-cat"><span>Planilla</span><b><i style="width:100%;background:#FF4D5E"></i></b><em>38%</em></div>
-            <div class="sis-cat"><span>Alquiler</span><b><i style="width:58%;background:#e8606d"></i></b><em>22%</em></div>
-            <div class="sis-cat"><span>Proveedores</span><b><i style="width:53%;background:#d0707a"></i></b><em>20%</em></div>
-            <div class="sis-cat"><span>Insumos batidos</span><b><i style="width:32%;background:#b87c84"></i></b><em>12%</em></div>
-            <div class="sis-cat"><span>Servicios</span><b><i style="width:21%;background:#9a7c80"></i></b><em>8%</em></div>
-            <svg id="sis-donut" viewBox="0 0 200 200"></svg>
-          </div>
-          <div class="sis-panel" id="sis-p5">
-            <div class="sis-lab" style="color:#9fe8c4">VENTAS POR SEMANA</div>
-            <div id="sis-bars5"></div>
-            <div id="sis-star"><svg width="54" height="54" viewBox="0 0 54 54"><circle cx="27" cy="30" r="20" fill="#6b3e1f"/><rect x="10" y="16" width="34" height="7" rx="3" fill="#F3EAD2"/><rect x="29" y="2" width="4" height="18" rx="2" fill="#f4a6c0"/></svg>Producto estrella: Batido de coco</div>
-          </div>
-          <div id="sis-flow"></div>
-          <div class="sis-panel" id="sis-p7">
-            <div class="top"><img src="assets/img/sello-maru.png" alt="" />MARU · ahora</div>
-            <div class="ttl">📊 Tu reporte semanal está listo</div>
-            <div id="sis-rep">
-              <div style="background:rgba(47,208,138,.12);color:#2FD08A">Ganancia de la semana<span>▲ 12%</span></div>
-              <div style="background:rgba(255,77,94,.12);color:#FF7a85">⚠ Gastos de proveedores<span>▲ 8%</span></div>
-            </div>
-          </div>
-          <svg id="sis-lines" viewBox="0 0 1080 1920"></svg>
-          <div id="sis-core">KURO<br />GYM</div>
-          <div class="sis-card" id="sis-c1" style="left:90px;top:360px;color:#9fe8c4">INGRESOS<div class="sis-num sis-g">S/ 48,250</div></div>
-          <div class="sis-card" id="sis-c2" style="left:640px;top:420px;color:#ffb3ba">EGRESOS<div class="sis-num sis-r">S/ 29,870</div></div>
-          <div class="sis-card" id="sis-c3" style="left:375px;top:1250px;color:#D7B98C;border-color:rgba(47,208,138,.5)">GANANCIA<div class="sis-num sis-g">S/ 18,380</div></div>
-          <div class="sis-card" id="sis-c4" style="left:80px;top:1020px;color:#ffb3ba">CATEGORÍAS<div class="sis-num" style="font-size:40px;color:#FF7a85">5 ordenadas</div></div>
-          <div class="sis-card" id="sis-c5" style="left:650px;top:980px;color:#9fe8c4">MEJOR SEMANA<div class="sis-num" style="font-size:44px;color:#F3DDB0">S3</div></div>
-          <div class="sis-card" id="sis-c6" style="left:110px;top:700px;color:#b8bec6">REPORTE<div class="sis-num" style="font-size:40px">cada lunes</div></div>
-        </div></div>
+        </div>
+        <div class="sis-head" id="sis-h8" style="text-align:center;left:60px;right:60px"><div class="sis-lab" style="color:#D7B98C">KURO GYM</div><div class="sis-num" style="font-size:72px;margin-top:10px">Todo tu negocio, en un lugar.</div></div>
+        <div id="sis-core">KURO GYM</div>
         <div id="sis-ring"></div>
         <div id="sis-iris"></div>
         <div id="sis-flash"></div>
         <div id="grain-overlay"><div class="grain-texture"></div></div>
       </div>
 
+      <script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
       <script>
         (function () {
+        var W = 1080, H = 1920, N = 2400;
         var hash = function (n) { var s = Math.sin(n * 12.9898) * 43758.5453; return s - Math.floor(s); };
+        var clamp = function (v, a, b) { return Math.min(b === undefined ? 1 : b, Math.max(a || 0, v)); };
+        var pk = function (t, s, d) { return clamp((t - s) / d); };
+        var lerp = function (a, b, k) { return a + (b - a) * k; };
+        var eio = function (k) { return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
+        var eout = function (k) { return 1 - Math.pow(1 - k, 3); };
         var B = [2.04, 4.09, 6.89, 8.93, 10.97, 13.02, 15.08];
-        // partículas finas
-        var dots = document.getElementById("sis-dots");
-        for (var i = 0; i < 46; i++) { var d = document.createElement("div"); d.className = "sis-dot"; d.id = "sis-dot" + i; d.style.left = (hash(i) * 1080) + "px"; d.style.top = (hash(i + 40) * 1920) + "px"; d.style.opacity = .15 + hash(i + 80) * .45; dots.appendChild(d); }
-        // barras de egresos vs ingresos (6 meses)
-        var b2 = document.getElementById("sis-bars2");
-        [[.55, .42], [.6, .45], [.52, .47], [.7, .5], [.78, .52], [1, .62]].forEach(function (v, j) { var c = document.createElement("div"); c.innerHTML = '<i class="sis-bg2" style="height:' + v[0] * 100 + '%;background:#2FD08A"></i><i class="sis-br2" style="height:' + v[1] * 100 + '%;background:#FF4D5E"></i>'; b2.appendChild(c); });
-        // barras por semana
-        var b5 = document.getElementById("sis-bars5");
-        [["S1", "9,800", .58], ["S2", "11,400", .68], ["S3", "14,650", 1], ["S4", "12,400", .75]].forEach(function (v, j) { var c = document.createElement("div"); c.className = "col"; c.innerHTML = '<div style="color:' + (j === 2 ? "#F3DDB0" : "#d6ddd9") + ';font-size:32px;margin-bottom:10px" class="sis-v5">S/ ' + v[1] + '</div><div class="bar' + (j === 2 ? " best" : "") + '" style="height:' + v[2] * 330 + 'px"></div>' + v[0] + (j === 2 ? " · mejor" : ""); b5.appendChild(c); });
-        // dona de gastos
-        var donut = document.getElementById("sis-donut"), acc = 0, C = 2 * Math.PI * 70;
-        donut.innerHTML = '<circle cx="100" cy="100" r="70" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="30"/>' + [[.38, "#FF4D5E"], [.22, "#e8606d"], [.20, "#d0707a"], [.12, "#b87c84"], [.08, "#9a7c80"]].map(function (s, j) { var el = '<circle class="sis-seg" cx="100" cy="100" r="70" fill="none" stroke="' + s[1] + '" stroke-width="30" stroke-dasharray="' + (s[0] * C - 3) + ' ' + C + '" stroke-dashoffset="' + (-acc * C) + '" transform="rotate(-90 100 100)"/>'; acc += s[0]; return el; }).join("") + '<text x="100" y="96" text-anchor="middle" fill="#F4F1EA" font-size="22" font-weight="900" font-family="Zen Kaku Gothic New">S/ 29,870</text><text x="100" y="120" text-anchor="middle" fill="#ffb3ba" font-size="12" font-weight="700" letter-spacing="2" font-family="Zen Kaku Gothic New">EGRESOS</text>';
-        // celdas del Excel roto
-        var world = document.getElementById("sis-world");
-        var CELLS = ["####", "#¡REF!", "=SUMA(??", "####", "#¡DIV/0!", "???", "####", "=A1+B7", "#N/A", "####", "#¡VALOR!", "S/ ,,", "####", "#¡REF!"];
-        CELLS.forEach(function (tx, j) { var c = document.createElement("div"); c.className = "sis-cell"; c.id = "sis-cell" + j; c.setAttribute("data-layout-allow-overflow", ""); c.setAttribute("data-layout-allow-overlap", ""); c.textContent = tx; c.style.left = (40 + hash(j + 3) * 820) + "px"; c.style.top = (240 + hash(j + 9) * 1260) + "px"; c.dataset.dx = 445 - (40 + hash(j + 3) * 820); c.dataset.dy = 925 - (240 + hash(j + 9) * 1260); c.style.background = ["#ffe066", "#ff8fa3", "#a5f3a1", "#9ad0ff", "#ffb86b", "#e0e0e0"][j % 6]; world.appendChild(c); });
-        // flujo de automatización
-        var flow = document.getElementById("sis-flow");
-        var ICON = {
-          caja: '<svg viewBox="0 0 70 70"><rect x="8" y="26" width="54" height="34" rx="6" fill="none" stroke="#D7B98C" stroke-width="5"/><rect x="18" y="10" width="34" height="16" rx="3" fill="none" stroke="#D7B98C" stroke-width="5"/><rect x="18" y="38" width="34" height="6" rx="3" fill="#D7B98C"/></svg>',
-          ventas: '<svg viewBox="0 0 70 70"><rect x="10" y="8" width="50" height="54" rx="6" fill="none" stroke="#9fe8c4" stroke-width="5"/><path d="M20 24h30M20 36h30M20 48h18" stroke="#9fe8c4" stroke-width="5"/></svg>',
-          dash: '<svg viewBox="0 0 70 70"><path d="M10 56 L26 38 L38 46 L60 16" fill="none" stroke="#2FD08A" stroke-width="6" stroke-linejoin="round"/><circle cx="60" cy="16" r="6" fill="#2FD08A"/></svg>',
-          wsp: '<svg viewBox="0 0 70 70"><path d="M35 8a26 26 0 0 0-22 40l-4 14 14-4A26 26 0 1 0 35 8z" fill="none" stroke="#2FD08A" stroke-width="5"/><path d="M26 26c2 8 8 14 16 17l4-4" fill="none" stroke="#2FD08A" stroke-width="5" stroke-linecap="round"/></svg>'
-        };
-        [["caja", "Caja"], ["ventas", "Hoja de ventas"], ["dash", "Dashboard"], ["wsp", "WhatsApp"]].forEach(function (n, j) {
-          var el = document.createElement("div"); el.className = "sis-node"; el.id = "sis-node" + j; el.style.top = (380 + j * 270) + "px"; el.innerHTML = ICON[n[0]] + n[1]; flow.appendChild(el);
-          if (j < 3) { var w = document.createElement("div"); w.className = "sis-wire"; w.id = "sis-wire" + j; w.style.top = (530 + j * 270) + "px"; w.style.height = "120px"; flow.appendChild(w); var p = document.createElement("div"); p.className = "sis-pulse"; p.id = "sis-pulse" + j; p.style.top = (530 + j * 270) + "px"; flow.appendChild(p); }
-        });
-        // líneas de la constelación
-        var lines = document.getElementById("sis-lines");
-        lines.innerHTML = [[255, 420], [805, 480], [540, 1310], [245, 1080], [815, 1040], [275, 760]].map(function (p) { return '<line x1="540" y1="960" x2="' + p[0] + '" y2="' + p[1] + '" stroke="rgba(47,208,138,.45)" stroke-width="3" stroke-dasharray="8 10"/>'; }).join("");
+        var BASE = -2.3;
 
+        // ---------------- escena ----------------
+        var canvas = document.getElementById("sis-gl");
+        var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, preserveDrawingBuffer: true });
+        renderer.setPixelRatio(1); renderer.setSize(W, H, false); renderer.setClearColor(0x050608, 1);
+        var scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x050608, 0.055);
+        var camera = new THREE.PerspectiveCamera(40, W / H, 0.1, 200);
+        scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+        var dl = new THREE.DirectionalLight(0xffffff, 0.9); dl.position.set(3, 6, 6); scene.add(dl);
+        var pl = new THREE.PointLight(0x2fd08a, 1.4, 20); pl.position.set(0, 1.5, 3); scene.add(pl);
+        var grid = new THREE.GridHelper(40, 40, 0x3a4a40, 0x18221d); grid.position.y = BASE - 0.02; scene.add(grid);
+
+        function glowTex() {
+          var c = document.createElement("canvas"); c.width = c.height = 64; var x = c.getContext("2d");
+          var gr = x.createRadialGradient(32, 32, 0, 32, 32, 32); gr.addColorStop(0, "rgba(255,255,255,1)"); gr.addColorStop(.25, "rgba(255,255,255,.75)"); gr.addColorStop(1, "rgba(255,255,255,0)");
+          x.fillStyle = gr; x.fillRect(0, 0, 64, 64); return new THREE.CanvasTexture(c);
+        }
+        var GLOW = glowTex();
+        var sg = new THREE.BufferGeometry(), sp = new Float32Array(900 * 3);
+        for (var s = 0; s < 900; s++) { var th = hash(s) * 6.283, ph = Math.acos(2 * hash(s + 1) - 1), r = 20 + hash(s + 2) * 30; sp[s * 3] = r * Math.sin(ph) * Math.cos(th); sp[s * 3 + 1] = r * Math.cos(ph); sp[s * 3 + 2] = r * Math.sin(ph) * Math.sin(th) - 10; }
+        sg.setAttribute("position", new THREE.BufferAttribute(sp, 3));
+        scene.add(new THREE.Points(sg, new THREE.PointsMaterial({ size: .09, color: 0x9fb8ad, transparent: true, opacity: .6, depthWrite: false })));
+
+        // ---------------- datos (partículas) ----------------
+        var pg = new THREE.BufferGeometry(), P = new Float32Array(N * 3), CO = new Float32Array(N * 3);
+        pg.setAttribute("position", new THREE.BufferAttribute(P, 3)); pg.setAttribute("color", new THREE.BufferAttribute(CO, 3));
+        var pmat = new THREE.PointsMaterial({ size: .12, map: GLOW, vertexColors: true, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending });
+        scene.add(new THREE.Points(pg, pmat));
+
+        var GREEN = [.18, .82, .54], RED = [1, .30, .37], GOLD = [.95, .82, .55], WHITE = [.9, .95, .92];
+        var ING = [28, 31, 29.5, 34, 36.2, 39, 42.4, 48.25], EGR = [21, 22.4, 23.1, 24, 25.6, 26.2, 27.4, 29.87];
+        var PROFIT = [7, 8.6, 6.4, 10, 10.6, 12.8, 15, 18.38];
+        var barX = function (m) { return -2.1 + m * 0.6; };
+        var barH = function (v) { return v / 48.25 * 3.6; };
+
+        function chaos(i, t, seed) {
+          var a = hash(i * 3 + seed) * 6.283 + t * (.3 + hash(i) * .5), r = 1.6 + hash(i * 7 + seed) * 3.4, y = (hash(i * 11 + seed) - .5) * 7;
+          return [Math.cos(a) * r, y, Math.sin(a) * r - .5];
+        }
+        function greenBar(i) { var m = i % 8, h = barH(ING[m]); return [barX(m) - .13 + (hash(i + 5) - .5) * .2, BASE + hash(i + 9) * h, (hash(i + 13) - .5) * .2]; }
+        function redBar(i) { var m = i % 8, h = barH(EGR[m]); return [barX(m) + .13 + (hash(i + 5) - .5) * .18, BASE + hash(i + 9) * h, (hash(i + 13) - .5) * .18]; }
+        function profitY(u) { var f = u * 7, a = Math.floor(Math.min(6, f)), k = f - a; var p0 = PROFIT[Math.max(0, a - 1)], p1 = PROFIT[a], p2 = PROFIT[a + 1], p3 = PROFIT[Math.min(7, a + 2)];
+          var v = .5 * ((2 * p1) + (-p0 + p2) * k + (2 * p0 - 5 * p1 + 4 * p2 - p3) * k * k + (-p0 + 3 * p1 - 3 * p2 + p3) * k * k * k); return BASE + .3 + v / 18.38 * 3.3; }
+        function ribbon(i) { var u = hash(i + 21), y = profitY(u); var under = hash(i + 33) < .55; return [-2.2 + u * 4.4, under ? lerp(BASE, y, Math.pow(hash(i + 44), .5)) : y + (hash(i + 55) - .5) * .08, (hash(i + 66) - .5) * (under ? .5 : .12)]; }
+        var CATS = [.38, .22, .20, .12, .08], CATC = [[1, .30, .37], [1, .48, .36], [1, .62, .48], [.79, .35, .48], [.56, .29, .42]];
+        function catOf(i) { var u = hash(i + 77), acc = 0; for (var c = 0; c < 5; c++) { acc += CATS[c]; if (u <= acc) return [c, u]; } return [4, u]; }
+        function donut(i) { var cu = catOf(i), ang = Math.PI / 2 - cu[1] * 6.283, R = 1.55, tube = .36 * Math.sqrt(hash(i + 88)), tb = hash(i + 99) * 6.283;
+          var rr = R + Math.cos(tb) * tube; return [Math.cos(ang) * rr, .1 + Math.sin(ang) * rr, Math.sin(tb) * tube]; }
+        var WEEK = [.58, .68, 1, .75], WX = [-1.5, -.5, .5, 1.5];
+        function skyline(i) { var w = i % 4, h = WEEK[w] * 4.2; return [WX[w] + (hash(i + 3) - .5) * .6, BASE + hash(i + 17) * h, (hash(i + 29) - .5) * .6]; }
+        var FLOWPTS = [new THREE.Vector3(-.4, 1.7, 0), new THREE.Vector3(1.1, .5, .6), new THREE.Vector3(-1.1, -.9, .3), new THREE.Vector3(.4, -2.3, 0)];
+        var flowCurve = new THREE.CatmullRomCurve3(FLOWPTS);
+        function flow(i, t) { var u = (hash(i + 7) + t * .28) % 1, p = flowCurve.getPoint(u); var j = .12; return [p.x + (hash(i + 1) - .5) * j, p.y + (hash(i + 2) - .5) * j, p.z + (hash(i + 3) - .5) * j]; }
+        function spiral(i, t) { var r = .4 + hash(i + 5) * 3.6, a = hash(i + 6) * 6.283 + t * .15; return [Math.cos(a) * r, (hash(i + 7) - .5) * .6 - .5, Math.sin(a) * r - 3]; }
+        function galaxy(i, t) { var arm = i % 3, u = Math.pow(hash(i + 11), .7), r = .35 + u * 2.7, a = arm * 2.094 + r * 1.35 + t * .35 + (hash(i + 12) - .5) * .5; return [Math.cos(a) * r, (hash(i + 13) - .5) * .25 * (1.2 - u), Math.sin(a) * r]; }
+        function collapse(i) { return [(hash(i) - .5) * .2, -2.9 + (hash(i + 1) - .5) * .2, 1.5]; }
+
+        var PH = [
+          { at: 0, f: function (i, t) { return chaos(i, t, 1); }, c: function (i) { return hash(i + 3) < .5 ? WHITE : GREEN; } },
+          { at: .35, dur: 1.1, stag: .7, f: greenBar, c: function () { return GREEN; } },
+          { at: 2.04, dur: .9, stag: .5, f: function (i) { return i % 2 ? redBar(i) : greenBar(i); }, c: function (i) { return i % 2 ? RED : GREEN; } },
+          { at: 4.09, dur: .9, stag: .5, f: ribbon, c: function (i) { return hash(i + 33) < .55 ? [.1, .5, .34] : GREEN; } },
+          { at: 6.89, dur: .35, stag: .1, f: function (i, t) { return chaos(i, t, 9); }, c: function (i) { return hash(i + 4) < .5 ? WHITE : RED; } },
+          { at: 7.3, dur: 1.0, stag: .55, f: donut, c: function (i) { return CATC[catOf(i)[0]]; } },
+          { at: 8.93, dur: .9, stag: .5, f: skyline, c: function (i) { return i % 4 === 2 ? GOLD : GREEN; } },
+          { at: 10.97, dur: .9, stag: .45, f: flow, c: function () { return GREEN; } },
+          { at: 13.02, dur: .8, stag: .4, f: spiral, c: function (i) { return hash(i) < .5 ? [.12, .45, .32] : [.35, .3, .22]; } },
+          { at: 15.08, dur: .9, stag: .45, f: galaxy, c: function (i) { var a = i % 3; return a === 0 ? GREEN : a === 1 ? GOLD : RED; } },
+          { at: 16.55, dur: .5, stag: .15, f: collapse, c: function () { return GREEN; } }
+        ];
+        var ARC = []; for (var i = 0; i < N; i++) ARC.push([(hash(i + 201) - .5) * 2.4, hash(i + 202) * 1.6, (hash(i + 203) - .5) * 2.4]);
+        function updateParticles(t) {
+          var p = 0; while (p < PH.length - 1 && t >= PH[p + 1].at) p++;
+          var cur = PH[p], prev = PH[Math.max(0, p - 1)];
+          for (var i = 0; i < N; i++) {
+            var to = cur.f(i, t), ct = cur.c(i), k = 1, pos, col;
+            if (p > 0) {
+              var d = hash(i + 301) * cur.stag;
+              k = eio(clamp((t - cur.at - d) / cur.dur));
+              var from = prev.f(i, cur.at + d), cf = prev.c(i);
+              var lift = Math.sin(k * Math.PI);
+              pos = [lerp(from[0], to[0], k) + ARC[i][0] * lift, lerp(from[1], to[1], k) + ARC[i][1] * lift, lerp(from[2], to[2], k) + ARC[i][2] * lift];
+              col = [lerp(cf[0], ct[0], k), lerp(cf[1], ct[1], k), lerp(cf[2], ct[2], k)];
+            } else { pos = to; col = ct; }
+            P[i * 3] = pos[0]; P[i * 3 + 1] = pos[1]; P[i * 3 + 2] = pos[2];
+            CO[i * 3] = col[0]; CO[i * 3 + 1] = col[1]; CO[i * 3 + 2] = col[2];
+          }
+          pg.attributes.position.needsUpdate = true; pg.attributes.color.needsUpdate = true;
+        }
+
+        // ---------------- mallas de los gráficos ----------------
+        function glass(color, op) { return new THREE.MeshStandardMaterial({ color: color, emissive: color, emissiveIntensity: .45, roughness: .3, metalness: .1, transparent: true, opacity: op }); }
+        var gBars = [], rBars = [];
+        for (var m = 0; m < 8; m++) {
+          var gb = new THREE.Mesh(new THREE.BoxGeometry(.22, 1, .22), glass(0x2fd08a, .55)); gb.position.x = barX(m) - .13; scene.add(gb); gBars.push(gb);
+          var rb = new THREE.Mesh(new THREE.BoxGeometry(.2, 1, .2), glass(0xff4d5e, .55)); rb.position.x = barX(m) + .13; scene.add(rb); rBars.push(rb);
+        }
+        var curvePts = []; for (var u = 0; u <= 120; u++) curvePts.push(new THREE.Vector3(-2.2 + u / 120 * 4.4, profitY(u / 120), 0));
+        var tubeGeo = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(curvePts), 240, .03, 8, false);
+        var tube = new THREE.Mesh(tubeGeo, new THREE.MeshStandardMaterial({ color: 0x9dffd0, emissive: 0x2fd08a, emissiveIntensity: 1.2 })); scene.add(tube);
+        var tubeCount = tubeGeo.index.count;
+        var segs = [], acc = 0;
+        for (var c = 0; c < 5; c++) {
+          var tg = new THREE.TorusGeometry(1.55, .3, 18, 90, CATS[c] * 6.283 - .04);
+          var sm = new THREE.Mesh(tg, glass(new THREE.Color(CATC[c][0], CATC[c][1], CATC[c][2]), .7));
+          sm.position.y = .1; sm.rotation.z = Math.PI / 2 - (acc + CATS[c]) * 6.283 + .02; acc += CATS[c]; scene.add(sm); segs.push(sm);
+        }
+        var cols = [];
+        for (var w = 0; w < 4; w++) { var cm = new THREE.Mesh(new THREE.BoxGeometry(.72, 1, .72), glass(w === 2 ? 0xd7b98c : 0x2fd08a, .5)); cm.position.x = WX[w]; scene.add(cm); cols.push(cm); }
+        var fTube = new THREE.Mesh(new THREE.TubeGeometry(flowCurve, 200, .03, 8, false), new THREE.MeshStandardMaterial({ color: 0x2fd08a, emissive: 0x2fd08a, emissiveIntensity: .6, transparent: true, opacity: .5 })); scene.add(fTube);
+        var nodes = FLOWPTS.map(function (p) { var s = new THREE.Mesh(new THREE.SphereGeometry(.26, 32, 16), new THREE.MeshStandardMaterial({ color: 0x0f1a15, emissive: 0x2fd08a, emissiveIntensity: .2 })); s.position.copy(p); scene.add(s); return s; });
+        var core = new THREE.Mesh(new THREE.SphereGeometry(.22, 32, 16), new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0x2fd08a, emissiveIntensity: 1.3 })); scene.add(core);
+
+        // ---------------- números desordenados → etiquetas ----------------
+        var MESSY = ["####", "S/ 1,24O", "=SUMA(??", "#¡REF!", "3.8,,0", "S/ 9 800", "#N/A", "12,4OO", "¿?", "4.825O", "S/ -", "1.2k??", "#¡VALOR!", "=A1+B7", "ventas_FINAL2", "S/ 7.3", "####", "#DIV/0!", "S/ 48", "0,0,0"];
+        var EXCEL = ["#ffe066", "#ff8fa3", "#a5f3a1", "#9ad0ff", "#ffb86b", "#e6e6e6"];
+        function textTex(txt, bg, fg, w) {
+          var c = document.createElement("canvas"); c.width = w || 320; c.height = 110; var x = c.getContext("2d");
+          if (bg) { x.fillStyle = bg; x.fillRect(4, 8, c.width - 8, 94); x.strokeStyle = "rgba(0,0,0,.35)"; x.lineWidth = 4; x.strokeRect(4, 8, c.width - 8, 94); }
+          x.font = "900 54px 'Zen Kaku Gothic New'"; x.textAlign = "center"; x.textBaseline = "middle"; x.fillStyle = fg;
+          if (!bg) { x.shadowColor = fg; x.shadowBlur = 18; }
+          x.fillText(txt, c.width / 2, 58); var tx = new THREE.CanvasTexture(c); tx.anisotropy = 4; return tx;
+        }
+        var sprites = [], weekSpr = [];
+        function buildSprites() {
+          for (var j = 0; j < 44; j++) {
+            var messy = textTex(MESSY[j % MESSY.length], EXCEL[j % 6], "#1b1b1b");
+            var mat = new THREE.SpriteMaterial({ map: messy, transparent: true, depthWrite: false });
+            var spr = new THREE.Sprite(mat); spr.scale.set(.62, .21, 1); scene.add(spr);
+            var clean = j < 8 ? textTex("S/ " + ING[j].toFixed(1).replace(".0", "") + "k", null, "#9dffd0", 300) : null;
+            sprites.push({ s: spr, messy: messy, clean: clean, j: j });
+          }
+          ["S/ 9.8k", "S/ 11.4k", "S/ 14.7k", "S/ 12.4k"].forEach(function (txt, w) {
+            var ws = new THREE.Sprite(new THREE.SpriteMaterial({ map: textTex(txt, null, w === 2 ? "#F3DDB0" : "#9dffd0", 320), transparent: true, depthWrite: false }));
+            ws.scale.set(.9, .31, 1); ws.visible = false; scene.add(ws); weekSpr.push(ws);
+          });
+        }
+        function updateSprites(t) {
+          sprites.forEach(function (o) {
+            var j = o.j, s = o.s, a = hash(j * 5) * 6.283 + t * (.25 + hash(j) * .4), r = 1.5 + hash(j * 3) * 2.6;
+            var cx = Math.cos(a) * r, cy = (hash(j * 7) - .5) * 6.5, cz = Math.sin(a) * r;
+            var vis = 0, x = cx, y = cy, z = cz, sc = 1, rot = (hash(j + 9) - .5) * .8;
+            if (t < 4.09) {
+              var d = hash(j + 50) * .5, k = eio(clamp((t - .3 - d) / 1.0));
+              var m = j % 8, tx = barX(m) - .13, ty = BASE + barH(ING[m]) + (j < 8 ? .32 : 0);
+              x = lerp(cx, tx, k); y = lerp(cy, ty, k); z = lerp(cz, 0, k); rot = lerp(rot, 0, k);
+              vis = j < 8 ? 1 : 1 - k; sc = j < 8 ? 1 : lerp(1, .2, k);
+              s.material.map = j < 8 && k > .55 ? o.clean : o.messy;
+              if (j < 8) vis *= 1 - pk(t, 3.9, .19);
+              if (j >= 8) vis *= pk(t, 0, .15);
+            } else if (t >= 6.89 && t < 8.5) {
+              var e = eout(pk(t, 6.89, .3)), k2 = eio(clamp((t - 7.3 - hash(j + 60) * .4) / .9));
+              var ang = Math.PI / 2 - hash(j + 70) * 6.283;
+              x = lerp(lerp(0, cx * 1.2, e), Math.cos(ang) * 1.55, k2); y = lerp(lerp(0, cy, e), .1 + Math.sin(ang) * 1.55, k2); z = lerp(cz, 0, k2);
+              vis = e * (1 - k2); sc = lerp(1, .2, k2); s.material.map = o.messy;
+            }
+            s.material.opacity = vis; s.visible = vis > .01;
+            s.position.set(x, y, z); s.material.rotation = rot; s.scale.set(.62 * sc, .21 * sc, 1);
+          });
+        }
+
+        // ---------------- cámara por golpes ----------------
+        var CAM = [
+          [0, [0, .6, 15], [0, 0, 0]], [1.4, [.6, 1.3, 13.2], [0, -.6, 0]], [2.04, [-.6, 1.4, 13.0], [0, -.6, 0]],
+          [4.09, [0, .6, 12.5], [0, -.5, 0]], [6.89, [0, .5, 13.5], [0, 0, 0]], [7.3, [0, .2, 11.8], [0, .1, 0]], [8.93, [1.4, -.4, 12.8], [0, .3, 0]],
+          [10.97, [0, -.2, 12.8], [0, -.3, 0]], [13.02, [0, .2, 13], [0, -.5, -2]], [15.08, [0, 6.8, 7.2], [0, 0, 0]], [16.55, [0, 4.2, 5.6], [0, -1.6, 0]]
+        ];
+        function updateCamera(t) {
+          var c = 0; while (c < CAM.length - 1 && t >= CAM[c + 1][0]) c++;
+          var a = CAM[Math.max(0, c - 1)], b = CAM[c], k = c === 0 ? 1 : eio(clamp((t - b[0]) / .95));
+          var orb = Math.sin(t * .35) * .3;
+          camera.position.set(lerp(a[1][0], b[1][0], k) + orb, lerp(a[1][1], b[1][1], k), lerp(a[1][2], b[1][2], k));
+          camera.lookAt(lerp(a[2][0], b[2][0], k), lerp(a[2][1], b[2][1], k), lerp(a[2][2], b[2][2], k));
+          var punch = 0; [0].concat(B).forEach(function (bt) { if (t >= bt && t < bt + .5) punch = Math.max(punch, Math.exp(-(t - bt) * 9)); });
+          camera.fov = 40 - punch * 3.5; camera.updateProjectionMatrix();
+        }
+
+        function updateMeshes(t) {
+          for (var m = 0; m < 8; m++) {
+            var gk = eout(pk(t, .9 + m * .06, .8)) * (1 - pk(t, 4.09, .4)), h = barH(ING[m]) * Math.max(.001, gk);
+            gBars[m].scale.y = h; gBars[m].position.y = BASE + h / 2; gBars[m].visible = gk > .002;
+            var rk = eout(pk(t, 2.5 + m * .06, .7)) * (1 - pk(t, 4.09, .4)), hr = barH(EGR[m]) * Math.max(.001, rk);
+            rBars[m].scale.y = hr; rBars[m].position.y = BASE + hr / 2; rBars[m].visible = rk > .002;
+          }
+          var tk = pk(t, 4.3, 1.0) * (t < 6.89 ? 1 : 0);
+          tube.geometry.setDrawRange(0, Math.floor(tubeCount * tk / 3) * 3); tube.visible = tk > 0;
+          segs.forEach(function (sm, i) { var sk = eout(pk(t, 7.9 + i * .08, .6)) * (t < 8.93 ? 1 : 1 - pk(t, 8.93, .3)); sm.visible = sk > .01; sm.scale.setScalar(lerp(.7, 1, sk)); sm.material.opacity = .72 * sk; });
+          cols.forEach(function (cm, w) { var ck = eout(pk(t, 9.35 + w * .1, .8)) * (t < 10.97 ? 1 : 1 - pk(t, 10.97, .3)), h = WEEK[w] * 4.2 * Math.max(.001, ck); cm.scale.y = h; cm.position.y = BASE + h / 2; cm.visible = ck > .003;
+            var ws = weekSpr[w]; if (ws) { ws.visible = ck > .6; ws.material.opacity = pk(ck, .6, .4); ws.position.set(WX[w], BASE + h + .38, 0); } });
+          var fk = pk(t, 11.1, .4) * (t < 13.02 ? 1 : 1 - pk(t, 13.02, .3)); fTube.visible = fk > .01; fTube.material.opacity = .5 * fk;
+          nodes.forEach(function (s, j) { var on = pk(t, 11.5 + j * .35, .15); s.visible = fk > .01; s.scale.setScalar(Math.max(.01, fk)); s.material.emissiveIntensity = .2 + on * 1.4; });
+          var ck2 = eout(pk(t, 15.2, .5)) * (1 - pk(t, 16.55, .3)); core.visible = ck2 > .01; core.scale.setScalar(Math.max(.01, ck2) * (1 + Math.sin(t * 6) * .06));
+          grid.visible = t < 15.08;
+        }
+
+        function project(v) { camera.updateMatrixWorld(); var p = v.clone().project(camera); return [(p.x + 1) / 2 * W, (1 - p.y) / 2 * H]; }
+        var tags = [0, 1, 2, 3].map(function (j) { return document.getElementById("sis-t" + j); });
+        var coreEl = document.getElementById("sis-core");
+        var TAGSIDE = [1, -1, 1, 1], TAGW = [140, 300, 260, 230], COREW = 290;
+        function updateDom(t) {
+          tags.forEach(function (el, j) {
+            var on = pk(t, 11.5 + j * .35, .2) * (t < 13.02 ? 1 : 1 - pk(t, 13.02, .25));
+            var p = project(FLOWPTS[j]); el.style.opacity = on;
+            var ox = TAGSIDE[j] > 0 ? 70 : -TAGW[j] - 70;
+            el.style.transform = "translate(" + (p[0] + ox) + "px," + (p[1] - 30) + "px)";
+          });
+          var cp = project(new THREE.Vector3(0, 0, 0)), ck = pk(t, 15.4, .4) * (1 - pk(t, 16.55, .25));
+          coreEl.style.opacity = ck; coreEl.style.transform = "translate(" + (cp[0] - COREW / 2) + "px," + (cp[1] + 70) + "px)";
+        }
+
+        function renderAt(t) { updateCamera(t); updateParticles(t); updateSprites(t); updateMeshes(t); updateDom(t); renderer.render(scene, camera); }
+
+        // ---------------- línea de tiempo ----------------
         var tl = gsap.timeline({ paused: true });
         var fmt = function (v) { return "S/ " + Math.round(v).toLocaleString("en-US"); };
         var counter = function (id, to, at, dur) { var o = { v: 0 }; tl.to(o, { v: to, duration: dur, ease: "power3.out", onUpdate: function () { document.getElementById(id).textContent = fmt(o.v); } }, at); };
-
-        // --- DROP: la pupila se abre como diafragma ---
-        tl.fromTo("#sis-iris", { "--r": "0px" }, { "--r": "1500px", duration: .75, ease: "expo.out" }, 0);
-        tl.fromTo("#sis-ring", { opacity: 1, scale: .05 }, { opacity: 0, scale: 3.4, duration: .7, ease: "expo.out" }, 0);
-        // partículas que suben lento
-        for (var k = 0; k < 46; k++) tl.fromTo("#sis-dot" + k, { y: 0 }, { y: -(120 + hash(k + 5) * 260), duration: 17.1, ease: "none" }, 0);
-        tl.fromTo("#sis-grid", { rotationX: 76, y: 0 }, { rotationX: 76, y: 90, duration: 17.1, ease: "none" }, 0);
-
-        // P1 INGRESOS
-        tl.fromTo("#sis-p1", { opacity: 0, scale: 1.5, filter: "blur(24px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: .6, ease: "expo.out" }, .05);
-        counter("sis-n1", 48250, .15, 1.5);
-        tl.fromTo("#sis-line1", { strokeDasharray: 1100, strokeDashoffset: 1100 }, { strokeDashoffset: 0, duration: 1.3, ease: "power2.out" }, .25);
-        tl.fromTo("#sis-area1", { opacity: 0 }, { opacity: 1, duration: .8 }, .6);
-        tl.to("#sis-p1", { y: -270, scale: .86, duration: .8, ease: "expo.inOut" }, 1.3);
-
-        // P2 EGRESOS (golpe 1)
-        tl.fromTo("#sis-p2", { opacity: 0, x: 700, rotationY: -35 }, { opacity: 1, x: 0, rotationY: 0, duration: .6, ease: "expo.out" }, B[0]);
-        counter("sis-n2", 29870, B[0] + .1, 1.3);
-        tl.fromTo(".sis-bg2", { scaleY: 0 }, { scaleY: 1, duration: .5, stagger: .07, ease: "back.out(1.6)", transformOrigin: "50% 100%" }, B[0] + .25);
-        tl.fromTo(".sis-br2", { scaleY: 0 }, { scaleY: 1, duration: .5, stagger: .07, ease: "back.out(1.6)", transformOrigin: "50% 100%" }, B[0] + .35);
-
-        // P3 GANANCIA (golpe 2)
-        tl.to(["#sis-p1", "#sis-p2"], { z: -700, opacity: .18, filter: "blur(6px)", duration: .5, ease: "expo.out" }, B[1]);
-        tl.fromTo("#sis-p3", { opacity: 0, scale: .6, z: 200 }, { opacity: 1, scale: 1, z: 0, duration: .55, ease: "back.out(1.5)" }, B[1]);
-        counter("sis-n3", 18380, B[1] + .1, 1.2);
-        tl.fromTo("#sis-w1", { opacity: 0, scale: 1.35, filter: "blur(12px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 1.2, ease: "expo.out" }, B[1]);
-        tl.to("#sis-glow", { scale: 1.3, opacity: 1, duration: .8 }, B[1]);
-
-        // P4 EXCEL ROTO → ORDEN (golpe 3)
-        tl.to(["#sis-p1", "#sis-p2", "#sis-p3", "#sis-w1"], { opacity: 0, duration: .25 }, B[2] - .05);
-        CELLS.forEach(function (c, j) {
-          tl.fromTo("#sis-cell" + j, { opacity: 0, rotation: (hash(j + 1) - .5) * 50, scale: .6 }, { opacity: 1, scale: 1, duration: .18, ease: "back.out(2)" }, B[2] + j * .02);
-          var ce = document.getElementById("sis-cell" + j);
-          tl.to(ce, { x: +ce.dataset.dx, y: +ce.dataset.dy, scale: .1, rotation: 360, opacity: 0, duration: .5, ease: "expo.in" }, B[2] + .45 + hash(j + 7) * .2);
-        });
-        tl.fromTo("#sis-p4", { opacity: 0, scale: .85 }, { opacity: 1, scale: 1, duration: .5, ease: "expo.out" }, B[2] + .95);
-        tl.fromTo("#sis-p4 .sis-cat", { opacity: 0, x: -60 }, { opacity: 1, x: 0, duration: .4, stagger: .08, ease: "expo.out" }, B[2] + 1.05);
-        tl.fromTo("#sis-p4 .sis-cat i", { scaleX: 0 }, { scaleX: 1, duration: .6, stagger: .08, ease: "expo.out" }, B[2] + 1.1);
-        tl.fromTo(".sis-seg", { opacity: 0, rotation: -140, transformOrigin: "100px 100px" }, { opacity: 1, rotation: -90, duration: .7, stagger: .08, ease: "expo.out" }, B[2] + 1.2);
-        tl.fromTo("#sis-w2", { opacity: 0, scale: 1.35, filter: "blur(12px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 1.2, ease: "expo.out" }, B[2] + .9);
-
-        // P5 VENTAS POR SEMANA (golpe 4)
-        tl.to(["#sis-p4", "#sis-w2"], { opacity: 0, z: -500, duration: .3 }, B[3] - .05);
-        tl.fromTo("#sis-p5", { opacity: 0, rotationX: 25, y: 120 }, { opacity: 1, rotationX: 0, y: 0, duration: .6, ease: "expo.out" }, B[3]);
-        tl.fromTo("#sis-bars5 .bar", { scaleY: 0 }, { scaleY: 1, duration: .7, stagger: .12, ease: "back.out(1.4)", transformOrigin: "50% 100%" }, B[3] + .15);
-        tl.fromTo(".sis-v5", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .4, stagger: .12 }, B[3] + .45);
-        tl.fromTo("#sis-star", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: .5, ease: "expo.out" }, B[3] + 1.0);
-
-        // P6 FLUJO (golpe 5)
-        tl.to("#sis-p5", { opacity: 0, z: -500, duration: .3 }, B[4] - .05);
-        for (var n = 0; n < 4; n++) {
-          tl.fromTo("#sis-node" + n, { opacity: 0, x: n % 2 ? 120 : -120 }, { opacity: 1, x: 0, duration: .4, ease: "expo.out" }, B[4] + n * .12);
-          tl.to("#sis-node" + n, { borderColor: "rgba(47,208,138,.9)", boxShadow: "0 0 50px rgba(47,208,138,.45)", duration: .2 }, B[4] + .6 + n * .32);
-          if (n < 3) {
-            tl.fromTo("#sis-wire" + n, { opacity: 0 }, { opacity: 1, duration: .3 }, B[4] + .3 + n * .12);
-            tl.set("#sis-pulse" + n, { opacity: 0 }, 0);
-            tl.fromTo("#sis-pulse" + n, { opacity: 1, y: 0 }, { opacity: 1, y: 110, duration: .32, ease: "none", repeat: 4, repeatDelay: .12, immediateRender: false }, B[4] + .6 + n * .32);
-          }
+        function build() {
+          buildSprites();
+          tags.forEach(function (el, j) { TAGW[j] = el.offsetWidth || TAGW[j]; }); COREW = coreEl.offsetWidth || COREW;
+          var clock = { t: 0 };
+          tl.to(clock, { t: 17.1, duration: 17.1, ease: "none", onUpdate: function () { renderAt(clock.t); } }, 0);
+          tl.fromTo("#sis-iris", { "--r": "0px" }, { "--r": "1500px", duration: .75, ease: "expo.out" }, 0);
+          tl.fromTo("#sis-ring", { opacity: 1, scale: .05 }, { opacity: 0, scale: 3.4, duration: .7, ease: "expo.out" }, 0);
+          var head = function (id, a, b) { tl.fromTo(id, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: .45, ease: "expo.out" }, a); tl.to(id, { opacity: 0, y: -30, duration: .2, ease: "power2.in" }, b - .2); };
+          head("#sis-h1", .5, B[0]); counter("sis-n1", 48250, .5, 1.4);
+          head("#sis-h2", B[0] + .05, B[1]); counter("sis-n2", 29870, B[0] + .1, 1.2);
+          head("#sis-h3", B[1] + .05, B[2]); counter("sis-n3", 18380, B[1] + .1, 1.3);
+          head("#sis-h4", B[2] + .6, B[3]);
+          tl.fromTo("#sis-legend", { opacity: 0 }, { opacity: 1, duration: .2 }, B[2] + 1.0);
+          tl.fromTo("#sis-legend div", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: .35, stagger: .07, ease: "expo.out" }, B[2] + 1.05);
+          tl.to("#sis-legend", { opacity: 0, duration: .2 }, B[3] - .2);
+          head("#sis-h5", B[3] + .1, B[4]);
+          tl.fromTo("#sis-star", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: .45, ease: "expo.out" }, B[3] + 1.1);
+          tl.to("#sis-star", { opacity: 0, duration: .2 }, B[4] - .2);
+          head("#sis-h6", B[4] + .1, B[5]);
+          tl.fromTo("#sis-p7", { opacity: 0, y: -240, scale: .9 }, { opacity: 1, y: 0, scale: 1, duration: .55, ease: "back.out(1.4)" }, B[5]);
+          tl.fromTo("#sis-rep", { height: 0, opacity: 0 }, { height: 220, opacity: 1, duration: .6, ease: "expo.out" }, B[5] + .7);
+          tl.fromTo("#sis-rep div", { x: -40, opacity: 0 }, { x: 0, opacity: 1, duration: .4, stagger: .15, ease: "expo.out" }, B[5] + .85);
+          tl.to("#sis-p7", { opacity: 0, scale: .7, duration: .25 }, B[6] - .1);
+          head("#sis-h8", B[6] + .2, 16.75);
+          tl.set("#sis-flash", { opacity: 0 }, 0);
+          [0].concat(B).forEach(function (b, j) { tl.fromTo("#sis-flash", { opacity: j === 0 ? .6 : .22 }, { opacity: 0, duration: .07, ease: "none", immediateRender: false }, b); });
+          renderAt(0);
+          window.__timelines["sistema"] = tl;
         }
-
-        // P7 NOTIFICACIÓN (golpe 6)
-        tl.to(["#sis-flow .sis-node", "#sis-flow .sis-wire", "#sis-flow .sis-pulse"], { opacity: 0, duration: .25 }, B[5] - .05);
-        tl.fromTo("#sis-p7", { opacity: 0, y: -260, scale: .9 }, { opacity: 1, y: 0, scale: 1, duration: .55, ease: "back.out(1.4)" }, B[5]);
-        tl.fromTo("#sis-rep", { height: 0, opacity: 0 }, { height: 240, opacity: 1, duration: .6, ease: "expo.out" }, B[5] + .7);
-        tl.fromTo("#sis-rep div", { x: -40, opacity: 0 }, { x: 0, opacity: 1, duration: .4, stagger: .15, ease: "expo.out" }, B[5] + .85);
-
-        // P8 CONSTELACIÓN (golpe 7)
-        tl.to("#sis-p7", { opacity: 0, scale: .6, duration: .3 }, B[6] - .05);
-        tl.fromTo("#sis-core", { opacity: 0, scale: .4 }, { opacity: 1, scale: 1, duration: .5, ease: "back.out(2)" }, B[6]);
-        tl.fromTo("#sis-lines", { opacity: 0 }, { opacity: 1, duration: .6 }, B[6] + .2);
-        tl.fromTo(".sis-card", { opacity: 0, scale: .5, z: -400 }, { opacity: 1, scale: 1, z: 0, duration: .5, stagger: .07, ease: "expo.out" }, B[6] + .1);
-        tl.fromTo("#sis-w3", { opacity: 0, scale: 1.35, filter: "blur(12px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 1.2, ease: "expo.out" }, B[6] + .2);
-        tl.fromTo("#sis-world", { scale: 1.12 }, { scale: .94, duration: 2.0, ease: "power2.out" }, B[6]);
-        // match cut: la ganancia se encoge hacia el celular de Kuro
-        tl.to([".sis-card:not(#sis-c3)", "#sis-core", "#sis-lines", "#sis-w3"], { opacity: 0, duration: .25 }, 16.55);
-        tl.to("#sis-c3", { x: 45, y: -70, scale: .72, duration: .5, ease: "expo.inOut" }, 16.55);
-
-        // Golpes: punch leve + flash de 2 cuadros
-        [0].concat(B).forEach(function (b, j) {
-          tl.fromTo("#sis-persp", { scale: 1.045 }, { scale: 1, duration: .38, ease: "expo.out", immediateRender: j === 0 }, b);
-          tl.fromTo("#sis-flash", { opacity: j === 0 ? .6 : .2 }, { opacity: 0, duration: .07, ease: "none", immediateRender: false }, b);
-        });
-
-        window.__timelines["sistema"] = tl;
+        var ready = document.fonts.load("900 54px 'Zen Kaku Gothic New'").then(build, build);
+        window.__hf = window.__hf || {}; window.__hf.buildReady = window.__hf.buildReady || {}; window.__hf.buildReady["sistema-3d"] = ready;
         })();
       </script>
     </template>

@@ -44,6 +44,8 @@
         #playa-big { position: absolute; left: 140px; top: 500px; width: 800px; height: 800px; opacity: 0; }
         #playa-bigcv { width: 800px; height: 800px; image-rendering: pixelated; display: block; }
         #playa-black { position: absolute; inset: 0; background: #000; opacity: 0; }
+        #playa-flash { position: absolute; inset: 0; background: #fff6ee; opacity: 0; }
+        #playa-biglab { position: absolute; left: 0; right: 0; top: 380px; text-align: center; font-size: 46px; color: #d9cff0; opacity: 0; }
       </style>
 
       <div id="root" data-composition-id="playa" data-width="1080" data-height="1920" data-duration="17.11">
@@ -82,8 +84,10 @@
 
         <div id="playa-bonk">BONK!</div>
         <div id="playa-ouch">¡¡!!</div>
+        <div id="playa-biglab">Maru 丸 envió un sticker</div>
         <div id="playa-big"><canvas id="playa-bigcv" width="90" height="90"></canvas></div>
         <div id="playa-black"></div>
+        <div id="playa-flash"></div>
       </div>
 
       <script>
@@ -135,14 +139,23 @@
             if (t >= hit && t < hit + .3) { var sh = (hash(Math.floor(t * 40)) - .5) * 30; camT += " translate(" + sh + "px," + (-sh * .6) + "px)"; }
           } else if (t < 9.7) {
             // Acto 1d: la ola
-            beach(t); umbrella(222, 368, t); palm(20, 480, t); chair(150, 376);
-            var w = pk(t, 8.4, .5);
-            if (t < 8.95) kuro(150, 346, 1.25, { rightHold: "coco", right: { x: 20, y: -38 }, leftHold: "phone", left: { x: -20, y: -24 }, eyes: t > 8.6 ? "shock" : "glasses", mouth: t > 8.6 ? "o" : "smug" }, t);
-            else kuro(150, 346, 1.25, { wet: true, seaweed: true, glassesTilt: 1.5, glassesY: 2, mouth: "wince" }, t);
-            waveCrash(t);
+            beach(t); umbrella(222, 368, t); palm(20, 480, t);
+            var drag = pk(t, 8.97, .33), rest = t >= 9.3;
+            if (!rest) chair(150 - drag * 40, 376);
+            else { g.save(); g.translate(206, 380); g.rotate(1.2); chair(0, 0); g.restore(); }
+            var hitW = t >= 8.97;
+            if (!hitW) kuro(150, 346, 1.25, { rightHold: "coco", right: { x: 20, y: -38 }, leftHold: "phone", left: { x: -20, y: -24 }, eyes: t > 8.55 ? "shock" : "glasses", mouth: t > 8.55 ? "o" : "smug", legsUp: t > 8.65 }, t);
+            var wv = waveCrash(t);
+            if (t >= 8.97 && t < 9.3) {
+              // Kuro revolcado dentro de la ola
+              var kx = lerp(150, 70, drag), ky = wv ? wv.top(kx) + 30 : 330;
+              g.save(); g.translate(kx, ky); g.rotate(drag * 7.5); kuro(0, 40, 1.1, { wet: true, eyes: "x", mouth: "o", legsUp: true }, t); g.restore();
+              for (var fo = 0; fo < 30; fo++) { var fx = kx - 40 + hash(fo) * 80, fy = ky + 20 + hash(fo + 9) * 30; rect(fx, fy, 3, 2, fo % 2 ? "#f4fbff" : "#8fe3ea"); }
+            }
+            if (rest) kuro(78, 400, 1.1, { wet: true, seaweed: true, glassesTilt: 1.5, glassesY: 2, mouth: "wince" }, t);
             camT = "none";
-            if (t > 8.8 && t < 9.4) { var sh2 = (hash(Math.floor(t * 36)) - .5) * 26; camT = "translate(" + sh2 + "px," + (hash(Math.floor(t * 36) + 3) - .5) * 20 + "px)"; }
-          } else if (t < 15.45) {
+            if (t > 8.75 && t < 9.35) { var sh2 = (hash(Math.floor(t * 36)) - .5) * 22; camT = "translate(" + sh2 + "px," + (hash(Math.floor(t * 36) + 3) - .5) * 16 + "px)"; }
+          } else if (t < 15.05) {
             // Acto 1e: empapado, cangrejo (y de fondo durante el chat con Maru)
             gradient(SKY, 0, 330); palmFronds(t); gradient(["#e2a57a", "#dca06f"], 330, PH);
             var pinch = t >= 10.35 && t < 10.65;
@@ -155,17 +168,18 @@
             if (t >= 9.95) crab(crabX, crabY, 3.1, t, co);
             camT = pinch ? "translate(" + (hash(Math.floor(t * 40)) - .5) * 16 + "px,0)" : "none";
             cam.style.transformOrigin = "540px 800px";
-          } else if (t < 16.25) {
+          } else if (t < 16.0) {
             // Mini-drops 1 y 2: cara de Kuro sin lentes
             gradient(["#2a1a4a", "#5e2461", "#b1435f"], 0, PH);
             for (var rr = 0; rr < 22; rr++) { var ang = rr / 22 * Math.PI * 2 + t * .5; line(135, 240, 135 + Math.cos(ang) * 300, 240 + Math.sin(ang) * 300, rr % 2 ? "#6a2a62" : "#4a1e56", 3); }
-            head(135, 245, 6, { eyes: "shock", mouth: "o", tremble: t >= 16.15, sweat: t >= 16.15, wet: true }, t);
-            var gf = pk(t, 15.45, .4);
+            head(135, 245, 6, { eyes: "shock", mouth: "o", tremble: t >= 15.2, sweat: t >= 15.2, wet: true }, t);
+            var gf = pk(t, 15.05, .45);
             if (gf < 1) glassesFalling(135, 245 - 18 + gf * 320, 6, gf);
-            var p1 = t < 16.15 ? 1 + .18 * Math.exp(-(t - 15.45) * 9) : 1.9 + .12 * Math.exp(-(t - 16.15) * 9);
+            var p1 = t < 15.2 ? 1.12 + .2 * Math.exp(-(t - 15.05) * 12) : 1.85 + .18 * Math.exp(-(t - 15.2) * 10) + (t - 15.2) * .08;
             camT = "scale(" + p1 + ")"; cam.style.transformOrigin = "540px 940px";
           } else {
-            gradient(["#1d1535", "#120c22"], 0, PH);
+            gradient(["#2a1a4a", "#1d1535", "#120c22"], 0, PH);
+            for (var q = 0; q < 24; q++) { var an = q / 24 * Math.PI * 2 + t * .8; line(135, 225, 135 + Math.cos(an) * 320, 225 + Math.sin(an) * 320, q % 2 ? "#3a2560" : "#2a1a4a", 3); }
           }
           cam.style.transform = camT;
         }
@@ -195,31 +209,49 @@
           g.restore();
         }
         function waveCrash(t) {
-          var rise = pk(t, 8.4, .5), crash = pk(t, 8.9, .35), rec = pk(t, 9.25, .45);
-          if (rec >= 1) return;
-          var front = lerp(300, -60, outQ(crash));
-          var h = lerp(10, 330, outQ(rise));
-          var baseY = 340;
-          for (var x = Math.max(0, Math.floor(front - 40)); x < PW; x++) {
+          // Ola viva: sube detrás, rompe con cresta y espuma, arrastra a Kuro y se retira. Solo cubre la mitad baja.
+          var H = 150 * outQ(pk(t, 8.4, .4)) * (1 - outQ(pk(t, 9.28, .42)));
+          var front = lerp(330, -140, Math.pow(pk(t, 8.72, .62), 1.15));
+          var base = 350 + 60 * pk(t, 9.28, .42);
+          if (H < 1) return null;
+          var top = function (x) {
             var d = x - front;
-            var hh = h * (d < 0 ? Math.max(0, 1 + d / 40) : 1) * (1 - rec) + Math.sin(x * .1 + t * 8) * 6;
-            var top = baseY - hh;
-            for (var y = Math.floor(top); y < PH; y++) {
-              var depth = y - top;
-              var c = depth < 5 ? "#fff6ee" : depth < 14 ? "#bfe6ff" : depth < 60 ? "#5aa0e0" : "#2f5aa8";
-              if (depth > 14 && ((x + y) & 7) === 0) c = "#8fc6f0";
+            if (d < -6) return 9999;
+            var prof = d < 26 ? Math.sqrt(Math.max(0, d + 6) / 32) : 1 - Math.min(.55, (d - 26) / 520);
+            return base - H * prof + Math.sin(x * .09 + t * 7) * 3 + Math.sin(x * .23 - t * 11) * 1.5;
+          };
+          for (var x = 0; x < PW; x++) {
+            var ty = top(x); if (ty > PH) continue;
+            for (var y = Math.floor(ty); y < PH; y++) {
+              var dep = y - ty, c;
+              if (dep < 3) c = "#f4fbff";
+              else if (dep < 7) c = ((x + y) & 3) ? "#bdf1f2" : "#f4fbff";
+              else if (dep < 18) c = "#6fd3dc";
+              else if (dep < 40) c = "#2fb3c7";
+              else if (dep < 80) c = (dep - 40) * 16 / 40 > BAYER[y & 3][x & 3] ? "#1f7f9c" : "#2fb3c7";
+              else c = (dep - 80) * 16 / 60 > BAYER[y & 3][x & 3] ? "#15506f" : "#1f7f9c";
+              var band = (y - ty + Math.sin(x * .06 + t * 4) * 5 + t * 18) % 16;
+              if (dep > 14 && band < 1.2) c = dep < 60 ? "#8fe3ea" : "#3fb7c9";
               px(x, y, c);
             }
           }
-          if (crash > 0 && rec < 1) for (var i = 0; i < 60; i++) { var bx = hash(i) * PW, by = 120 + ((hash(i + 3) * 380 + t * 90) % 360); blob(bx, by, 2 + hash(i + 7) * 3, 2 + hash(i + 7) * 3, "#e8f6ff", "#8fc6f0"); }
+          // labio de la cresta que se curva hacia adelante
+          var cx0 = front + 4, cy0 = base - H - 4;
+          for (var i = 0; i < 26; i++) { var a = Math.PI * (1.05 + i / 26 * .9), r = 16 + (i % 3); var lx = cx0 + Math.cos(a) * r * .9 + 14, ly = cy0 + Math.sin(a) * r * .7 + 10; rect(lx, ly, 3, 3, i % 4 ? "#f4fbff" : "#bdf1f2"); }
+          // spray
+          for (var s = 0; s < 46; s++) {
+            var k = (t * 1.6 + hash(s)) % 1, sx = front + (hash(s + 3) - .2) * 80, sy = base - H - k * 70 * hash(s + 7) + k * k * 60;
+            if (sx > 0 && sx < PW) rect(sx, sy, 2, 2, s % 3 ? "#f4fbff" : "#8fe3ea");
+          }
+          return { top: top, front: front, H: H, base: base };
         }
 
         function update(t) {
           scene(t);
           // tipeo en el chat de Maru
-          if (t >= 12.6 && t < 13.6) { var n = Math.floor(pk(t, 12.6, .9) * TYPE.length); typed.textContent = TYPE.slice(0, n); }
+          if (t >= 12.3 && t < 13.15) { var n = Math.floor(pk(t, 12.3, .8) * TYPE.length); typed.textContent = TYPE.slice(0, n); }
           else typed.textContent = "";
-          car.style.opacity = (t >= 11 && Math.floor(t * 3) % 2 === 0) || (t >= 12.6 && t < 13.6) ? 1 : 0;
+          car.style.opacity = (t >= 11 && Math.floor(t * 3) % 2 === 0) || (t >= 12.3 && t < 13.15) ? 1 : 0;
           drawSticker(stkMini, t, false);
           drawSticker(stkBig, t, t >= 16.8);
         }
@@ -260,25 +292,25 @@
         tl.set("#playa-b1", { display: "block" }, 11.3);
         tl.fromTo("#playa-b1", { scale: .5, opacity: 0 }, { scale: 1, opacity: 1, duration: .3, ease: "back.out(2.4)", transformOrigin: "100% 100%" }, 11.3);
         tl.fromTo("#playa-b1", { x: -8 }, { x: 8, duration: .05, repeat: 9, yoyo: true, ease: "none" }, 11.6);
-        tl.set(["#playa-b2", "#playa-b3"], { display: "block" }, 13.6);
-        tl.fromTo("#playa-b2", { scale: .4, opacity: 0 }, { scale: 1, opacity: 1, duration: .3, ease: "back.out(2.6)", transformOrigin: "0% 100%" }, 13.6);
-        tl.fromTo("#playa-b3", { scale: .4, opacity: 0 }, { scale: 1, opacity: 1, duration: .34, ease: "back.out(2)", transformOrigin: "0% 100%" }, 13.7);
-        tl.fromTo("#playa-b3 path:last-of-type", { strokeDasharray: 900, strokeDashoffset: 900 }, { strokeDashoffset: 0, duration: .7, ease: "power2.out" }, 13.8);
-        tl.set("#playa-b4", { display: "block" }, 14.6);
-        tl.fromTo("#playa-b4", { scale: .5, opacity: 0 }, { scale: 1, opacity: 1, duration: .28, ease: "back.out(2.4)", transformOrigin: "100% 100%" }, 14.6);
+        tl.set(["#playa-b2", "#playa-b3"], { display: "block" }, 13.15);
+        tl.fromTo("#playa-b2", { scale: .4, opacity: 0 }, { scale: 1, opacity: 1, duration: .3, ease: "back.out(2.6)", transformOrigin: "0% 100%" }, 13.15);
+        tl.fromTo("#playa-b3", { scale: .4, opacity: 0 }, { scale: 1, opacity: 1, duration: .34, ease: "back.out(2)", transformOrigin: "0% 100%" }, 13.25);
+        tl.fromTo("#playa-b3 path:last-of-type", { strokeDasharray: 900, strokeDashoffset: 900 }, { strokeDashoffset: 0, duration: .7, ease: "power2.out" }, 13.35);
+        tl.set("#playa-b4", { display: "block" }, 14.1);
+        tl.fromTo("#playa-b4", { scale: .5, opacity: 0 }, { scale: 1, opacity: 1, duration: .28, ease: "back.out(2.4)", transformOrigin: "100% 100%" }, 14.1);
         // corte a la cara (mini-drop 1) y vuelta al chat con el sticker
-        tl.set(["#playa-chatB", "#playa-dim"], { opacity: 0 }, 15.45);
-        tl.set("#playa-stkbub", { display: "block" }, 16.25);
-        tl.set("#playa-chatB", { opacity: 1 }, 16.25);
-        tl.set("#playa-dim", { opacity: .6 }, 16.25);
-        tl.fromTo("#playa-stkbub", { scale: .3, opacity: 0 }, { scale: 1, opacity: 1, duration: .2, ease: "back.out(3)", transformOrigin: "0% 100%" }, 16.25);
-        // mini-drop 3: sticker gigante; mini-drop 4: al ojo; luego a la pupila
-        tl.set("#playa-chatB", { opacity: 0 }, 16.47);
-        tl.set("#playa-dim", { opacity: 1 }, 16.47);
-        tl.fromTo("#playa-big", { opacity: 0, scale: .55 }, { opacity: 1, scale: 1, duration: .25, ease: "back.out(2)" }, 16.47);
-        tl.to("#playa-big", { scale: 3.1, transformOrigin: "65.3% 53.8%", duration: .04, ease: "expo.out" }, 16.82);
-        tl.to("#playa-big", { scale: 48, transformOrigin: "65.6% 54.2%", duration: .24, ease: "expo.in" }, 16.86);
-        tl.fromTo("#playa-black", { opacity: 0 }, { opacity: 1, duration: .1, ease: "none" }, 17.0);
+        // Mini-drops: 15.05 cara, 15.20 más cerca, 16.00 el sticker, 16.60 zoom al sticker y a la pupila
+        tl.set(["#playa-chatB", "#playa-dim"], { opacity: 0 }, 15.05);
+        tl.set("#playa-flash", { opacity: 0 }, 0);
+        [15.05, 15.2, 16.0, 16.6].forEach(function (b, j) { tl.fromTo("#playa-flash", { opacity: j === 1 || j === 3 ? .35 : .8 }, { opacity: 0, duration: .09, ease: "none", immediateRender: false }, b); });
+        tl.fromTo("#playa-big", { opacity: 0, scale: .3, rotation: -10 }, { opacity: 1, scale: 1, rotation: 0, duration: .35, ease: "back.out(2.2)" }, 16.0);
+        tl.fromTo("#playa-biglab", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .3, ease: "expo.out" }, 16.05);
+        tl.to("#playa-big", { y: -14, duration: .25, ease: "sine.inOut" }, 16.35);
+        tl.to("#playa-biglab", { opacity: 0, duration: .05 }, 16.6);
+        tl.to("#playa-big", { y: 0, scale: 3.1, transformOrigin: "65.3% 53.2%", duration: .06, ease: "expo.out" }, 16.6);
+        tl.to("#playa-big", { scale: 5.2, transformOrigin: "65.4% 53.4%", duration: .32, ease: "power1.inOut" }, 16.66);
+        tl.to("#playa-big", { scale: 48, transformOrigin: "65.6% 53.8%", duration: .13, ease: "expo.in" }, 16.98);
+        tl.fromTo("#playa-black", { opacity: 0 }, { opacity: 1, duration: .08, ease: "none" }, 17.03);
 
         update(0);
         window.__timelines["playa"] = tl;
