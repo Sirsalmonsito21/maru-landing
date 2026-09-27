@@ -8,7 +8,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap">
 <style>
-  /* Borrador pixel art japonés: combate de RPG retro. Lienzo lógico 180×320 escalado ×6 = 1080×1920. */
+  /* Meme "Tipos de clientes": combate de RPG retro en pixel art japonés.
+     Lienzo lógico 180×320 escalado ×6 = 1080×1920. La historia vive en STEPS (abajo): cada paso tiene su duración,
+     así se puede ajustar a la música sin tocar el dibujo. */
   :root { --k: #1a1422; --w: #FFF6EE; --shu: #C8452C; --mikan: #DE9A5A; --kin: #D7B98C; color-scheme: dark; }
   * { box-sizing: border-box; }
   html, body { margin: 0; height: 100%; background: #0d0a12; color: var(--w); font-family: "DotGothic16", monospace; }
@@ -19,75 +21,135 @@
   body.rec .viewport { position: static; overflow: visible; }
   body.rec #stage { left: 0; top: 0; transform: none !important; }
   body.rec .bar { display: none; }
+  #cam { position: absolute; inset: 0; transform-origin: 144px 1032px; }
   #px { position: absolute; inset: 0; width: 1080px; height: 1920px; image-rendering: pixelated; }
   .abs { position: absolute; }
-  /* Scanlines tipo CRT, muy sutiles */
-  #scan { inset: 0; pointer-events: none; background: repeating-linear-gradient(to bottom, rgba(0,0,0,.10) 0 3px, transparent 3px 6px); }
-  #flash { inset: 0; background: #fff; opacity: 0; }
+  #scan { inset: 0; pointer-events: none; background: repeating-linear-gradient(to bottom, rgba(0,0,0,.10) 0 3px, transparent 3px 6px); z-index: 30; }
+  #flash { inset: 0; background: #fff; opacity: 0; z-index: 25; }
+  #blocks { position: absolute; inset: 0; width: 1080px; height: 1920px; image-rendering: pixelated; z-index: 26; }
 
-  /* Cajas estilo consola: doble borde, esquinas en escalón */
-  .box {
-    background: var(--k); color: var(--w);
-    border: 6px solid var(--w); outline: 6px solid var(--k);
-    box-shadow: inset 0 0 0 6px var(--k), inset 0 0 0 12px #5a4a6e;
-  }
-  #textbox { left: 54px; right: 162px; top: 1236px; height: 246px; padding: 38px 42px; font-size: 54px; line-height: 1.3; }
-  #textbox .cur { display: inline-block; width: 30px; height: 30px; background: var(--w); margin-left: 8px; clip-path: polygon(0 0, 100% 0, 50% 100%); }
-  #menu { left: 54px; right: 162px; top: 1236px; height: 246px; padding: 30px 36px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px 20px; font-size: 44px; align-content: center; opacity: 0; }
-  #menu span { white-space: nowrap; }
+  .box { background: var(--k); color: var(--w); border: 6px solid var(--w); outline: 6px solid var(--k); box-shadow: inset 0 0 0 6px var(--k), inset 0 0 0 12px #5a4a6e; }
+  #textbox { left: 54px; right: 162px; top: 1236px; height: 246px; padding: 36px 42px; font-size: 52px; line-height: 1.32; z-index: 20; }
+  #textbox .cur { display: inline-block; width: 28px; height: 28px; background: var(--w); margin-left: 10px; clip-path: polygon(0 0, 100% 0, 50% 100%); }
+  #menu { left: 54px; right: 162px; top: 1236px; height: 246px; padding: 30px 36px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px 20px; font-size: 44px; align-content: center; z-index: 21; opacity: 0; }
+  #menu span { white-space: nowrap; padding-left: 50px; color: #cfc3d8; }
+  #menu .sel { padding-left: 0; color: var(--w); }
   #menu .sel::before { content: "▶"; color: var(--shu); margin-right: 6px; }
-  #menu span:not(.sel) { padding-left: 50px; color: #cfc3d8; }
 
-  .plate { padding: 22px 30px 26px; }
-  .plate .nm { font-size: 46px; display: flex; justify-content: space-between; gap: 24px; }
-  .plate .lv { color: var(--kin); font-size: 38px; }
+  .plate { padding: 22px 30px 26px; z-index: 15; }
+  .plate .nm { font-size: 44px; display: flex; justify-content: space-between; gap: 24px; white-space: nowrap; }
+  .plate .lv { color: var(--kin); font-size: 36px; }
   .hp { margin-top: 14px; display: flex; align-items: center; gap: 14px; font-size: 32px; color: var(--mikan); }
   .hp .track { flex: 1; height: 24px; background: #3a2f47; border: 4px solid var(--w); }
   .hp .fill { height: 100%; background: #6fd08c; }
-  #plateE { left: 54px; top: 250px; width: 560px; }
+  #plateE { left: 54px; top: 250px; width: 600px; }
   #plateP { left: 540px; top: 1000px; width: 378px; }
-  #zzz { left: 330px; top: 900px; font-size: 60px; color: var(--kin); }
-  #bubbleTxt { font-size: 60px; color: var(--k); }
-  #seal { right: 190px; top: 1150px; width: 150px; height: 150px; display: grid; place-items: center; background: var(--shu); color: var(--w); font-size: 104px; line-height: 1; border: 6px solid var(--k); box-shadow: 12px 12px 0 rgba(26,20,34,.6); opacity: 0; }
-  #logo { left: 54px; top: 120px; font-size: 40px; letter-spacing: .12em; color: var(--kin); }
+
+  #logo { left: 54px; top: 120px; font-size: 40px; letter-spacing: .1em; color: var(--w); z-index: 16; background: var(--k); padding: 6px 18px 6px 0; }
   #logo b { background: var(--shu); color: var(--w); padding: 2px 12px; margin-right: 16px; }
+  #zzz { font-size: 60px; color: var(--kin); z-index: 14; }
+  #xd { font-size: 88px; color: var(--k); z-index: 14; letter-spacing: -.02em; opacity: 0; }
+  #think { left: 40px; top: 760px; padding: 18px 26px; font-size: 42px; background: var(--w); color: var(--k); border: 6px solid var(--k); z-index: 14; opacity: 0; }
+  #think::after { content: ""; position: absolute; left: 60px; bottom: -58px; width: 30px; height: 30px; background: var(--w); border: 6px solid var(--k); box-shadow: -30px 30px 0 -6px var(--w), -30px 30px 0 0 var(--k); }
+  #cri { left: 640px; top: 820px; font-size: 44px; color: #cfc3d8; z-index: 14; opacity: 0; }
+  #wall { left: 54px; right: 54px; top: 420px; padding: 30px 36px; font-size: 38px; line-height: 1.35; z-index: 18; opacity: 0; }
+  #wall em { font-style: normal; color: var(--shu); background: var(--w); padding: 0 8px; }
+  #word { font-size: 44px; color: var(--k); z-index: 14; white-space: nowrap; }
+  #card { inset: 0; display: grid; place-content: center; text-align: center; gap: 26px; z-index: 27; opacity: 0; }
+  #card .n { font-size: 56px; color: var(--kin); letter-spacing: .12em; }
+  #card .place { font-size: 84px; color: var(--w); }
+  #card .sub { font-size: 44px; color: #cfc3d8; }
+  #seal { right: 190px; top: 1150px; width: 150px; height: 150px; display: grid; place-items: center; background: var(--shu); color: var(--w); font-size: 104px; line-height: 1; border: 6px solid var(--k); box-shadow: 12px 12px 0 rgba(26,20,34,.6); opacity: 0; z-index: 22; }
 
   .bar { display: flex; align-items: center; gap: 14px; padding: 12px 16px; background: #1b1622; font: 14px system-ui; }
   .bar button { color: #F3EDE2; background: #3A342F; border: 0; border-radius: 999px; padding: 10px 16px; cursor: pointer; }
   .bar input { flex: 1; accent-color: #C8452C; }
-  .bar output { min-width: 80px; color: #CFC5B8; font-variant-numeric: tabular-nums; }
+  .bar output { min-width: 150px; color: #CFC5B8; font-variant-numeric: tabular-nums; }
 </style>
 </head>
 <body>
 <div class="viewport" id="viewport"><div id="stage">
-  <canvas id="px" width="180" height="320"></canvas>
-  <div class="abs" id="logo"><b>丸</b>TIPOS DE CLIENTES Nº1</div>
-  <div class="abs" id="bubbleTxt">info</div>
-  <div class="abs box plate" id="plateE"><div class="nm"><span>EL «INFO»</span><span class="lv">Nv.99</span></div><div class="hp"><span>PS</span><div class="track"><div class="fill" id="hpE"></div></div></div></div>
-  <div class="abs box plate" id="plateP"><div class="nm"><span>MARU</span><span class="lv">Nv.1</span></div><div class="hp"><span>PS</span><div class="track"><div class="fill" style="width:100%"></div></div></div></div>
-  <div class="abs" id="zzz">z Z</div>
+  <div id="cam">
+    <canvas id="px" width="180" height="320"></canvas>
+    <div class="abs" id="word"></div>
+    <div class="abs box plate" id="plateE"><div class="nm"><span id="eName">EL «INFO»</span><span class="lv" id="eLv">Nv.99</span></div><div class="hp"><span>PS</span><div class="track"><div class="fill" id="hpE"></div></div></div></div>
+    <div class="abs box plate" id="plateP"><div class="nm"><span>MARU</span><span class="lv" id="pLv">Nv.1</span></div><div class="hp"><span>PS</span><div class="track"><div class="fill" id="hpP" style="width:100%"></div></div></div></div>
+    <div class="abs" id="zzz">z Z</div>
+    <div class="abs" id="xd">XD</div>
+    <div class="abs box" id="think">¿fue el precio?</div>
+    <div class="abs" id="cri">cri… cri…</div>
+  </div>
+  <div class="abs" id="logo"><b>丸</b>TIPOS DE CLIENTES</div>
+  <div class="abs box" id="wall"></div>
   <div class="abs box" id="textbox"><span id="txt"></span><span class="cur" id="cur"></span></div>
   <div class="abs box" id="menu"><span class="sel">RESPUESTA AUTO</span><span>PEDIR FOTO</span><span>AGENDAR</span><span>HUIR</span></div>
   <div class="abs" id="seal">丸</div>
   <div class="abs" id="flash"></div>
+  <canvas id="blocks" width="180" height="320"></canvas>
+  <div class="abs" id="card"><span class="n" id="cardN">CLIENTE Nº2</span><span class="place" id="cardP">Monte Fuji</span><span class="sub" id="cardS">arrozales · mediodía</span></div>
   <div class="abs" id="scan"></div>
 </div></div>
 <div class="bar">
   <button id="play" type="button">Pausa</button>
-  <input id="scrub" type="range" min="0" max="5" step="0.01" value="0" aria-label="Posición">
+  <input id="scrub" type="range" min="0" max="80" step="0.01" value="0" aria-label="Posición">
   <output id="time">0.00 s</output>
 </div>
 <script>
-const DURATION = 5;
+/* ======================= GUION ======================= */
+/* face: sleep · awake · happy · surprised · think · sad · xd · dizzy · flat · level
+   Cada paso dura lo suficiente para leer el texto: se escribe y se queda en pantalla. */
+const STEPS = [
+  // Combate 1 · Ciudad al atardecer
+  { scene: "ciudad", enemy: "info", dur: 2.8, text: "¡Un cliente salvaje apareció!", face: "sleep", fx: ["enter"], hp: [1, 1] },
+  { scene: "ciudad", enemy: "info", dur: 2.8, text: "EL «INFO» usó: «info»", face: "surprised", fx: ["shake", "word:info"], hp: [1, 1] },
+  { scene: "ciudad", enemy: "info", dur: 1.6, menu: true, face: "awake", hp: [1, 1] },
+  { scene: "ciudad", enemy: "info", dur: 3.0, text: "¡MARU usó RESPUESTA AUTOMÁTICA!", face: "happy", fx: ["throw:pdf"], hp: [1, 1] },
+  { scene: "ciudad", enemy: "info", dur: 2.6, text: "…EL «INFO» no respondió.", face: "awake", fx: ["visto"], hp: [1, 1] },
+  { scene: "ciudad", enemy: "info", dur: 3.0, text: "MARU usó: «¿Sigues ahí? (^_^)»", face: "happy", fx: ["throw:bubble", "visto"], hp: [1, 1] },
+  { scene: "ciudad", enemy: "info", dur: 3.2, text: "EL «INFO» te dejó en visto…", face: "think", fx: ["visto", "cri", "think"], hp: [1, 1] },
+  { scene: "ciudad", enemy: "info", dur: 2.6, text: "MARU se puso triste…", face: "sad", fx: ["rain", "visto"], hp: [1, 1] },
+  { scene: "ciudad", enemy: "info", dur: 2.8, text: "¡EL «INFO» BLOQUEÓ A MARU!", face: "surprised", fx: ["block"], hp: [1, 1] },
+  { scene: "ciudad", enemy: null, dur: 3.2, text: "No fue muy efectivo…", face: "xd", fx: ["zoom"], hp: [1, 1] },
+  // Transición
+  { scene: "fuji", trans: { n: "CLIENTE Nº2", place: "Monte Fuji", sub: "arrozales · mediodía" }, dur: 2.2 },
+  // Combate 2 · Monte Fuji
+  { scene: "fuji", enemy: "audio", dur: 2.8, text: "¡Apareció EL AUDIO ETERNO!", face: "awake", fx: ["enter"], hp: [1, 1] },
+  { scene: "fuji", enemy: "audio", dur: 3.0, text: "EL AUDIO ETERNO usó AUDIO DE 5:47", face: "dizzy", fx: ["wave"], hp: [1, 1] },
+  { scene: "fuji", enemy: "audio", dur: 3.6, text: "¡MARU usó TRANSCRIBIR!", face: "think", fx: ["wall"], hp: [1, 1] },
+  { scene: "fuji", enemy: "audio", dur: 3.0, text: "…la pregunta era: «¿cuánto el corte?»", face: "xd", fx: ["wallShrink"], hp: [1, 1] },
+  { scene: "fuji", enemy: "audio", dur: 3.0, text: "¡MARU respondió en 1 segundo! ¡Golpe crítico!", face: "happy", fx: ["throw:bubble", "hit"], hp: [1, .5] },
+  { scene: "fuji", enemy: "audio", dur: 3.0, text: "EL AUDIO ETERNO usó OTRO AUDIO DE 7:12", face: "dizzy", fx: ["wave", "pushP"], hp: [.5, .5] },
+  { scene: "fuji", enemy: "audio", dur: 2.6, text: "…preguntaba si aceptan Yape.", face: "flat", fx: [], hp: [.5, .5] },
+  { scene: "fuji", enemy: "audio", dur: 2.8, text: "¡EL AUDIO ETERNO reservó una cita!", face: "happy", fx: ["confetti", "leave"], hp: [.5, 0] },
+  // Transición
+  { scene: "noche", trans: { n: "CLIENTE Nº3", place: "Calle de faroles", sub: "02:13 a. m." }, dur: 2.2 },
+  // Combate 3 · Noche
+  { scene: "noche", enemy: "buho", dur: 2.8, text: "¡Apareció EL NOCTURNO! (02:13 a. m.)", face: "sleep", fx: ["enter"], hp: [1, 1] },
+  { scene: "noche", enemy: "buho", dur: 2.4, text: "EL NOCTURNO usó «¿precio?»", face: "sleep", fx: ["shake", "word:¿precio?"], hp: [1, 1] },
+  { scene: "noche", enemy: "buho", dur: 3.2, text: "¡MARU usó RESPUESTA AUTOMÁTICA… DORMIDA!", face: "sleep", fx: ["throw:pdf"], hp: [1, 1] },
+  { scene: "noche", enemy: "buho", dur: 2.6, text: "¡Incluso dormida es súper efectiva!", face: "sleep", fx: ["hit"], hp: [1, .55] },
+  { scene: "noche", enemy: "buho", dur: 3.2, text: "EL NOCTURNO usó «¿y si me haces descuento?»", face: "surprised", fx: ["shake", "word:¿descuento?"], hp: [.55, .55] },
+  { scene: "noche", enemy: "buho", dur: 3.0, text: "¡MARU usó PROMO: 10% si reservas hoy!", face: "happy", fx: ["throw:coupon", "hit"], hp: [.55, .1] },
+  { scene: "noche", enemy: "buho", dur: 2.6, text: "¡EL NOCTURNO reservó 3 citas!", face: "happy", fx: ["confetti", "leave"], hp: [.1, 0] },
+  { scene: "noche", enemy: null, dur: 3.0, text: "¡MARU subió al NIVEL 2!", face: "level", fx: ["level", "seal"], hp: [1, 1] },
+  // Cierre y vuelta al inicio
+  { scene: "noche", enemy: null, dur: 3.4, text: "¿Qué cliente te tocó hoy? Comenta ▼", face: "happy", fx: ["seal"], hp: [1, 1] },
+  { scene: "ciudad", trans: { n: "", place: "", sub: "" }, dur: 1.2, loop: true },
+];
+let acc = 0; STEPS.forEach((s) => { s.t0 = acc; acc += s.dur; });
+const DURATION = Math.round(acc * 30) / 30;
+const ENEMIES = { info: ["EL «INFO»", "Nv.99"], audio: ["EL AUDIO ETERNO", "Nv.57"], buho: ["EL NOCTURNO", "Nv.2am"] };
+
+/* ======================= DIBUJO ======================= */
 const $ = (id) => document.getElementById(id);
 const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const p = (t, s, d) => clamp((t - s) / d);
 const outQ = (k) => 1 - (1 - k) ** 3;
-const C = $("px"), g = C.getContext("2d");
-g.imageSmoothingEnabled = false;
-const PAL = { k: "#1a1422", w: "#FFF6EE", W: "#f3e6d8", o: "#DE9A5A", O: "#b86f35", r: "#C8452C", R: "#8e2f1f", p: "#F4C6C0", y: "#f2d27a", kin: "#D7B98C" };
-const px = (x, y, c) => { g.fillStyle = c; g.fillRect(x | 0, y | 0, 1, 1); };
-const rect = (x, y, w, h, c) => { g.fillStyle = c; g.fillRect(x | 0, y | 0, w | 0, h | 0); };
+const C = $("px"), g = C.getContext("2d"); g.imageSmoothingEnabled = false;
+const B = $("blocks"), gb = B.getContext("2d");
+const PAL = { k: "#1a1422", w: "#FFF6EE", o: "#DE9A5A", r: "#C8452C", R: "#8e2f1f", p: "#F4C6C0", y: "#f2d27a", kin: "#D7B98C", blue: "#53bdeb" };
+const px = (x, y, c) => { g.fillStyle = c; g.fillRect(Math.round(x), Math.round(y), 1, 1); };
+const rect = (x, y, w, h, c) => { g.fillStyle = c; g.fillRect(Math.round(x), Math.round(y), Math.round(w), Math.round(h)); };
 const BAYER = [[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]];
 const inE = (x, y, cx, cy, rx, ry) => ((x + .5 - cx) / rx) ** 2 + ((y + .5 - cy) / ry) ** 2 <= 1;
 function blob(cx, cy, rx, ry, fill, out, keep) {
@@ -97,162 +159,306 @@ function blob(cx, cy, rx, ry, fill, out, keep) {
     px(x, y, edge && out ? out : fill);
   }
 }
+function gradient(stops, y0, y1) {
+  for (let y = y0; y < y1; y++) {
+    const f = (y - y0) / (y1 - y0) * (stops.length - 1), i = Math.floor(f), fr = f - i;
+    for (let x = 0; x < 180; x++) px(x, y, (fr * 16 > BAYER[y % 4][x % 4]) && stops[i + 1] ? stops[i + 1] : stops[i]);
+  }
+}
 let seed = 3; const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
-
-/* ---- Fondo fijo: atardecer, sol en franjas, nubes kin, ciudad con torii ---- */
-const SKY = ["#1d1633", "#2c1b40", "#3f214a", "#5a2750", "#7a3050", "#9e3c4a", "#c65043", "#e0703f"];
 const BUILD = []; { seed = 11; let x = 0; while (x < 180) { const w = 8 + Math.floor(rnd() * 14), h = 10 + Math.floor(rnd() * 26); BUILD.push({ x, w, h, win: Array.from({ length: 6 }, () => [Math.floor(rnd() * (w - 2)) + 1, Math.floor(rnd() * (h - 4)) + 2]) }); x += w + 1; } }
 const PETALS = Array.from({ length: 18 }, () => ({ x: rnd() * 180, y: rnd() * 320, s: 10 + rnd() * 14, d: rnd() * 6 }));
-function background(t) {
-  for (let y = 0; y < 112; y++) {
-    const f = y / 112 * (SKY.length - 1), i = Math.floor(f), fr = f - i;
-    for (let x = 0; x < 180; x++) px(x, y, (fr * 16 > BAYER[y % 4][x % 4]) && SKY[i + 1] ? SKY[i + 1] : SKY[i]);
-  }
-  // Sol shu con franjas retro en la mitad baja
-  for (let y = 62; y <= 118; y++) for (let x = 90; x <= 150; x++) {
-    if (!inE(x, y, 120, 92, 27, 27)) continue;
-    if (y > 92 && (y - 92) % 6 < (y - 92) / 9) continue;
-    px(x, y, y < 80 ? "#e2623f" : "#C8452C");
-  }
-  // Nubes kin
-  [[20, 70, 60], [34, 74, 40], [118, 58, 52], [132, 62, 34]].forEach(([x, y, w]) => rect(x, y, w, 2, PAL.kin));
-  // Ciudad
-  BUILD.forEach((b, j) => {
-    rect(b.x, 112 - b.h, b.w, b.h, "#2a1f3d");
-    b.win.forEach(([wx, wy], k) => { if ((Math.floor(t * 2 + j + k) % 7) !== 0) px(b.x + wx, 112 - b.h + wy, PAL.y); });
-  });
-  // Torii
-  rect(16, 84, 30, 3, PAL.R); rect(13, 82, 36, 2, PAL.R); rect(20, 90, 22, 2, PAL.R); rect(21, 84, 3, 28, PAL.R); rect(38, 84, 3, 28, PAL.R);
-  // Suelo de combate con franjas
-  for (let y = 112; y < 320; y++) rect(0, y, 180, 1, y % 8 < 4 ? "#2b2338" : "#261f33");
-  blob(124, 138, 38, 7, "#3d3150", "#1a1422");
-  blob(46, 192, 44, 8, "#3d3150", "#1a1422");
-  // Pétalos de sakura cayendo
-  PETALS.forEach((q) => {
-    const y = (q.y + t * q.s) % 320, x = (q.x + Math.sin(t * 2 + q.d) * 4 + t * 3) % 180;
-    px(x, y, PAL.p); if ((Math.floor(t * 6 + q.d) % 2) === 0) px(x + 1, y, "#e89aa6");
-  });
-}
+const STARS = Array.from({ length: 40 }, () => ({ x: rnd() * 180, y: rnd() * 100, d: rnd() * 6 }));
+function petals(t, col) { PETALS.forEach((q) => { const y = (q.y + t * q.s) % 320, x = (q.x + Math.sin(t * 2 + q.d) * 4 + t * 3) % 180; px(x, y, col); }); }
+function ground(c1, c2) { for (let y = 112; y < 320; y++) rect(0, y, 180, 1, y % 8 < 4 ? c1 : c2); }
+function pads(c) { blob(124, 138, 38, 7, c, "#1a1422"); blob(46, 192, 44, 8, c, "#1a1422"); }
 
-/* ---- Sprites ---- */
-function enemy(t, dissolve) {
-  const inK = outQ(p(t, .45, .45));
-  let ex = 96 + Math.round((1 - inK) * 70), ey = 94;
-  const hit = t > 3.35 && t < 3.65, shake = (t > 1.25 && t < 1.55) || hit;
-  if (shake) ex += Math.floor(t * 40) % 2 ? 3 : -3;
-  if (hit && Math.floor(t * 20) % 2) return { x: ex, y: ey, visible: false };
-  g.setTransform(2, 0, 0, 2, ex, ey); const x = 0, y = 0;
-  const keep = (px_, py_) => BAYER[py_ % 4][px_ % 4] >= dissolve * 16;
-  // Globo con cola
+function sceneCiudad(t) {
+  gradient(["#1d1633", "#2c1b40", "#3f214a", "#5a2750", "#7a3050", "#9e3c4a", "#c65043", "#e0703f"], 0, 112);
+  for (let y = 62; y <= 118; y++) for (let x = 90; x <= 150; x++) { if (!inE(x, y, 120, 92, 27, 27)) continue; if (y > 92 && (y - 92) % 6 < (y - 92) / 9) continue; px(x, y, y < 80 ? "#e2623f" : "#C8452C"); }
+  [[20, 70, 60], [34, 74, 40], [118, 58, 52], [132, 62, 34]].forEach(([x, y, w]) => rect(x, y, w, 2, PAL.kin));
+  BUILD.forEach((b, j) => { rect(b.x, 112 - b.h, b.w, b.h, "#2a1f3d"); b.win.forEach(([wx, wy], k) => { if ((Math.floor(t * 2 + j + k) % 7) !== 0) px(b.x + wx, 112 - b.h + wy, PAL.y); }); });
+  rect(16, 84, 30, 3, PAL.R); rect(13, 82, 36, 2, PAL.R); rect(20, 90, 22, 2, PAL.R); rect(21, 84, 3, 28, PAL.R); rect(38, 84, 3, 28, PAL.R);
+  ground("#2b2338", "#261f33"); pads("#3d3150"); petals(t, PAL.p);
+}
+function sceneFuji(t) {
+  gradient(["#7ec4e6", "#9dd3ea", "#bfe0ec", "#f3dcc8", "#f6c9a8"], 0, 112);
+  blob(118, 22, 8, 8, "#fff1c4", null);
+  [[8, 24, 30], [60, 32, 40], [150, 30, 26]].forEach(([x, y, w]) => rect(x, y, w, 2, "#ffffff"));
+  for (let y = 40; y < 112; y++) { const half = (y - 40) * 1.2 + 4; for (let x = 140 - half; x <= 140 + half; x++) px(x, y, y < 54 && (x * 3 + y) % 5 ? "#ffffff" : y < 56 ? "#dfe8f0" : "#6f86a8"); }
+  for (let y = 78; y < 112; y++) { const half = (y - 78) * 2 + 12; for (let x = 24 - half; x <= 24 + half; x++) px(x, y, "#5a7a64"); }
+  [[18, 70, 10], [16, 78, 14], [14, 86, 18], [12, 94, 22]].forEach(([x, y, w]) => { rect(x - 3, y, w + 6, 2, "#8e2f1f"); rect(x, y + 2, w, 6, "#C8452C"); });
+  rect(22, 62, 2, 8, "#8e2f1f");
+  for (let y = 112; y < 320; y++) rect(0, y, 180, 1, y % 6 < 3 ? "#7fae5a" : "#6d9a4c");
+  for (let y = 116; y < 320; y += 10) for (let x = (y / 2) % 8; x < 180; x += 8) px(x, y, "#a6cf72");
+  pads("#5d8a44"); petals(t, "#ffffff");
+}
+function sceneNoche(t) {
+  gradient(["#0b1020", "#111726", "#18203a", "#232c4a"], 0, 112);
+  STARS.forEach((s) => { if ((Math.floor(t * 3 + s.d * 3) % 5) !== 0) px(s.x, s.y, "#f3ead6"); });
+  blob(140, 30, 14, 14, "#f3e9cf", null); blob(135, 26, 3, 3, "#ddd0b0", null); blob(146, 36, 2, 2, "#ddd0b0", null);
+  [[0, 30], [34, 40], [70, 28], [104, 44], [140, 40]].forEach(([x, w], i) => { const h = 34 + (i % 2) * 10; rect(x, 112 - h, w - 2, h, "#1c1628"); rect(x - 2, 112 - h - 3, w + 2, 3, "#2a2138"); rect(x + 4, 112 - h + 8, 6, 5, (Math.floor(t * 2 + i) % 5) ? "#f2d27a" : "#c9a84f"); });
+  for (let x = 0; x < 180; x++) px(x, 46 + Math.round(Math.sin(x / 30) * 4), "#3a2f47");
+  [20, 56, 92, 128, 164].forEach((x, i) => { const sw = Math.round(Math.sin(t * 2 + i) * 1.2); const y = 48 + Math.round(Math.sin(x / 30) * 4); blob(x + sw, y + 7, 4, 5, "#C8452C", "#5a1c14"); rect(x + sw - 3, y + 7, 7, 1, "#f2d27a"); rect(x + sw - 1, y + 1, 2, 2, "#1a1422"); });
+  for (let y = 112; y < 320; y++) rect(0, y, 180, 1, y % 8 < 4 ? "#1d2238" : "#1a1f33");
+  for (let y = 118; y < 320; y += 12) for (let x = (y % 24 ? 0 : 10); x < 180; x += 20) rect(x, y, 16, 1, "#2a3050");
+  pads("#2c3552");
+}
+const SCENES = { ciudad: sceneCiudad, fuji: sceneFuji, noche: sceneNoche };
+
+/* ---------- Enemigos (dibujados a ×2) ---------- */
+function drawInfo(x, y) {
   for (let j = 0; j < 20; j++) for (let i = 0; i < 28; i++) {
     const corner = (i < 2 && j < 2) || (i > 25 && j < 2) || (i < 2 && j > 17) || (i > 25 && j > 17);
-    if (corner || !keep(x + i, y + j)) continue;
+    if (corner) continue;
     const edge = i === 0 || j === 0 || i === 27 || j === 19 || (i === 1 && (j === 1 || j === 18)) || (i === 26 && (j === 1 || j === 18));
     px(x + i, y + j, edge ? PAL.k : PAL.w);
   }
-  [[4, 20], [4, 21], [5, 20], [3, 22]].forEach(([i, j]) => keep(x + i, y + j) && px(x + i, y + j, PAL.k));
-  // Cara: cejas enojadas y ojos
-  if (dissolve < .5) {
-    [[7, 9], [8, 10], [19, 10], [20, 9]].forEach(([i, j]) => px(x + i, y + j, PAL.k));
-    rect(x + 7, y + 12, 2, 3, PAL.k); rect(x + 19, y + 12, 2, 3, PAL.k);
-    rect(x + 12, y + 16, 4, 1, PAL.k);
-    px(x + 5, y + 15, PAL.p); px(x + 22, y + 15, PAL.p);
-  }
-  g.setTransform(1, 0, 0, 1, 0, 0);
-  return { x: ex, y: ey, visible: true };
+  [[4, 20], [4, 21], [5, 20], [3, 22]].forEach(([i, j]) => px(x + i, y + j, PAL.k));
+  [[7, 9], [8, 10], [19, 10], [20, 9]].forEach(([i, j]) => px(x + i, y + j, PAL.k));
+  rect(x + 7, y + 12, 2, 3, PAL.k); rect(x + 19, y + 12, 2, 3, PAL.k); rect(x + 12, y + 16, 4, 1, PAL.k);
+  px(x + 5, y + 15, PAL.p); px(x + 22, y + 15, PAL.p);
 }
-function cat(t) {
-  const jump = t > 2.95 && t < 3.25 ? -Math.round(Math.sin((t - 2.95) / .3 * Math.PI) * 5) : 0;
-  const breathe = Math.round(Math.sin(t * 2.6) * .6);
-  const wx = 44, wy = 168 + jump * 2; g.setTransform(2, 0, 0, 2, wx, wy); const cx = 0, cy = 0;
-  blob(cx + 11, cy + 7, 7, 3, PAL.w, PAL.k);                       // cola
-  blob(cx, cy, 15, 10 + breathe * .3, PAL.w, PAL.k);               // cuerpo
-  blob(cx + 7, cy - 5, 7, 5, PAL.o, null, (x, y) => inE(x, y, cx, cy, 14, 9)); // mancha del lomo
-  blob(cx + 13, cy + 7, 3, 2, PAL.o, null, (x, y) => inE(x, y, cx + 11, cy + 7, 6, 2)); // punta de la cola
-  // orejas
-  [[cx - 15, cy - 3], [cx - 14, cy - 4], [cx - 14, cy - 3], [cx - 13, cy - 2]].forEach(([x, y]) => px(x, y, PAL.k));
-  [[cx - 7, cy - 5], [cx - 6, cy - 4], [cx - 7, cy - 4], [cx - 8, cy - 3]].forEach(([x, y]) => px(x, y, PAL.k));
-  blob(cx - 10, cy + 2, 7, 6, PAL.w, PAL.k);                        // cabeza
+function drawAudio(x, y, t) {
+  blob(x + 14, y + 8, 10, 9, "#9aa3b5", PAL.k);
+  for (let j = 0; j < 16; j += 3) for (let i = 0; i < 20; i += 3) if (inE(x + 5 + i, y + j, x + 14, y + 8, 9, 8)) px(x + 5 + i, y + j, "#6c7488");
+  rect(x + 4, y + 6, 21, 4, PAL.k); rect(x + 7, y + 7, 5, 2, "#3b4a78"); rect(x + 17, y + 7, 5, 2, "#3b4a78");
+  rect(x + 11, y + 13, 6, 1, PAL.k); px(x + 16, y + 12, PAL.k);
+  rect(x + 12, y + 17, 4, 6, "#3a2f47"); rect(x + 7, y + 23, 14, 2, "#3a2f47");
+  if (Math.floor(t * 4) % 2) { rect(x + 27, y + 3, 1, 4, PAL.kin); rect(x + 30, y + 1, 1, 8, PAL.kin); }
+}
+function drawBuho(x, y, t) {
+  blob(x + 13, y + 12, 12, 11, "#5b4a6e", PAL.k);
+  blob(x + 13, y + 15, 7, 6, "#8a78a0", null);
+  [[3, 1], [4, 2], [22, 1], [21, 2]].forEach(([i, j]) => px(x + i, y + j, PAL.k));
+  blob(x + 8, y + 9, 4, 4, "#f2d27a", PAL.k); blob(x + 18, y + 9, 4, 4, "#f2d27a", PAL.k);
+  rect(x + 8, y + 9, 2, 2, PAL.k); rect(x + 18, y + 9, 2, 2, PAL.k);
+  px(x + 13, y + 12, PAL.o); px(x + 13, y + 13, PAL.o);
+  rect(x + 16, y + 16, 7, 9, "#1a1422"); rect(x + 17, y + 17, 5, 7, Math.floor(t * 3) % 4 ? "#9fd3ff" : "#c8e8ff");
+}
+function enemy(st, lt, t) {
+  if (!st.enemy) return null;
+  const inK = st.fx?.includes("enter") ? outQ(p(lt, .3, .6)) : 1;
+  let ex = 96 + Math.round((1 - inK) * 80), ey = 92;
+  if (st.fx?.includes("shake") && lt > .3 && lt < .9) ex += Math.floor(lt * 30) % 2 ? 3 : -3;
+  if (st.fx?.includes("hit") && lt > 1.35 && lt < 1.75 && Math.floor(lt * 20) % 2) return { x: ex, y: ey };
+  if (st.fx?.includes("leave")) { const k = outQ(p(lt, 1.4, .8)); ex += Math.round(k * 90); ey -= lt > 1.4 ? Math.round(Math.abs(Math.sin(lt * 8)) * 3) : 0; }
+  g.setTransform(2, 0, 0, 2, ex, ey);
+  if (st.enemy === "info") drawInfo(0, 0);
+  if (st.enemy === "audio") drawAudio(0, 0, t);
+  if (st.enemy === "buho") drawBuho(0, 0, t);
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  return { x: ex, y: ey };
+}
+
+/* ---------- Mandarina con caras ---------- */
+function face(expr, cx, cy, t) {
+  const K = PAL.k;
+  const pts = (arr) => arr.forEach(([x, y]) => px(cx + x, cy + y, K));
+  if (expr === "sleep") pts([[-14, 2], [-13, 3], [-12, 2], [-9, 2], [-8, 3], [-7, 2]]);
+  if (expr === "awake" || expr === "sad") { rect(cx - 14, cy + 1, 2, 2, K); rect(cx - 9, cy + 1, 2, 2, K); }
+  if (expr === "happy" || expr === "level") pts([[-14, 2], [-13, 1], [-12, 2], [-9, 2], [-8, 1], [-7, 2], [-11, 5], [-10, 5]]);
+  if (expr === "surprised") { rect(cx - 15, cy, 3, 3, K); rect(cx - 10, cy, 3, 3, K); px(cx - 15, cy, "#fff"); px(cx - 10, cy, "#fff"); rect(cx - 11, cy + 5, 2, 2, K); }
+  if (expr === "think") { rect(cx - 13, cy, 2, 1, K); rect(cx - 8, cy, 2, 1, K); rect(cx - 11, cy + 5, 3, 1, K); }
+  if (expr === "sad") { px(cx - 14, cy + 4, PAL.blue); px(cx - 14, cy + 5, PAL.blue); pts([[-11, 6], [-10, 5], [-9, 6]]); }
+  if (expr === "dizzy") { const r = [[0, -1], [1, 0], [0, 1], [-1, 0]]; const k = Math.floor(t * 8) % 4; [[-13, 2], [-8, 2]].forEach(([ex, ey]) => r.forEach(([a, b], i) => { if (i !== k) px(cx + ex + a, cy + ey + b, K); })); }
+  if (expr === "flat") { rect(cx - 15, cy + 2, 3, 1, K); rect(cx - 10, cy + 2, 3, 1, K); rect(cx - 12, cy + 5, 2, 1, K); }
+  if (expr !== "xd") px(cx - 11, cy + 4, PAL.p);
+}
+function maru(st, lt, t) {
+  const f = st.face || "sleep";
+  const throwing = st.fx?.some((x) => x.startsWith("throw")) && lt > 1.0 && lt < 1.35;
+  const jump = throwing ? -Math.round(Math.sin((lt - 1.0) / .35 * Math.PI) * 5) : 0;
+  const push = st.fx?.includes("pushP") && lt > 1.2 && lt < 1.8 ? -Math.round(Math.sin((lt - 1.2) / .6 * Math.PI) * 6) : 0;
+  const breathe = f === "sleep" ? Math.round(Math.sin(t * 2.6) * .6) : 0;
+  const wx = 44 + push, wy = 168 + jump * 2;
+  g.setTransform(2, 0, 0, 2, wx, wy);
+  const cx = 0, cy = 0;
+  blob(cx + 11, cy + 7, 7, 3, PAL.w, PAL.k);
+  blob(cx, cy + breathe * .3, 15, 10, PAL.w, PAL.k);
+  blob(cx + 7, cy - 5, 7, 5, PAL.o, null, (x, y) => inE(x, y, cx, cy, 14, 9));
+  blob(cx + 13, cy + 7, 3, 2, PAL.o, null, (x, y) => inE(x, y, cx + 11, cy + 7, 6, 2));
+  [[-15, -3], [-14, -4], [-14, -3], [-13, -2], [-7, -5], [-6, -4], [-7, -4], [-8, -3]].forEach(([x, y]) => px(cx + x, cy + y, PAL.k));
+  blob(cx - 10, cy + 2, 7, 6, PAL.w, PAL.k);
   blob(cx - 7, cy - 2, 3, 2, PAL.o, null, (x, y) => inE(x, y, cx - 10, cy + 2, 6, 5));
-  // ojos cerrados (dormida)
-  [[cx - 14, cy + 2], [cx - 13, cy + 3], [cx - 12, cy + 2], [cx - 9, cy + 2], [cx - 8, cy + 3], [cx - 7, cy + 2]].forEach(([x, y]) => px(x, y, PAL.k));
-  px(cx - 11, cy + 5, PAL.p);
+  face(f, cx, cy, t);
   g.setTransform(1, 0, 0, 1, 0, 0);
-  return { cx: wx, cy: wy };
+  return { x: wx, y: wy };
 }
-function projectile(t) {
-  const k = p(t, 3.02, .33); if (k <= 0 || k >= 1) return;
-  const x = 64 + (122 - 64) * k, y = 160 - (160 - 114) * k - Math.sin(k * Math.PI) * 22;
-  rect(x - 5, y - 4, 11, 8, PAL.w); rect(x - 5, y - 4, 11, 1, PAL.k); rect(x - 5, y + 3, 11, 1, PAL.k); rect(x - 5, y - 4, 1, 8, PAL.k); rect(x + 5, y - 4, 1, 8, PAL.k);
-  rect(x - 3, y - 1, 7, 1, PAL.r); rect(x - 3, y + 1, 5, 1, PAL.r);
+
+/* ---------- Efectos ---------- */
+function projectile(kind, lt) {
+  const k = p(lt, 1.02, .38); if (k <= 0 || k >= 1) return;
+  const x = 64 + (122 - 64) * k, y = 160 - 46 * k - Math.sin(k * Math.PI) * 22;
+  g.setTransform(2, 0, 0, 2, Math.round(x), Math.round(y));
+  if (kind === "pdf") { rect(-4, -5, 8, 10, PAL.w); rect(-4, -5, 8, 1, PAL.k); rect(-4, 4, 8, 1, PAL.k); rect(-4, -5, 1, 10, PAL.k); rect(3, -5, 1, 10, PAL.k); rect(-2, -2, 4, 1, PAL.r); rect(-2, 0, 4, 1, PAL.k); rect(-2, 2, 3, 1, PAL.k); }
+  if (kind === "bubble") { rect(-5, -3, 10, 6, PAL.w); rect(-5, -3, 10, 1, PAL.k); rect(-5, 2, 10, 1, PAL.k); rect(-5, -3, 1, 6, PAL.k); rect(4, -3, 1, 6, PAL.k); rect(-3, 0, 1, 1, PAL.k); rect(0, 0, 1, 1, PAL.k); rect(2, 0, 1, 1, PAL.k); }
+  if (kind === "coupon") { rect(-6, -3, 12, 7, PAL.y); rect(-6, -3, 12, 1, PAL.k); rect(-6, 3, 12, 1, PAL.k); rect(-2, -1, 1, 3, PAL.r); rect(1, -1, 1, 3, PAL.r); }
+  g.setTransform(1, 0, 0, 1, 0, 0);
 }
-function sparks(t) {
-  const k = p(t, 3.35, .45); if (k <= 0 || k >= 1) return;
-  for (let i = 0; i < 8; i++) {
-    const a = i / 8 * Math.PI * 2, r = 10 + k * 26, x = 124 + Math.cos(a) * r, y = 114 + Math.sin(a) * r * .8;
-    px(x, y, i % 2 ? PAL.y : PAL.w); px(x + 1, y, PAL.y);
+function visto(lt, e) {
+  if (!e || lt < .6) return;
+  const x = e.x + 58, y = e.y + 34;
+  g.setTransform(2, 0, 0, 2, x, y);
+  [[0, 2], [1, 3], [2, 2], [3, 1], [4, 0]].forEach(([a, b]) => { px(a, b, PAL.blue); px(a + 4, b, PAL.blue); });
+  g.setTransform(1, 0, 0, 1, 0, 0);
+}
+function rain(lt, m) {
+  const cx = m.x - 20, cy = m.y - 34;
+  blob(cx, cy, 10, 4, "#8a8fa6", "#4a4f66"); blob(cx + 7, cy - 2, 6, 4, "#8a8fa6", "#4a4f66");
+  for (let i = 0; i < 6; i++) { const yy = cy + 5 + ((lt * 30 + i * 7) % 18); px(cx - 8 + i * 3, yy, PAL.blue); px(cx - 8 + i * 3, yy + 1, PAL.blue); }
+}
+function blockIcon(lt, e) {
+  const k = outQ(p(lt, .9, .3)); if (k <= 0) return;
+  const cx = e ? e.x + 28 : 124, cy = e ? e.y + 22 : 114, r = 22 * k;
+  for (let y = -r - 2; y <= r + 2; y++) for (let x = -r - 2; x <= r + 2; x++) {
+    const d = Math.hypot(x, y);
+    if ((d <= r && d >= r - 4) || (Math.abs(x - y) < 3 && d < r)) px(cx + x, cy + y, "#e03b2c");
   }
 }
-
-/* ---- Texto de diálogo con máquina de escribir ---- */
-const LINES = [
-  [0.15, "¡Un cliente salvaje apareció!"],
-  [1.25, "EL «INFO» solo escribió: info"],
-  [2.05, null], // menú
-  [2.8, "¡MARU usó RESPUESTA AUTOMÁTICA!"],
-  [3.6, "¡Es súper efectivo!"],
-  [4.25, "¡EL «INFO» fue atendido!"],
-];
-function dialog(t) {
-  let cur = LINES[0];
-  LINES.forEach((l) => { if (t >= l[0]) cur = l; });
-  const menuOn = cur[1] === null;
-  $("menu").style.opacity = menuOn ? 1 : 0;
-  $("textbox").style.opacity = menuOn ? 0 : 1;
-  if (menuOn) { $("menu").querySelector(".sel").style.color = t > 2.6 && Math.floor(t * 12) % 2 ? "#C8452C" : ""; return; }
-  const n = Math.floor((t - cur[0]) * 38);
-  $("txt").textContent = cur[1].slice(0, n);
-  $("cur").style.opacity = n >= cur[1].length && Math.floor(t * 3) % 2 === 0 ? 1 : 0;
+function wave(lt) {
+  const k = p(lt, .6, 1.6); if (k <= 0) return;
+  const head = 180 - k * 260;
+  for (let x = 0; x < 180; x += 3) {
+    if (x < head) continue;
+    const h = 3 + Math.abs(Math.sin(x * .7 + lt * 12)) * 12;
+    rect(x, 150 - h / 2, 2, h, x % 6 ? PAL.kin : PAL.w);
+  }
+}
+function sparks(lt, e) {
+  const k = p(lt, 1.4, .45); if (k <= 0 || k >= 1 || !e) return;
+  for (let i = 0; i < 10; i++) { const a = i / 10 * Math.PI * 2, r = 10 + k * 26; px(e.x + 28 + Math.cos(a) * r, e.y + 22 + Math.sin(a) * r * .8, i % 2 ? PAL.y : PAL.w); }
+}
+function confetti(lt) {
+  for (let i = 0; i < 40; i++) {
+    const x = (i * 37) % 180, y = ((lt * 60 + i * 23) % 200) - 40, c = [PAL.r, PAL.y, PAL.p, PAL.blue, "#6fd08c"][i % 5];
+    if (y > 0) rect(x + Math.sin(lt * 5 + i) * 3, y, 2, 2, c);
+  }
+}
+function levelStars(lt, m) {
+  for (let i = 0; i < 8; i++) { const a = lt * 2 + i / 8 * Math.PI * 2, r = 30 + Math.sin(lt * 4) * 3; const x = m.x - 4 + Math.cos(a) * r, y = m.y + 4 + Math.sin(a) * r * .55; px(x, y, PAL.y); px(x + 1, y, PAL.y); px(x, y - 1, "#fff"); }
 }
 
+/* ---------- Transición de combate: bloques que cubren y revelan ---------- */
+const ORDER = []; { seed = 29; for (let by = 0; by < 32; by++) for (let bx = 0; bx < 18; bx++) { const d = Math.hypot(bx - 8.5, by - 15.5) / 18; ORDER.push({ bx, by, o: clamp(d * .75 + rnd() * .25) }); } }
+function blocks(k) {
+  gb.clearRect(0, 0, 180, 320);
+  gb.fillStyle = "#1a1422";
+  ORDER.forEach((b) => { const on = k <= 1 ? b.o < k : b.o >= (k - 1); if (on) gb.fillRect(b.bx * 10, b.by * 10, 10, 10); });
+}
+
+/* ======================= RENDER ======================= */
+function stepAt(t) { let i = 0; while (i < STEPS.length - 1 && t >= STEPS[i + 1].t0) i++; return i; }
 function render(t) {
-  g.clearRect(0, 0, 180, 320);
-  background(t);
-  const dis = p(t, 4.2, .5);
-  const e = dis < 1 ? enemy(t, dis) : { visible: false };
-  const c = cat(t);
-  projectile(t); sparks(t);
-  // DOM sobre el píxel (alineado a la grilla de 6 px)
-  $("bubbleTxt").style.left = (e.x + 13) * 6 + "px"; $("bubbleTxt").style.top = (e.y + 1) * 6 + "px";
-  $("bubbleTxt").style.opacity = e.visible && dis < .3 ? 1 : 0;
-  const plE = outQ(p(t, .95, .3));
-  $("plateE").style.opacity = plE * (1 - p(t, 4.5, .3));
-  $("plateE").style.transform = `translateX(${Math.round((1 - plE) * -60 / 6) * 6}px)`;
-  const hp = 1 - outQ(p(t, 3.45, .5));
+  const i = stepAt(t), st = STEPS[i], lt = t - st.t0, prev = STEPS[i - 1];
+  g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, 180, 320);
+
+  /* Transición: cubre con bloques, muestra el cartel del lugar y revela el campo nuevo */
+  const tr = st.trans;
+  let covered = false, uncovering = false;
+  if (tr) {
+    const k = lt / st.dur, coverEnd = st.loop ? .5 : .3, uncoverStart = st.loop ? .5 : .72;
+    const kb = k < coverEnd ? k / coverEnd : k < uncoverStart ? 1 : 1 + (k - uncoverStart) / (1 - uncoverStart);
+    blocks(kb);
+    covered = k < coverEnd; uncovering = k >= uncoverStart;
+    $("card").style.opacity = !st.loop && k > coverEnd + .03 && k < uncoverStart - .03 ? 1 : 0;
+    $("cardN").textContent = tr.n; $("cardP").textContent = tr.place; $("cardS").textContent = tr.sub;
+  } else { blocks(0); $("card").style.opacity = 0; }
+
+  /* Mientras se cubre se sigue viendo el combate anterior congelado; al revelar ya está el campo nuevo */
+  const show = tr ? (covered ? prev : { scene: st.scene, face: st.scene === "noche" || st.loop ? "sleep" : "awake", fx: [] }) : st;
+  const showLt = tr && covered ? prev.dur : lt;
+  SCENES[show.scene](t);
+  const e = show.enemy && !(tr && show.fx?.some((f) => f === "leave" || f === "block")) ? enemy(show, showLt, t) : null;
+  const m = maru(show, showLt, t);
+
+  const fx = tr ? [] : (st.fx || []);
+  fx.forEach((f) => {
+    if (f.startsWith("throw:")) projectile(f.split(":")[1], lt);
+    if (f === "visto") visto(lt, e);
+    if (f === "rain") rain(lt, m);
+    if (f === "block") blockIcon(lt, e);
+    if (f === "wave") wave(lt);
+    if (f === "hit") sparks(lt, e);
+    if (f === "confetti") confetti(lt);
+    if (f === "level") levelStars(lt, m);
+  });
+
+  /* Cámara */
+  const zoom = fx.includes("zoom") ? 1 + .45 * outQ(p(lt, .4, .5)) : 1;
+  const shake = fx.includes("block") && lt > .9 && lt < 1.5 ? (Math.floor(lt * 30) % 2 ? 8 : -8) : 0;
+  $("cam").style.transform = `translate(${shake}px, 0) scale(${zoom})`;
+  $("flash").style.opacity = fx.includes("hit") && lt > 1.38 && lt < 1.5 ? .85 : 0;
+
+  /* Placas y vida */
+  const eKey = st.enemy || (tr && covered ? prev.enemy : null);
+  const ename = ENEMIES[eKey] || ["", ""];
+  $("eName").textContent = ename[0]; $("eLv").textContent = ename[1];
+  let plate = 0;
+  if (!tr && st.enemy) plate = (fx.includes("enter") ? outQ(p(lt, .9, .3)) : 1) * (fx.includes("leave") ? 1 - p(lt, 1.8, .3) : 1);
+  if (tr && covered && prev.enemy && !prev.fx?.includes("leave")) plate = 1;
+  $("plateE").style.opacity = plate;
+  const hp = st.hp ? st.hp[0] + (st.hp[1] - st.hp[0]) * outQ(p(lt, 1.45, .5)) : 1;
   $("hpE").style.width = hp * 100 + "%";
   $("hpE").style.background = hp > .5 ? "#6fd08c" : hp > .2 ? "#f2d27a" : "#C8452C";
-  $("zzz").style.transform = `translateY(${Math.round(Math.sin(t * 2) * 2) * 6}px)`;
-  $("zzz").style.left = (c.cx + 8) * 6 + "px"; $("zzz").style.top = (c.cy - 40) * 6 + "px";
-  $("flash").style.opacity = t > 3.35 && t < 3.47 ? .9 : 0;
-  const s = p(t, 4.55, .12);
+  $("plateP").style.opacity = 1;
+  const lvlIdx = STEPS.findIndex((s) => s.fx?.includes("level"));
+  $("pLv").textContent = i >= lvlIdx && !st.loop ? "Nv.2" : "Nv.1";
+  $("hpP").style.width = fx.includes("pushP") ? (100 - 30 * outQ(p(lt, 1.3, .4))) + "%" : "100%";
+
+  /* Caras en texto y globos */
+  const face_ = show.face;
+  $("zzz").style.opacity = face_ === "sleep" ? 1 : 0;
+  $("zzz").style.left = (m.x + 8) * 6 + "px"; $("zzz").style.top = (m.y - 40 + Math.round(Math.sin(t * 2) * 2)) * 6 + "px";
+  $("xd").style.opacity = face_ === "xd" ? 1 : 0;
+  $("xd").style.left = (m.x - 31) * 6 + "px"; $("xd").style.top = (m.y - 4) * 6 + "px";
+  $("think").style.opacity = fx.includes("think") ? outQ(p(lt, 1.2, .3)) : 0;
+  $("cri").style.opacity = fx.includes("cri") ? (Math.floor(lt * 2) % 2 ? .9 : .5) * p(lt, .5, .3) : 0;
+
+  /* Lo que dice el cliente */
+  const w = fx.find((f) => f.startsWith("word:"));
+  const word = $("word");
+  word.textContent = w ? w.split(":")[1] : (e && show.enemy === "info" ? "info" : "");
+  word.style.opacity = e && word.textContent ? 1 : 0;
+  if (w) Object.assign(word.style, { background: "#FFF6EE", padding: "4px 14px", border: "6px solid #1a1422" });
+  else Object.assign(word.style, { background: "none", padding: "0", border: "0" });
+  if (e) { word.style.left = (e.x + 28) * 6 - word.offsetWidth / 2 + "px"; word.style.top = (w ? e.y - 14 : e.y + 1) * 6 + "px"; }
+
+  /* Muro de la transcripción */
+  $("wall").style.opacity = fx.includes("wall") ? outQ(p(lt, 1.1, .3)) : fx.includes("wallShrink") ? 1 - p(lt, 2.0, .3) : 0;
+  $("wall").innerHTML = fx.includes("wallShrink") && lt > .8
+    ? "…mire le cuento… mi prima… en Surco… el otro día… <em>¿cuánto el corte?</em>"
+    : "«hola buenas mire le cuento que mi prima la que vive en Surco me dijo que ustedes atienden bien y justo el otro día pasaba por ahí y dije voy a preguntar pero no tenía saldo y entonces mi hermano me prestó el celular y le digo mire ¿cuánto el corte?»";
+
+  /* Sello */
+  const s = fx.includes("seal") ? p(lt, .8, .12) : 0;
   $("seal").style.opacity = s > 0 ? 1 : 0;
   $("seal").style.transform = `scale(${s < 1 ? 2.2 - 1.2 * s : 1}) rotate(-6deg)`;
-  dialog(t);
+
+  /* Diálogo o menú */
+  $("menu").style.opacity = st.menu ? 1 : 0;
+  $("menu").querySelector(".sel").style.color = st.menu && lt > 1.0 && Math.floor(lt * 10) % 2 ? "#C8452C" : "";
+  $("textbox").style.opacity = st.menu ? 0 : 1;
+  const txt = st.text || "";
+  const n = Math.floor(Math.max(0, lt - .15) * 24);
+  $("txt").textContent = txt.slice(0, n);
+  $("cur").style.opacity = txt && n >= txt.length && Math.floor(t * 3) % 2 === 0 ? 1 : 0;
 }
 
-/* ---- Reproductor ---- */
+/* ---------- Reproductor ---------- */
 const REC = new URLSearchParams(location.search).has("rec");
 if (REC) document.body.classList.add("rec");
 function fit() { if (REC) return; const vp = $("viewport").getBoundingClientRect(); const s = Math.min(vp.width / 1080, vp.height / 1920) * .96; $("stage").style.transform = `translate(${-540 * s}px, ${-960 * s}px) scale(${s})`; }
 addEventListener("resize", fit);
+$("scrub").max = DURATION;
 let playing = !REC, t0 = performance.now(), now = 0;
-function show(t) { now = t; render(t); $("scrub").value = t; $("time").textContent = t.toFixed(2) + " s"; }
-function loop(ts) { if (playing) { let t = (ts - t0) / 1000; if (t > DURATION + .8) { t0 = ts; t = 0; } show(Math.min(t, DURATION)); } requestAnimationFrame(loop); }
+function show(t) { now = t; render(t); $("scrub").value = t; $("time").textContent = t.toFixed(2) + " / " + DURATION.toFixed(1) + " s"; }
+function loop(ts) { if (playing) { let t = (ts - t0) / 1000; if (t >= DURATION) { t0 = ts; t = 0; } show(t); } requestAnimationFrame(loop); }
 $("play").onclick = () => { playing = !playing; $("play").textContent = playing ? "Pausa" : "Reproducir"; t0 = performance.now() - now * 1000; };
 $("scrub").oninput = () => { playing = false; $("play").textContent = "Reproducir"; show(+$("scrub").value); };
 window.__seek = (t) => show(t);
 window.__duration = DURATION;
-window.__ready = document.fonts.load("54px DotGothic16").then(() => document.fonts.ready).then(() => { fit(); show(0); return true; });
+window.__ready = document.fonts.load("52px DotGothic16").then(() => document.fonts.ready).then(() => { fit(); show(0); return true; });
 window.__ready.then(() => { t0 = performance.now(); requestAnimationFrame(loop); });
 </script>
 </body>
