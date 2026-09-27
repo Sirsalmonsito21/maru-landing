@@ -204,22 +204,22 @@
   .volt .hd { font-family: "Archivo", sans-serif; font-stretch: 125%; font-weight: 800; }
   .volt nav { position: absolute; left: 0; right: 0; top: 0; height: 92px; display: flex; align-items: center; justify-content: space-between; padding: 0 70px; z-index: 3; }
   .volt .lg { font-family: "Archivo", sans-serif; font-stretch: 125%; font-weight: 900; font-size: 30px; letter-spacing: .02em; }
-  .volt .lg i { font-style: normal; color: #ff5a1f; }
+  .volt .lg i { font-style: normal; color: #e11d2e; }
   .volt nav ul { display: flex; gap: 44px; list-style: none; margin: 0; padding: 0; color: #a4a4aa; font-size: 16px; font-weight: 500; }
-  .volt .btn { padding: 16px 30px; background: #ff5a1f; color: #0a0a0b; font-weight: 800; font-size: 15px; border-radius: 40px; display: inline-block; }
+  .volt .btn { padding: 16px 30px; background: #e11d2e; color: #0a0a0b; font-weight: 800; font-size: 15px; border-radius: 40px; display: inline-block; }
   .volt .btn.gh { background: rgba(255,255,255,.06); color: #f2f2f2; border: 1px solid rgba(255,255,255,.18); }
   .volt .hero { height: 680px; position: relative; overflow: hidden; }
   .volt .hero .ph { position: absolute; top: -40px; bottom: -40px; right: -40px; width: 68%; background: url(../videos/04-habilidades/fotos/volt-hero.jpg) 50% 57% / cover; }
   .volt .hero .shade { position: absolute; inset: 0; background: linear-gradient(90deg, #050506 30%, rgba(5,5,6,.7) 42%, transparent 62%), linear-gradient(0deg, #050506, transparent 22%); }
   .volt .hero .sweep { position: absolute; inset: 0; background: linear-gradient(100deg, transparent 42%, rgba(255,255,255,.55) 50%, transparent 58%); background-size: 300% 100%; mix-blend-mode: overlay; }
   .volt .hero .copy { position: absolute; left: 70px; top: 170px; width: 640px; z-index: 2; }
-  .volt .tag { color: #ff5a1f; font-size: 14px; letter-spacing: .32em; margin-bottom: 22px; font-weight: 800; }
+  .volt .tag { color: #e11d2e; font-size: 14px; letter-spacing: .32em; margin-bottom: 22px; font-weight: 800; }
   .volt h1 { font-size: 84px; line-height: .96; margin: 0; letter-spacing: -.02em; }
-  .volt h1 .o { color: #ff5a1f; }
+  .volt h1 .o { color: #e11d2e; }
   .volt .hero p { color: #a4a4aa; font-size: 18px; line-height: 1.6; margin: 26px 0 34px; max-width: 460px; }
   .volt .ba { height: 680px; padding: 70px 70px 60px; }
   .volt h2 { font-size: 52px; margin: 0 0 30px; letter-spacing: -.01em; }
-  .volt h2 span { color: #ff5a1f; }
+  .volt h2 span { color: #e11d2e; }
   .volt .slider { position: relative; height: 470px; border-radius: 26px; overflow: hidden; background: #000; }
   .volt .slider .lay { position: absolute; inset: 0; background: url(../videos/04-habilidades/fotos/volt-hero.jpg) 50% 58% / cover; }
   .volt .slider .dull { filter: grayscale(.8) brightness(.62) contrast(.78) blur(.6px); }
@@ -234,12 +234,12 @@
   .volt .packs > * { position: relative; }
   .volt .pk { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
   .volt .pk > div { border: 1px solid rgba(255,255,255,.12); border-radius: 26px; padding: 34px; background: rgba(14,14,16,.62); backdrop-filter: blur(12px); }
-  .volt .pk > div.hot { border-color: #ff5a1f; background: linear-gradient(160deg, rgba(60,24,10,.75), rgba(14,14,16,.7) 60%); }
+  .volt .pk > div.hot { border-color: #e11d2e; background: linear-gradient(160deg, rgba(70,8,14,.78), rgba(14,14,16,.7) 60%); }
   .volt .pk b { font-family: "Archivo", sans-serif; font-stretch: 125%; font-weight: 800; font-size: 24px; display: block; }
   .volt .pk .pr { font-family: "Archivo", sans-serif; font-stretch: 125%; font-weight: 900; font-size: 52px; margin: 20px 0; }
   .volt .pk .pr small { font-size: 18px; color: #a4a4aa; font-weight: 600; }
   .volt .pk li { color: #c4c4ca; font-size: 16px; margin: 9px 0; list-style: none; }
-  .volt .pk li::before { content: "✓  "; color: #ff5a1f; font-weight: 800; }
+  .volt .pk li::before { content: "✓  "; color: #e11d2e; font-weight: 800; }
   .volt .pk ul { padding: 0; margin: 0 0 26px; }
 
   .bar { display: flex; align-items: center; gap: 14px; padding: 12px 16px; background: #1b1622; font: 14px system-ui; }
@@ -664,7 +664,7 @@ function updVolt(root, o, t) {
   rise(Q(root, ".tag"), outQ(p(hk, .05, .4))); rise(Q(root, ".hero p"), outQ(p(hk, .4, .4))); rise(Q(root, ".bk1"), outQ(p(hk, .5, .4)));
   const s = o.slider; Q(root, ".shine").style.clipPath = `inset(0 0 0 ${s * 100}%)`; Q(root, ".slider .bar").style.left = s * 100 + "%"; Q(root, ".slider .knob").style.left = s * 100 + "%";
   QA(root, ".pk > div").forEach((el, i) => { const k = outQ(p(o.packs, i * .12, .45)); el.style.opacity = k; el.style.transform = `translateY(${(1 - k) * 90}px) scale(${.94 + .06 * k})`; });
-  const pu = o.pulse || 0; Q(root, ".hotb").style.boxShadow = pu ? `0 0 0 ${pu * 22}px rgba(255,90,31,${.6 * (1 - pu)})` : "none";
+  const pu = o.pulse || 0; Q(root, ".hotb").style.boxShadow = pu ? `0 0 0 ${pu * 22}px rgba(225,29,46,${.6 * (1 - pu)})` : "none";
 }
 
 function setDev(id, o) {
@@ -682,7 +682,7 @@ const hit = (t, list, dur = .5) => { let v = 0; list.forEach((b) => { if (t >= b
 const WORDS = [
   { from: 15, to: 18, text: "Elegante", font: "600 178px 'Shippori Mincho B1'", grad: "linear-gradient(180deg, #f6e3b8, #c9a45c 60%, #8c6a30)", top: 250, ls: ".02em" },
   { from: 19.3, to: 24.1, text: "Reservas", font: "italic 500 190px 'Bodoni Moda'", grad: "linear-gradient(180deg, #d98c97, #9c4f5c)", top: 190, ls: "0" },
-  { from: 28, to: 30, text: "QUE VENDE", font: "900 128px 'Archivo'", stretch: "125%", grad: "linear-gradient(180deg, #ffb070, #ff5a1f 55%, #c2320a)", top: 240, ls: "-.01em" },
+  { from: 28, to: 30, text: "QUE VENDE", font: "900 128px 'Archivo'", stretch: "125%", grad: "linear-gradient(180deg, #ff8a8f, #e11d2e 55%, #8f0f1a)", top: 240, ls: "-.01em" },
 ];
 function renderPro(t) {
   const pr = $("pro");
@@ -699,8 +699,8 @@ function renderPro(t) {
   const light = seg === 1;
   bg.style.background = seg === 0 ? "radial-gradient(90% 60% at 50% 42%, #1a2238 0%, #0a0e18 55%, #04060a 100%)"
     : seg === 1 ? "radial-gradient(90% 60% at 50% 42%, #fcf5f1 0%, #f0e3dc 55%, #dfcbc3 100%)"
-    : "radial-gradient(90% 60% at 50% 45%, #1e120e 0%, #0b0807 50%, #030303 100%)";
-  const lc = seg === 0 ? ["#c9a45c", "#C8452C"] : seg === 1 ? ["#f0b8b0", "#eadbc4"] : ["#ff5a1f", "#ff9a3c"];
+    : "radial-gradient(90% 60% at 50% 45%, #200b0e 0%, #0b0708 50%, #030303 100%)";
+  const lc = seg === 0 ? ["#c9a45c", "#C8452C"] : seg === 1 ? ["#f0b8b0", "#eadbc4"] : ["#e11d2e", "#7a0c16"];
   Object.assign(l1.style, { width: "720px", height: "720px", left: `${-220 + Math.sin(t * .6) * 120}px`, top: `${260 + Math.cos(t * .5) * 100}px`, background: lc[0], opacity: light ? .55 : .3 });
   Object.assign(l2.style, { width: "620px", height: "620px", left: `${620 + Math.cos(t * .4) * 120}px`, top: `${1000 + Math.sin(t * .7) * 100}px`, background: lc[1], opacity: light ? .45 : .24 });
   $("vig").style.opacity = light ? .3 : 1;
@@ -736,7 +736,7 @@ function renderPro(t) {
   }
   if (seg === 1) {
     const e = outX(p(t, 18, 1.0)), side = io(p(t, 22.4, .8));
-    pho = { x: lerp(0, 200, side), y: lerp(460, 0, e) + Math.sin(t * 1.6) * 10, z: lerp(-600, 0, e) - side * 80, rx: 4, ry: lerp(-32, -12, e) + Math.sin(t * .8) * 4 - side * 8, rz: lerp(-6, 0, e), s: lerp(1.28, 1.08, side), blur: (1 - e) * 10 };
+    pho = { x: lerp(0, 262, side), y: lerp(460, 0, e) + side * 50 + Math.sin(t * 1.6) * 10, z: lerp(-600, 0, e), rx: 4, ry: lerp(-32, -12, e) + Math.sin(t * .8) * 4 - side * 6, rz: lerp(-6, 0, e), s: lerp(1.28, .84, side), blur: (1 - e) * 10 };
     const slide = io(p(t, 19.3, .45)) * (1 - io(p(t, 22.4, .45)));
     let tap = null;
     const tapAt = (tt, x, y) => { const k = p(t, tt - .18, .42); if (k > 0 && k < 1) tap = [x, y, Math.sin(k * Math.PI), 1.3 - .5 * Math.sin(k * Math.PI)]; };
@@ -747,7 +747,7 @@ function renderPro(t) {
     updAurea(SITES.aurPho, { hero: p(t, 18.1, 1.2), slide, day: p(t, 21.0, .25), time: p(t, 21.35, .25), press: p(t, 21.65, .25), pressR: p(t, 19.15, .25), toast: p(t, 21.9, .35) * (1 - p(t, 23.9, .2)), tap }, t);
     if (t >= 22.4) {
       const te = outX(p(t, 22.4, .9));
-      tab = { x: lerp(-700, -180, te), y: 30 + Math.sin(t * 1.3) * 8, z: -60, rx: 4, ry: lerp(40, 14, te), s: 1.04, blur: (1 - te) * 10 };
+      tab = { x: lerp(-760, -238, te), y: -40 + Math.sin(t * 1.3) * 8, z: -60, rx: 4, ry: lerp(40, 10, te), s: .8, blur: (1 - te) * 10 };
       updAureaT(SITES.aurTab, { scroll: 300 * io(p(t, 23.0, 1.0)) });
     }
   }
@@ -863,8 +863,9 @@ function show(t) { now = t; render(t); $("scrub").value = t; $("time").textConte
 function loop(ts) { if (playing) { let t = (ts - t0) / 1000; if (t >= DURATION) { t0 = ts; t = 0; } show(t); } requestAnimationFrame(loop); }
 $("play").onclick = () => { playing = !playing; $("play").textContent = playing ? "Pausa" : "Reproducir"; t0 = performance.now() - now * 1000; };
 $("scrub").oninput = () => { playing = false; $("play").textContent = "Reproducir"; show(+$("scrub").value); };
-window.__seek = (t) => show(t);
-window.__duration = DURATION;
+const FROM = +(new URLSearchParams(location.search).get("from") || 0);
+window.__seek = (t) => show(t + FROM);
+window.__duration = DURATION - FROM;
 const FONTS = ["52px DotGothic16", "40px 'Tenor Sans'", "500 40px 'Shippori Mincho B1'", "600 40px 'Shippori Mincho B1'", "500 40px 'Bodoni Moda'", "italic 500 40px 'Bodoni Moda'", "400 20px Manrope", "700 20px Manrope", "800 20px Manrope", "800 40px Archivo", "900 40px Archivo"];
 const PHOTOS = ["umi-hero", "umi-sushi", "umi-ceviche", "umi-interior", "aurea-hero", "aurea-facial", "volt-hero", "volt-dark"].map((n) => new Promise((r) => { const i = new Image(); i.onload = i.onerror = r; i.src = F + n + ".jpg"; }));
 window.__ready = Promise.all([...FONTS.map((f) => document.fonts.load(f)), ...PHOTOS]).then(() => document.fonts.ready).then(() => { fit(); snapshot(); show(0); return true; });
