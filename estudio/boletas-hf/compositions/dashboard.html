@@ -1,0 +1,130 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Zen Kaku Gothic New"; font-weight: 500; src: url("assets/fonts/ZenKakuGothicNew-Medium.ttf"); }
+        @font-face { font-family: "Zen Kaku Gothic New"; font-weight: 700; src: url("assets/fonts/ZenKakuGothicNew-Bold.ttf"); }
+        @font-face { font-family: "Zen Kaku Gothic New"; font-weight: 900; src: url("assets/fonts/ZenKakuGothicNew-Black.ttf"); }
+        @font-face { font-family: "Shippori Mincho"; font-weight: 800; src: url("assets/fonts/ShipporiMincho-ExtraBold.ttf"); }
+        @font-face { font-family: "Tenor Sans"; src: url("assets/fonts/TenorSans-Regular.ttf"); }
+        #root { position: absolute; inset: 0; overflow: hidden; background: #111726; color: #F4F1EA; font-family: "Zen Kaku Gothic New", sans-serif; }
+        .fill { position: absolute; inset: 0; }
+        .noche { background: radial-gradient(90% 60% at 50% 45%, #18203a 0%, #111726 55%, #0B0F1A 100%); }
+        .washi { position: absolute; inset: 0; pointer-events: none; opacity: .07; mix-blend-mode: soft-light;
+          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .09' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23w)'/%3E%3C/svg%3E"); background-size: 600px 600px; }
+        .kanji { position: absolute; font-family: "Shippori Mincho", serif; font-weight: 800; color: #F4F1EA; opacity: .07; line-height: 1; white-space: nowrap; }
+        .hinomaru { position: absolute; border-radius: 50%; background: #C8452C; }
+        .step { position: absolute; left: 80px; top: 190px; display: flex; align-items: center; gap: 22px; font-size: 44px; font-weight: 900; }
+        .step b { width: 72px; height: 72px; border-radius: 50%; background: #C8452C; color: #F4F1EA; display: grid; place-items: center; font-size: 40px; flex: none; }
+        .step small { display: block; font-size: 30px; font-weight: 700; color: #D7B98C; margin-top: 4px; }
+        .goldline { position: absolute; height: 2px; background: linear-gradient(90deg, transparent, #D7B98C, transparent); }
+        /* celular */
+        .phone { position: absolute; width: 520px; height: 1060px; border-radius: 70px; background: #07090f; padding: 16px;
+          box-shadow: 0 0 0 3px #2b3142, 0 0 0 5px #8d93a3, 0 60px 120px rgba(0,0,0,.6); }
+        .phone .scr { position: relative; width: 100%; height: 100%; border-radius: 56px; overflow: hidden; background: #0f1422; }
+        .phone .isl { position: absolute; left: 50%; top: 16px; width: 130px; height: 36px; margin-left: -65px; border-radius: 20px; background: #000; z-index: 5; }
+        /* chat */
+        .chat { position: absolute; inset: 0; background: linear-gradient(#1a2233, #121826); display: flex; flex-direction: column; }
+        .chat .hd { height: 160px; padding: 64px 26px 0; display: flex; align-items: center; gap: 18px; background: rgba(23,31,48,.95); border-bottom: 1px solid rgba(255,255,255,.08); }
+        .chat .hd img { width: 72px; height: 72px; border-radius: 50%; }
+        .chat .hd .nm { font-size: 30px; font-weight: 900; }
+        .chat .hd .st { font-size: 22px; color: #6fb8ff; font-weight: 700; }
+        .chat .ms { flex: 1; padding: 22px 20px; display: flex; flex-direction: column; justify-content: flex-end; gap: 16px; overflow: hidden; }
+        .bub { max-width: 380px; padding: 16px 20px; border-radius: 24px; font-size: 26px; font-weight: 700; line-height: 1.3; }
+        .bub.out { align-self: flex-end; background: #2b7fd8; border-bottom-right-radius: 6px; }
+        .bub.in { align-self: flex-start; background: #242d40; border-bottom-left-radius: 6px; }
+        .bub .tk { font-size: 20px; color: #bfe0ff; margin-left: 10px; }
+        .chat .in-bar { height: 110px; padding: 20px 20px 30px; display: flex; gap: 14px; align-items: center; }
+        .chat .in-bar div { flex: 1; height: 60px; border-radius: 30px; background: #1f2738; font-size: 24px; color: #6d7890; padding: 0 24px; display: flex; align-items: center; }
+        .chat .in-bar i { width: 60px; height: 60px; border-radius: 50%; background: #2b7fd8; display: grid; place-items: center; font-style: normal; font-size: 28px; }
+        /* boleta de papel */
+        .rcpt { position: absolute; width: 300px; background: #F7F2E6; color: #2a2522; padding: 22px 22px 34px; font-family: "Zen Kaku Gothic New", monospace; font-size: 17px; font-weight: 700; line-height: 1.45;
+          clip-path: polygon(0 0, 100% 0, 100% 96%, 95% 100%, 90% 96%, 85% 100%, 80% 96%, 75% 100%, 70% 96%, 65% 100%, 60% 96%, 55% 100%, 50% 96%, 45% 100%, 40% 96%, 35% 100%, 30% 96%, 25% 100%, 20% 96%, 15% 100%, 10% 96%, 5% 100%, 0 96%);
+          box-shadow: 0 20px 40px rgba(0,0,0,.35); }
+        .rcpt h4 { margin: 0 0 6px; font-size: 24px; font-weight: 900; text-align: center; letter-spacing: .06em; }
+        .rcpt .c { text-align: center; color: #6b625b; font-size: 15px; }
+        .rcpt .r { display: flex; justify-content: space-between; }
+        .rcpt hr { border: 0; border-top: 2px dashed #b9ad9e; margin: 8px 0; }
+        .rcpt .tot { font-size: 22px; font-weight: 900; }
+        .rcpt .qr { width: 86px; height: 86px; margin: 10px auto 0; background:
+          conic-gradient(from 90deg at 30% 30%, #2a2522 25%, transparent 0) 0 0 / 22px 22px,
+          linear-gradient(#2a2522 0 0) 0 0 / 26px 26px no-repeat, linear-gradient(#2a2522 0 0) 100% 0 / 26px 26px no-repeat, linear-gradient(#2a2522 0 0) 0 100% / 26px 26px no-repeat; }
+
+
+        .db-panel { position: absolute; border-radius: 30px; background: rgba(20,26,40,.72); border: 1px solid rgba(255,255,255,.1); box-shadow: 0 30px 70px rgba(0,0,0,.5); padding: 30px 34px; opacity: 0; }
+        #db-chips { position: absolute; left: 70px; right: 130px; top: 340px; display: flex; gap: 10px; }
+        .db-chip { padding: 10px 15px; border-radius: 30px; border: 1px solid rgba(215,185,140,.4); font-size: 24px; white-space: nowrap; font-weight: 700; color: #D7B98C; opacity: 0; }
+        .db-chip.on { background: #C8452C; border-color: #C8452C; color: #F4F1EA; }
+        #db-tot { left: 70px; top: 480px; width: 520px; height: 230px; }
+        #db-igv { left: 610px; top: 480px; width: 340px; height: 230px; }
+        .db-l { font-size: 26px; font-weight: 700; letter-spacing: .14em; color: #D7B98C; }
+        .db-n { font-weight: 900; font-variant-numeric: tabular-nums; white-space: nowrap; margin-top: 16px; }
+        #db-donut { left: 70px; top: 740px; width: 880px; height: 420px; }
+        #db-donut svg { position: absolute; left: 30px; top: 40px; width: 340px; height: 340px; }
+        #db-leg { position: absolute; left: 410px; top: 60px; right: 30px; display: grid; gap: 14px; }
+        #db-leg div { display: flex; align-items: center; gap: 14px; font-size: 28px; font-weight: 700; }
+        #db-leg i { width: 22px; height: 22px; border-radius: 6px; flex: none; }
+        #db-leg em { font-style: normal; margin-left: auto; font-variant-numeric: tabular-nums; color: #F3EDE2; }
+        #db-bars { left: 70px; top: 1190px; width: 880px; height: 320px; }
+        #db-bw { position: absolute; left: 40px; right: 40px; bottom: 30px; height: 200px; display: flex; align-items: flex-end; gap: 30px; }
+        #db-bw div { flex: 1; text-align: center; font-size: 24px; font-weight: 700; color: #9aa3b5; }
+        #db-bw b { display: block; height: 180px; border-radius: 12px 12px 4px 4px; background: linear-gradient(#e0674f, #C8452C); transform-origin: 50% 100%; margin-bottom: 10px; }
+        #db-tap { position: absolute; width: 80px; height: 80px; margin: -40px 0 0 -40px; border-radius: 50%; background: rgba(244,241,234,.55); border: 3px solid #F4F1EA; opacity: 0; left: 0; top: 0; }
+      </style>
+      <div id="root" data-composition-id="dashboard" data-width="1080" data-height="1920" data-duration="8">
+
+        <div class="fill noche"></div><div class="washi"></div>
+        <div class="kanji" data-layout-allow-occlusion data-layout-allow-overlap style="left:40px;top:560px;font-size:620px">経費</div>
+        <div class="step" id="db-step"><b>4</b><div>Tu reporte del mes<small>en tiempo real</small></div></div>
+        <div id="db-chips"><div class="db-chip" id="db-c0">Todo</div><div class="db-chip" id="db-c1">Comidas</div><div class="db-chip" id="db-c2">Servicios</div><div class="db-chip" id="db-c3">Insumos</div><div class="db-chip" id="db-c4">Transporte</div><div class="db-chip" id="db-c5">Alquiler</div></div>
+        <div class="db-panel" id="db-tot"><div class="db-l" id="db-tl">TOTAL DEL MES</div><div class="db-n" id="db-tn" style="font-size:96px">S/ 0</div></div>
+        <div class="db-panel" id="db-igv"><div class="db-l">IGV DEL MES</div><div class="db-n" id="db-in" style="font-size:62px;color:#F3DDB0">S/ 0</div></div>
+        <div class="db-panel" id="db-donut"><div class="db-l">POR CATEGORÍA</div><svg viewBox="0 0 200 200" id="db-svg"></svg>
+          <div id="db-leg"><div id="db-lg0"><i style="background:#C8452C"></i>Insumos<em>S/ 3,450</em></div><div id="db-lg1"><i style="background:#D7B98C"></i>Alquiler<em>S/ 1,800</em></div><div id="db-lg2"><i style="background:#F3EDE2"></i>Comidas<em>S/ 1,280</em></div><div id="db-lg3"><i style="background:#8a7f78"></i>Servicios<em>S/ 960</em></div><div id="db-lg4"><i style="background:#8e2f1f"></i>Transporte<em>S/ 930</em></div></div></div>
+        <div class="db-panel" id="db-bars"><div class="db-l">GASTO POR SEMANA</div><div id="db-bw"><div><b id="db-b0"></b>S1</div><div><b id="db-b1"></b>S2</div><div><b id="db-b2"></b>S3</div><div><b id="db-b3"></b>S4</div></div></div>
+        <div id="db-tap"></div>
+      </div>
+      <script>
+        (function () {
+        var tl = gsap.timeline({ paused: true });
+
+        var CAT = [["Insumos",3450,"#C8452C"],["Alquiler",1800,"#D7B98C"],["Comidas",1280,"#F3EDE2"],["Servicios",960,"#8a7f78"],["Transporte",930,"#8e2f1f"]], TOT = 8420, WEEK = [1850, 2240, 1980, 2350];
+        var svg = document.getElementById("db-svg"), C = 2 * Math.PI * 70, acc = 0, h = '<circle cx="100" cy="100" r="70" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="34"/>';
+        CAT.forEach(function (c, i) { var f = c[1] / TOT; h += '<circle class="db-seg" id="db-s' + i + '" cx="100" cy="100" r="70" fill="none" stroke="' + c[2] + '" stroke-width="34" stroke-dasharray="' + (f * C - 2) + ' ' + C + '" stroke-dashoffset="' + (-acc * C) + '" transform="rotate(-90 100 100)"/>'; acc += f; });
+        svg.innerHTML = h;
+        var fmt = function (v) { return "S/ " + Math.round(v).toLocaleString("en-US"); };
+        var st = { tot: 0, igv: 0 };
+        var paint = function () { document.getElementById("db-tn").textContent = fmt(st.tot); document.getElementById("db-in").textContent = fmt(st.igv); };
+        tl.fromTo("#db-step", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: .4, ease: "expo.out" }, .05);
+        // construcción: los paneles llegan volando
+        [["#db-tot", .1], ["#db-igv", .2], ["#db-donut", .35], ["#db-bars", .5]].forEach(function (p) { tl.fromTo(p[0], { opacity: 0, y: 160, scale: .9, rotationX: 25 }, { opacity: 1, y: 0, scale: 1, rotationX: 0, duration: .6, ease: "expo.out" }, p[1]); });
+        tl.fromTo(".db-chip", { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: .3, stagger: .05, ease: "expo.out" }, .3);
+        tl.set("#db-c0", { className: "db-chip on" }, .3);
+        tl.fromTo(st, { tot: 0, igv: 0 }, { tot: TOT, igv: 1284, duration: 1.4, ease: "power3.out", onUpdate: paint }, .4);
+        tl.fromTo(".db-seg", { opacity: 0, rotation: -150, transformOrigin: "100px 100px" }, { opacity: 1, rotation: -90, duration: .8, stagger: .08, ease: "expo.out" }, .6);
+        tl.fromTo("#db-leg div", { opacity: 0, x: 30 }, { opacity: 1, x: 0, duration: .35, stagger: .07 }, .8);
+        WEEK.forEach(function (v, i) { tl.fromTo("#db-b" + i, { scaleY: 0 }, { scaleY: v / 2350, duration: .6, ease: "back.out(1.5)" }, .8 + i * .08); });
+        // filtros: Comidas, Servicios, Insumos y vuelta a Todo
+        var CHIPX = [124, 290, 470, 648, 180, 400];
+        var FIL = [[1, 2, 1280, 195, 2.5], [2, 3, 960, 146, 4.0], [3, 0, 3450, 526, 5.5], [0, -1, 8420, 1284, 7.0]];
+        FIL.forEach(function (f) {
+          var chip = f[0], seg = f[1], at = f[4], el = document.getElementById("db-c" + chip);
+          var x = el ? el.offsetLeft + 70 + el.offsetWidth / 2 : CHIPX[chip];
+          tl.fromTo("#db-tap", { opacity: 0, scale: 1.4, x: x, y: 362 }, { opacity: 1, scale: .8, duration: .18, ease: "power2.out" }, at - .2);
+          tl.to("#db-tap", { opacity: 0, duration: .15 }, at + .05);
+          for (var c = 0; c < 6; c++) tl.set("#db-c" + c, { className: c === chip ? "db-chip on" : "db-chip" }, at);
+          tl.to(st, { tot: f[2], igv: f[3], duration: .6, ease: "power3.out", onUpdate: paint }, at);
+          CAT.forEach(function (cat, i) { tl.to("#db-s" + i, { opacity: seg < 0 || seg === i ? 1 : .18, strokeWidth: seg === i ? 44 : 34, duration: .35, ease: "expo.out" }, at); tl.to("#db-lg" + i, { opacity: seg < 0 || seg === i ? 1 : .35, duration: .3 }, at); });
+          WEEK.forEach(function (v, i) { var k = f[2] / TOT * (0.8 + ((i * 37 + chip * 13) % 5) * .1); tl.to("#db-b" + i, { scaleY: Math.min(1, v / 2350 * (seg < 0 ? 1 : k * 1.6)), duration: .5, ease: "expo.out" }, at); });
+          tl.fromTo("#db-tot", { scale: 1.04 }, { scale: 1, duration: .35, ease: "expo.out", immediateRender: false }, at);
+        });
+        tl.set("#db-tl", { textContent: "TOTAL DEL MES" }, 0);
+        tl.to(["#db-tot", "#db-igv", "#db-donut", "#db-bars", "#db-chips"], { opacity: 0, y: -40, duration: .25, stagger: .03 }, 7.7);
+        window.__timelines["dashboard"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

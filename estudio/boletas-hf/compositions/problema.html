@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Zen Kaku Gothic New"; font-weight: 500; src: url("assets/fonts/ZenKakuGothicNew-Medium.ttf"); }
+        @font-face { font-family: "Zen Kaku Gothic New"; font-weight: 700; src: url("assets/fonts/ZenKakuGothicNew-Bold.ttf"); }
+        @font-face { font-family: "Zen Kaku Gothic New"; font-weight: 900; src: url("assets/fonts/ZenKakuGothicNew-Black.ttf"); }
+        @font-face { font-family: "Shippori Mincho"; font-weight: 800; src: url("assets/fonts/ShipporiMincho-ExtraBold.ttf"); }
+        @font-face { font-family: "Tenor Sans"; src: url("assets/fonts/TenorSans-Regular.ttf"); }
+        #root { position: absolute; inset: 0; overflow: hidden; background: #111726; color: #F4F1EA; font-family: "Zen Kaku Gothic New", sans-serif; }
+        .fill { position: absolute; inset: 0; }
+        .noche { background: radial-gradient(90% 60% at 50% 45%, #18203a 0%, #111726 55%, #0B0F1A 100%); }
+        .washi { position: absolute; inset: 0; pointer-events: none; opacity: .07; mix-blend-mode: soft-light;
+          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .09' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23w)'/%3E%3C/svg%3E"); background-size: 600px 600px; }
+        .kanji { position: absolute; font-family: "Shippori Mincho", serif; font-weight: 800; color: #F4F1EA; opacity: .07; line-height: 1; white-space: nowrap; }
+        .hinomaru { position: absolute; border-radius: 50%; background: #C8452C; }
+        .step { position: absolute; left: 80px; top: 190px; display: flex; align-items: center; gap: 22px; font-size: 44px; font-weight: 900; }
+        .step b { width: 72px; height: 72px; border-radius: 50%; background: #C8452C; color: #F4F1EA; display: grid; place-items: center; font-size: 40px; flex: none; }
+        .step small { display: block; font-size: 30px; font-weight: 700; color: #D7B98C; margin-top: 4px; }
+        .goldline { position: absolute; height: 2px; background: linear-gradient(90deg, transparent, #D7B98C, transparent); }
+        /* celular */
+        .phone { position: absolute; width: 520px; height: 1060px; border-radius: 70px; background: #07090f; padding: 16px;
+          box-shadow: 0 0 0 3px #2b3142, 0 0 0 5px #8d93a3, 0 60px 120px rgba(0,0,0,.6); }
+        .phone .scr { position: relative; width: 100%; height: 100%; border-radius: 56px; overflow: hidden; background: #0f1422; }
+        .phone .isl { position: absolute; left: 50%; top: 16px; width: 130px; height: 36px; margin-left: -65px; border-radius: 20px; background: #000; z-index: 5; }
+        /* chat */
+        .chat { position: absolute; inset: 0; background: linear-gradient(#1a2233, #121826); display: flex; flex-direction: column; }
+        .chat .hd { height: 160px; padding: 64px 26px 0; display: flex; align-items: center; gap: 18px; background: rgba(23,31,48,.95); border-bottom: 1px solid rgba(255,255,255,.08); }
+        .chat .hd img { width: 72px; height: 72px; border-radius: 50%; }
+        .chat .hd .nm { font-size: 30px; font-weight: 900; }
+        .chat .hd .st { font-size: 22px; color: #6fb8ff; font-weight: 700; }
+        .chat .ms { flex: 1; padding: 22px 20px; display: flex; flex-direction: column; justify-content: flex-end; gap: 16px; overflow: hidden; }
+        .bub { max-width: 380px; padding: 16px 20px; border-radius: 24px; font-size: 26px; font-weight: 700; line-height: 1.3; }
+        .bub.out { align-self: flex-end; background: #2b7fd8; border-bottom-right-radius: 6px; }
+        .bub.in { align-self: flex-start; background: #242d40; border-bottom-left-radius: 6px; }
+        .bub .tk { font-size: 20px; color: #bfe0ff; margin-left: 10px; }
+        .chat .in-bar { height: 110px; padding: 20px 20px 30px; display: flex; gap: 14px; align-items: center; }
+        .chat .in-bar div { flex: 1; height: 60px; border-radius: 30px; background: #1f2738; font-size: 24px; color: #6d7890; padding: 0 24px; display: flex; align-items: center; }
+        .chat .in-bar i { width: 60px; height: 60px; border-radius: 50%; background: #2b7fd8; display: grid; place-items: center; font-style: normal; font-size: 28px; }
+        /* boleta de papel */
+        .rcpt { position: absolute; width: 300px; background: #F7F2E6; color: #2a2522; padding: 22px 22px 34px; font-family: "Zen Kaku Gothic New", monospace; font-size: 17px; font-weight: 700; line-height: 1.45;
+          clip-path: polygon(0 0, 100% 0, 100% 96%, 95% 100%, 90% 96%, 85% 100%, 80% 96%, 75% 100%, 70% 96%, 65% 100%, 60% 96%, 55% 100%, 50% 96%, 45% 100%, 40% 96%, 35% 100%, 30% 96%, 25% 100%, 20% 96%, 15% 100%, 10% 96%, 5% 100%, 0 96%);
+          box-shadow: 0 20px 40px rgba(0,0,0,.35); }
+        .rcpt h4 { margin: 0 0 6px; font-size: 24px; font-weight: 900; text-align: center; letter-spacing: .06em; }
+        .rcpt .c { text-align: center; color: #6b625b; font-size: 15px; }
+        .rcpt .r { display: flex; justify-content: space-between; }
+        .rcpt hr { border: 0; border-top: 2px dashed #b9ad9e; margin: 8px 0; }
+        .rcpt .tot { font-size: 22px; font-weight: 900; }
+        .rcpt .qr { width: 86px; height: 86px; margin: 10px auto 0; background:
+          conic-gradient(from 90deg at 30% 30%, #2a2522 25%, transparent 0) 0 0 / 22px 22px,
+          linear-gradient(#2a2522 0 0) 0 0 / 26px 26px no-repeat, linear-gradient(#2a2522 0 0) 100% 0 / 26px 26px no-repeat, linear-gradient(#2a2522 0 0) 0 100% / 26px 26px no-repeat; }
+
+
+        #p-q { position: absolute; z-index: 5; left: 70px; right: 130px; top: 200px; text-align: center; font-size: 66px; font-weight: 900; }
+        #p-a { position: absolute; z-index: 5; left: 70px; right: 130px; top: 1400px; text-align: center; font-size: 58px; font-weight: 900; color: #D7B98C; }
+        .pp { font-size: 15px; }
+      </style>
+      <div id="root" data-composition-id="problema" data-width="1080" data-height="1920" data-duration="2">
+
+        <div class="fill noche"></div><div class="washi"></div>
+        <div class="kanji" data-layout-allow-occlusion data-layout-allow-overlap style="left:-40px;top:560px;font-size:520px">乱</div>
+        <div class="rcpt pp" data-layout-allow-overlap id="p-r0" style="left:60px;top:0;width:240px"><h4>BODEGA</h4><div class="c">Boleta 100</div><hr /><div class="r"><span>Total</span><span>S/ 12.5</span></div></div><div class="rcpt pp" data-layout-allow-overlap id="p-r1" style="left:520px;top:0;width:270px"><h4>MAKRO</h4><div class="c">Boleta 201</div><hr /><div class="r"><span>Total</span><span>S/ 245.8</span></div></div><div class="rcpt pp" data-layout-allow-overlap id="p-r2" style="left:300px;top:0;width:300px"><h4>TAMBO</h4><div class="c">Boleta 302</div><hr /><div class="r"><span>Total</span><span>S/ 8.9</span></div></div><div class="rcpt pp" data-layout-allow-overlap id="p-r3" style="left:700px;top:0;width:240px"><h4>GRIFO</h4><div class="c">Boleta 403</div><hr /><div class="r"><span>Total</span><span>S/ 120</span></div></div><div class="rcpt pp" data-layout-allow-overlap id="p-r4" style="left:140px;top:0;width:270px"><h4>PLAZA VEA</h4><div class="c">Boleta 504</div><hr /><div class="r"><span>Total</span><span>S/ 64.3</span></div></div><div class="rcpt pp" data-layout-allow-overlap id="p-r5" style="left:470px;top:0;width:300px"><h4>SODIMAC</h4><div class="c">Boleta 605</div><hr /><div class="r"><span>Total</span><span>S/ 88</span></div></div><div class="rcpt pp" data-layout-allow-overlap id="p-r6" style="left:620px;top:0;width:240px"><h4>MERCADO</h4><div class="c">Boleta 706</div><hr /><div class="r"><span>Total</span><span>S/ 35</span></div></div><div class="rcpt pp" data-layout-allow-overlap id="p-r7" style="left:20px;top:0;width:270px"><h4>TAXI</h4><div class="c">Boleta 807</div><hr /><div class="r"><span>Total</span><span>S/ 18</span></div></div><div class="rcpt pp" data-layout-allow-overlap id="p-r8" style="left:360px;top:0;width:300px"><h4>LUZ</h4><div class="c">Boleta 908</div><hr /><div class="r"><span>Total</span><span>S/ 142.6</span></div></div>
+        <div id="p-q">¿Cuánto gastaste este mes?</div>
+        <div id="p-a">…ni idea.</div>
+      </div>
+      <script>
+        (function () {
+        var tl = gsap.timeline({ paused: true });
+
+        document.querySelectorAll(".pp, .pp *").forEach(function (el) { el.setAttribute("data-layout-allow-overlap", ""); });
+        for (var i = 0; i < 9; i++) {
+          var r = (i % 2 ? 1 : -1) * (10 + i * 4);
+          tl.fromTo("#p-r" + i, { y: -500 - i * 60, rotation: r * .3, opacity: 0 }, { y: 640 + (i % 4) * 160, rotation: r, opacity: 1, duration: 1.6, ease: "power2.out" }, i * .05);
+        }
+        tl.fromTo("#p-q", { opacity: 0, y: -30 }, { opacity: 1, y: 0, duration: .35, ease: "expo.out" }, .05);
+        tl.fromTo("#p-a", { opacity: 0, scale: .8 }, { opacity: 1, scale: 1, duration: .3, ease: "back.out(2)" }, 1.0);
+        window.__timelines["problema"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

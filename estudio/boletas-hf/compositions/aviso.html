@@ -1,0 +1,86 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Zen Kaku Gothic New"; font-weight: 500; src: url("assets/fonts/ZenKakuGothicNew-Medium.ttf"); }
+        @font-face { font-family: "Zen Kaku Gothic New"; font-weight: 700; src: url("assets/fonts/ZenKakuGothicNew-Bold.ttf"); }
+        @font-face { font-family: "Zen Kaku Gothic New"; font-weight: 900; src: url("assets/fonts/ZenKakuGothicNew-Black.ttf"); }
+        @font-face { font-family: "Shippori Mincho"; font-weight: 800; src: url("assets/fonts/ShipporiMincho-ExtraBold.ttf"); }
+        @font-face { font-family: "Tenor Sans"; src: url("assets/fonts/TenorSans-Regular.ttf"); }
+        #root { position: absolute; inset: 0; overflow: hidden; background: #111726; color: #F4F1EA; font-family: "Zen Kaku Gothic New", sans-serif; }
+        .fill { position: absolute; inset: 0; }
+        .noche { background: radial-gradient(90% 60% at 50% 45%, #18203a 0%, #111726 55%, #0B0F1A 100%); }
+        .washi { position: absolute; inset: 0; pointer-events: none; opacity: .07; mix-blend-mode: soft-light;
+          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .09' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23w)'/%3E%3C/svg%3E"); background-size: 600px 600px; }
+        .kanji { position: absolute; font-family: "Shippori Mincho", serif; font-weight: 800; color: #F4F1EA; opacity: .07; line-height: 1; white-space: nowrap; }
+        .hinomaru { position: absolute; border-radius: 50%; background: #C8452C; }
+        .step { position: absolute; left: 80px; top: 190px; display: flex; align-items: center; gap: 22px; font-size: 44px; font-weight: 900; }
+        .step b { width: 72px; height: 72px; border-radius: 50%; background: #C8452C; color: #F4F1EA; display: grid; place-items: center; font-size: 40px; flex: none; }
+        .step small { display: block; font-size: 30px; font-weight: 700; color: #D7B98C; margin-top: 4px; }
+        .goldline { position: absolute; height: 2px; background: linear-gradient(90deg, transparent, #D7B98C, transparent); }
+        /* celular */
+        .phone { position: absolute; width: 520px; height: 1060px; border-radius: 70px; background: #07090f; padding: 16px;
+          box-shadow: 0 0 0 3px #2b3142, 0 0 0 5px #8d93a3, 0 60px 120px rgba(0,0,0,.6); }
+        .phone .scr { position: relative; width: 100%; height: 100%; border-radius: 56px; overflow: hidden; background: #0f1422; }
+        .phone .isl { position: absolute; left: 50%; top: 16px; width: 130px; height: 36px; margin-left: -65px; border-radius: 20px; background: #000; z-index: 5; }
+        /* chat */
+        .chat { position: absolute; inset: 0; background: linear-gradient(#1a2233, #121826); display: flex; flex-direction: column; }
+        .chat .hd { height: 160px; padding: 64px 26px 0; display: flex; align-items: center; gap: 18px; background: rgba(23,31,48,.95); border-bottom: 1px solid rgba(255,255,255,.08); }
+        .chat .hd img { width: 72px; height: 72px; border-radius: 50%; }
+        .chat .hd .nm { font-size: 30px; font-weight: 900; }
+        .chat .hd .st { font-size: 22px; color: #6fb8ff; font-weight: 700; }
+        .chat .ms { flex: 1; padding: 22px 20px; display: flex; flex-direction: column; justify-content: flex-end; gap: 16px; overflow: hidden; }
+        .bub { max-width: 380px; padding: 16px 20px; border-radius: 24px; font-size: 26px; font-weight: 700; line-height: 1.3; }
+        .bub.out { align-self: flex-end; background: #2b7fd8; border-bottom-right-radius: 6px; }
+        .bub.in { align-self: flex-start; background: #242d40; border-bottom-left-radius: 6px; }
+        .bub .tk { font-size: 20px; color: #bfe0ff; margin-left: 10px; }
+        .chat .in-bar { height: 110px; padding: 20px 20px 30px; display: flex; gap: 14px; align-items: center; }
+        .chat .in-bar div { flex: 1; height: 60px; border-radius: 30px; background: #1f2738; font-size: 24px; color: #6d7890; padding: 0 24px; display: flex; align-items: center; }
+        .chat .in-bar i { width: 60px; height: 60px; border-radius: 50%; background: #2b7fd8; display: grid; place-items: center; font-style: normal; font-size: 28px; }
+        /* boleta de papel */
+        .rcpt { position: absolute; width: 300px; background: #F7F2E6; color: #2a2522; padding: 22px 22px 34px; font-family: "Zen Kaku Gothic New", monospace; font-size: 17px; font-weight: 700; line-height: 1.45;
+          clip-path: polygon(0 0, 100% 0, 100% 96%, 95% 100%, 90% 96%, 85% 100%, 80% 96%, 75% 100%, 70% 96%, 65% 100%, 60% 96%, 55% 100%, 50% 96%, 45% 100%, 40% 96%, 35% 100%, 30% 96%, 25% 100%, 20% 96%, 15% 100%, 10% 96%, 5% 100%, 0 96%);
+          box-shadow: 0 20px 40px rgba(0,0,0,.35); }
+        .rcpt h4 { margin: 0 0 6px; font-size: 24px; font-weight: 900; text-align: center; letter-spacing: .06em; }
+        .rcpt .c { text-align: center; color: #6b625b; font-size: 15px; }
+        .rcpt .r { display: flex; justify-content: space-between; }
+        .rcpt hr { border: 0; border-top: 2px dashed #b9ad9e; margin: 8px 0; }
+        .rcpt .tot { font-size: 22px; font-weight: 900; }
+        .rcpt .qr { width: 86px; height: 86px; margin: 10px auto 0; background:
+          conic-gradient(from 90deg at 30% 30%, #2a2522 25%, transparent 0) 0 0 / 22px 22px,
+          linear-gradient(#2a2522 0 0) 0 0 / 26px 26px no-repeat, linear-gradient(#2a2522 0 0) 100% 0 / 26px 26px no-repeat, linear-gradient(#2a2522 0 0) 0 100% / 26px 26px no-repeat; }
+
+
+        #a-phone { left: 280px; top: 440px; }
+        .a-btns { display: flex; gap: 12px; margin-top: 14px; }
+        .a-btns span { flex: 1; text-align: center; padding: 12px 0; border-radius: 14px; background: rgba(255,255,255,.08); font-size: 22px; }
+      </style>
+      <div id="root" data-composition-id="aviso" data-width="1080" data-height="1920" data-duration="2.5">
+
+        <div class="fill noche"></div><div class="washi"></div>
+        <div class="kanji" data-layout-allow-occlusion data-layout-allow-overlap style="left:-40px;top:420px;font-size:420px">完了</div>
+        <div class="phone" id="a-phone"><div class="isl"></div><div class="scr"><div class="chat">
+          <div class="hd"><img src="assets/img/sello-maru.png" alt="" /><div><div class="nm">Bot de gastos 丸</div><div class="st">en línea</div></div></div>
+          <div class="ms">
+            <div class="bub in" id="a-m1">✅ Registrado<br /><span style="color:#D7B98C">Insumos · S/ 245.80</span><div class="a-btns"><span>✅ Correcto</span><span>✏️ Corregir</span></div></div>
+            <div class="bub in" id="a-m2">📊 Llevas <b style="color:#2FD08A">S/ 8,420</b> este mes<br />Comidas subió 12 %</div>
+          </div>
+          <div class="in-bar"><div>Mensaje</div><i>➤</i></div>
+        </div></div></div>
+      </div>
+      <script>
+        (function () {
+        var tl = gsap.timeline({ paused: true });
+
+        tl.fromTo("#a-phone", { opacity: 0, y: 200 }, { opacity: 1, y: 0, duration: .45, ease: "expo.out" }, 0);
+        tl.fromTo("#a-m1", { opacity: 0, y: 60, scale: .9 }, { opacity: 1, y: 0, scale: 1, duration: .35, ease: "back.out(1.8)", transformOrigin: "0% 100%" }, .35);
+        tl.fromTo("#a-m2", { opacity: 0, y: 60, scale: .9 }, { opacity: 1, y: 0, scale: 1, duration: .35, ease: "back.out(1.8)", transformOrigin: "0% 100%" }, 1.2);
+        tl.to("#a-phone", { opacity: 0, scale: .95, duration: .15 }, 2.35);
+        window.__timelines["aviso"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

@@ -1,0 +1,99 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Zen Kaku Gothic New"; font-weight: 500; src: url("assets/fonts/ZenKakuGothicNew-Medium.ttf"); }
+        @font-face { font-family: "Zen Kaku Gothic New"; font-weight: 700; src: url("assets/fonts/ZenKakuGothicNew-Bold.ttf"); }
+        @font-face { font-family: "Zen Kaku Gothic New"; font-weight: 900; src: url("assets/fonts/ZenKakuGothicNew-Black.ttf"); }
+        @font-face { font-family: "Shippori Mincho"; font-weight: 800; src: url("assets/fonts/ShipporiMincho-ExtraBold.ttf"); }
+        @font-face { font-family: "Tenor Sans"; src: url("assets/fonts/TenorSans-Regular.ttf"); }
+        #root { position: absolute; inset: 0; overflow: hidden; background: #111726; color: #F4F1EA; font-family: "Zen Kaku Gothic New", sans-serif; }
+        .fill { position: absolute; inset: 0; }
+        .noche { background: radial-gradient(90% 60% at 50% 45%, #18203a 0%, #111726 55%, #0B0F1A 100%); }
+        .washi { position: absolute; inset: 0; pointer-events: none; opacity: .07; mix-blend-mode: soft-light;
+          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .09' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23w)'/%3E%3C/svg%3E"); background-size: 600px 600px; }
+        .kanji { position: absolute; font-family: "Shippori Mincho", serif; font-weight: 800; color: #F4F1EA; opacity: .07; line-height: 1; white-space: nowrap; }
+        .hinomaru { position: absolute; border-radius: 50%; background: #C8452C; }
+        .step { position: absolute; left: 80px; top: 190px; display: flex; align-items: center; gap: 22px; font-size: 44px; font-weight: 900; }
+        .step b { width: 72px; height: 72px; border-radius: 50%; background: #C8452C; color: #F4F1EA; display: grid; place-items: center; font-size: 40px; flex: none; }
+        .step small { display: block; font-size: 30px; font-weight: 700; color: #D7B98C; margin-top: 4px; }
+        .goldline { position: absolute; height: 2px; background: linear-gradient(90deg, transparent, #D7B98C, transparent); }
+        /* celular */
+        .phone { position: absolute; width: 520px; height: 1060px; border-radius: 70px; background: #07090f; padding: 16px;
+          box-shadow: 0 0 0 3px #2b3142, 0 0 0 5px #8d93a3, 0 60px 120px rgba(0,0,0,.6); }
+        .phone .scr { position: relative; width: 100%; height: 100%; border-radius: 56px; overflow: hidden; background: #0f1422; }
+        .phone .isl { position: absolute; left: 50%; top: 16px; width: 130px; height: 36px; margin-left: -65px; border-radius: 20px; background: #000; z-index: 5; }
+        /* chat */
+        .chat { position: absolute; inset: 0; background: linear-gradient(#1a2233, #121826); display: flex; flex-direction: column; }
+        .chat .hd { height: 160px; padding: 64px 26px 0; display: flex; align-items: center; gap: 18px; background: rgba(23,31,48,.95); border-bottom: 1px solid rgba(255,255,255,.08); }
+        .chat .hd img { width: 72px; height: 72px; border-radius: 50%; }
+        .chat .hd .nm { font-size: 30px; font-weight: 900; }
+        .chat .hd .st { font-size: 22px; color: #6fb8ff; font-weight: 700; }
+        .chat .ms { flex: 1; padding: 22px 20px; display: flex; flex-direction: column; justify-content: flex-end; gap: 16px; overflow: hidden; }
+        .bub { max-width: 380px; padding: 16px 20px; border-radius: 24px; font-size: 26px; font-weight: 700; line-height: 1.3; }
+        .bub.out { align-self: flex-end; background: #2b7fd8; border-bottom-right-radius: 6px; }
+        .bub.in { align-self: flex-start; background: #242d40; border-bottom-left-radius: 6px; }
+        .bub .tk { font-size: 20px; color: #bfe0ff; margin-left: 10px; }
+        .chat .in-bar { height: 110px; padding: 20px 20px 30px; display: flex; gap: 14px; align-items: center; }
+        .chat .in-bar div { flex: 1; height: 60px; border-radius: 30px; background: #1f2738; font-size: 24px; color: #6d7890; padding: 0 24px; display: flex; align-items: center; }
+        .chat .in-bar i { width: 60px; height: 60px; border-radius: 50%; background: #2b7fd8; display: grid; place-items: center; font-style: normal; font-size: 28px; }
+        /* boleta de papel */
+        .rcpt { position: absolute; width: 300px; background: #F7F2E6; color: #2a2522; padding: 22px 22px 34px; font-family: "Zen Kaku Gothic New", monospace; font-size: 17px; font-weight: 700; line-height: 1.45;
+          clip-path: polygon(0 0, 100% 0, 100% 96%, 95% 100%, 90% 96%, 85% 100%, 80% 96%, 75% 100%, 70% 96%, 65% 100%, 60% 96%, 55% 100%, 50% 96%, 45% 100%, 40% 96%, 35% 100%, 30% 96%, 25% 100%, 20% 96%, 15% 100%, 10% 96%, 5% 100%, 0 96%);
+          box-shadow: 0 20px 40px rgba(0,0,0,.35); }
+        .rcpt h4 { margin: 0 0 6px; font-size: 24px; font-weight: 900; text-align: center; letter-spacing: .06em; }
+        .rcpt .c { text-align: center; color: #6b625b; font-size: 15px; }
+        .rcpt .r { display: flex; justify-content: space-between; }
+        .rcpt hr { border: 0; border-top: 2px dashed #b9ad9e; margin: 8px 0; }
+        .rcpt .tot { font-size: 22px; font-weight: 900; }
+        .rcpt .qr { width: 86px; height: 86px; margin: 10px auto 0; background:
+          conic-gradient(from 90deg at 30% 30%, #2a2522 25%, transparent 0) 0 0 / 22px 22px,
+          linear-gradient(#2a2522 0 0) 0 0 / 26px 26px no-repeat, linear-gradient(#2a2522 0 0) 100% 0 / 26px 26px no-repeat, linear-gradient(#2a2522 0 0) 0 100% / 26px 26px no-repeat; }
+
+
+        #f-phone { left: 280px; top: 440px; }
+        #f-view { position: absolute; inset: 0; background: radial-gradient(circle at 50% 45%, #3a3128, #15110d); }
+        #f-rc { left: 90px; top: 250px; transform-origin: 50% 50%; }
+        .f-br { position: absolute; width: 70px; height: 70px; border: 5px solid #F4F1EA; }
+        #f-flash { position: absolute; inset: 0; background: #fff; opacity: 0; }
+        #f-shot { position: absolute; left: 28px; bottom: 34px; width: 96px; height: 130px; border-radius: 14px; border: 3px solid #F4F1EA; background: #F7F2E6; opacity: 0; }
+        #f-btn { position: absolute; left: 50%; bottom: 30px; width: 110px; height: 110px; margin-left: -55px; border-radius: 50%; border: 8px solid #F4F1EA; background: rgba(255,255,255,.2); }
+      </style>
+      <div id="root" data-composition-id="foto" data-width="1080" data-height="1920" data-duration="2.5">
+
+        <div class="fill noche"></div><div class="washi"></div>
+        <div class="kanji" data-layout-allow-occlusion data-layout-allow-overlap style="right:-80px;top:360px;font-size:420px">写</div>
+        <div class="step" id="f-step"><b>1</b><div>Tómale una foto<small>a tu boleta o factura</small></div></div>
+        <div class="phone" id="f-phone"><div class="isl"></div><div class="scr">
+          <div id="f-view"></div>
+          <div class="rcpt" id="f-rc"><h4>MAKRO</h4><div class="c">RUC 20100070970<br />Boleta B001-004829</div><hr />
+<div class="r"><span>Café molido 1kg</span><span>89.90</span></div><div class="r"><span>Leche x12</span><span>62.40</span></div>
+<div class="r"><span>Azúcar 5kg</span><span>28.50</span></div><div class="r"><span>Vasos x100</span><span>27.51</span></div><hr />
+<div class="r"><span>OP. GRAVADA</span><span>208.31</span></div><div class="r"><span>IGV 18%</span><span>37.49</span></div>
+<div class="r tot"><span>TOTAL</span><span>S/ 245.80</span></div><div class="c">26/09/2026 · Café Sakura</div><div class="qr"></div></div>
+          <div class="f-br" style="left:60px;top:220px;border-right:0;border-bottom:0"></div><div class="f-br" style="right:60px;top:220px;border-left:0;border-bottom:0"></div>
+          <div class="f-br" style="left:60px;bottom:200px;border-right:0;border-top:0"></div><div class="f-br" style="right:60px;bottom:200px;border-left:0;border-top:0"></div>
+          <div id="f-btn"></div><div id="f-shot"></div><div id="f-flash"></div>
+        </div></div>
+      </div>
+      <script>
+        (function () {
+        var tl = gsap.timeline({ paused: true });
+
+        tl.fromTo("#f-phone", { y: 300, rotationX: 18, rotationY: -14, opacity: 0 }, { y: 0, rotationX: 4, rotationY: -6, opacity: 1, duration: .6, ease: "expo.out" }, 0);
+        tl.to("#f-phone", { rotationY: 6, duration: 2.5, ease: "none" }, .6);
+        tl.fromTo("#f-step", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: .4, ease: "expo.out" }, .15);
+        tl.fromTo("#f-rc", { scale: 1.12, filter: "blur(6px)" }, { scale: 1, filter: "blur(0px)", duration: .8, ease: "power2.out" }, .3);
+        tl.fromTo("#f-btn", { scale: 1 }, { scale: .82, duration: .08, yoyo: true, repeat: 1 }, 1.25);
+        tl.fromTo("#f-flash", { opacity: 0 }, { opacity: 1, duration: .03 }, 1.3);
+        tl.to("#f-flash", { opacity: 0, duration: .12 }, 1.34);
+        tl.fromTo("#f-shot", { opacity: 0, scale: 3, x: 180, y: -380 }, { opacity: 1, scale: 1, x: 0, y: 0, duration: .45, ease: "expo.inOut" }, 1.4);
+        tl.to("#f-phone", { opacity: 0, scale: .96, duration: .15 }, 2.35);
+        window.__timelines["foto"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>
