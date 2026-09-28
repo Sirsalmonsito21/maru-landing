@@ -6,12 +6,12 @@
       <style>
         @font-face { font-family: "DotGothic16"; src: url("assets/fonts/DotGothic16-Regular.ttf"); }
         #root { position: absolute; inset: 0; overflow: hidden; background: #0b0f1a; font-family: "DotGothic16", monospace; color: #fff6ee; }
-        #r-cam { position: absolute; inset: 0; transform-origin: 820px 1120px; }
+        #r-cam { position: absolute; inset: 0; transform-origin: 852px 1150px; }
         #r-px { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; image-rendering: pixelated; }
         .ol { text-shadow: 5px 0 0 #1a1422, -5px 0 0 #1a1422, 0 5px 0 #1a1422, 0 -5px 0 #1a1422, 5px 5px 0 #1a1422, -5px 5px 0 #1a1422, 5px -5px 0 #1a1422, -5px -5px 0 #1a1422, 8px 10px 0 #1a1422; }
         #r-bub { position: absolute; left: 80px; right: 150px; top: 640px; padding: 22px 28px; background: #fff6ee; color: #1a1422; font-size: 58px; text-align: center; border: 6px solid #1a1422; border-radius: 26px; opacity: 0; }
         #r-irr { position: absolute; left: 40px; right: 130px; top: 250px; text-align: center; font-size: 118px; line-height: 1; color: #f2d27a; opacity: 0; }
-        #r-glow { position: absolute; left: 820px; top: 1100px; width: 80px; height: 80px; margin: -40px 0 0 -40px; border-radius: 50%; background: radial-gradient(circle, #fff 0%, #fff3b8 30%, rgba(242,210,122,0) 70%); }
+        #r-glow { position: absolute; left: 852px; top: 1130px; width: 80px; height: 80px; margin: -40px 0 0 -40px; border-radius: 50%; background: radial-gradient(circle, #fff 0%, #fff3b8 30%, rgba(242,210,122,0) 70%); }
         #r-flash { position: absolute; inset: 0; background: #fff6ee; opacity: 0; }
       </style>
       <div id="root" data-composition-id="remate" data-width="1080" data-height="1920" data-duration="3.3">
@@ -31,17 +31,17 @@
           var T = t + OFF;
           setCtx(ctx); g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, PW, PH);
           var young = T >= 39.733, wink = T >= 41.383;
-          ramenStreet(T, { lantern: 1, dust: young ? 0 : 1,
+          ramenStreet(T, { lantern: 1, dust: young ? 0 : 1, crowd: young,
             manekiO: { paw: wink ? .6 + .4 * Math.abs(Math.sin((T - 41.383) * 9)) : .8, awake: true, wink: wink, glow: T < 39.3 ? .9 : .3 } });
           // cola de clientes
           if (young) QUEUE.forEach(function (q, i) { var k = outQ(pk(T, 39.733 + i * .12, .4)); walker(lerp(300, 212 + i * 16, k), 424 + (i % 2) * 6, 2.0, { umbrella: q[0], coat: q[1], dir: -1, still: k >= 1, seed: i + 9 }, T); });
           if (!young) {
-            tanuki(135, 400, 2.4, { beard: 1, age: 1, cane: true, hunch: 1, stone: 1, cracks: pk(T, 39.183, .5) }, T);
-            pigeon(139, 274, 3, false, T);
+            tanuki(135, 400, 2.4, { beard: .55, age: 1, cane: true, hunch: 1, stone: 1, cracks: pk(T, 39.183, .5) }, T);
+            pigeon(131, 272, 2.8, false, T);
           } else {
             var jump = Math.sin(pk(T, 39.733, .35) * Math.PI) * 14, cheer = T >= 40.833;
             tanuki(135, 400 - jump, 2.4, { eyes: cheer ? "happy" : "wide", mouth: "big", arm: cheer ? "wave" : "up", armK: 1 }, T);
-            var pk2 = pk(T, 39.733, .9); pigeon(lerp(139, 300, pk2), lerp(273, 80, pk2), 2.6, true, T);
+            var pk2 = pk(T, 39.733, .9); pigeon(lerp(131, 300, pk2), lerp(272, 80, pk2), 2.8, true, T);
             for (var i = 0; i < 26; i++) { var sk = pk(T, 39.733, .7), a = hash(i) * 6.283, v = 40 + hash(i + 3) * 70;
               if (sk < 1) rect(135 + Math.cos(a) * v * sk, 330 + Math.sin(a) * v * sk + sk * sk * 60, 4, 3, i % 2 ? "#8d8d93" : "#6b6b72"); }
             if (T >= 40.283) walker(lerp(-40, 88, outQ(pk(T, 40.283, .45))), 430, 2.2, { umbrella: "#C8452C", coat: "#d8c49a", bob: 1, dir: 1, still: T >= 40.733, seed: 3 }, T);

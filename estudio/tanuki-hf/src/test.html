@@ -1,12 +1,11 @@
 <!doctype html><html><body style="margin:0;background:#222;display:flex;flex-wrap:wrap;gap:6px">
 <script src="pixel-engine.js"></script><script src="tanuki-pixel.js"></script>
 <script>
-function shot(label, fn){ var c=document.createElement('canvas'); c.width=270;c.height=480; c.style.width='270px';c.style.height='480px';c.style.imageRendering='pixelated'; document.body.appendChild(c); setCtx(c.getContext('2d')); fn(); }
-shot('a',function(){ ramenStreet(3,{lantern:1}); tanuki(135,400,2.4,{eyes:'happy',mouth:'big',arm:'present'},3); ramenBowl(160,340,1.4,1,0,3); weather(3,'rain'); });
-shot('b',function(){ ramenStreet(9,{lantern:1,neon2x1:1}); tanuki(135,400,2.4,{eyes:'hopeful',mouth:'smile',arm:'wave'},9); walker(200,420,2.2,{umbrella:'#C8452C',coat:'#d8c49a',bob:1,phone:1,dir:-1},9); walker(40,430,2.2,{umbrella:'#3a4458',phone:1},9); weather(9,'rain'); });
-shot('c',function(){ ramenStreet(13,{lantern:.6,day:.8,sunA:1,dust:.6,snow:1}); tanuki(135,400,2.4,{eyes:'old',mouth:'sad',beard:.7,age:.8,cane:1,hunch:1},13); weather(13,'snow'); });
-shot('d',function(){ ramenStreet(16,{lantern:.5,dust:1}); tanuki(135,400,2.4,{beard:1,age:1,cane:1,hunch:1,stone:1},16); pigeon(137,266,2,false,16); weather(16,'rain'); });
-shot('e',function(){ gradient(['#1a1020','#2a1a18'],0,480); rect(0,330,270,150,'#5a3a22'); rect(0,330,270,6,'#8a5a34'); maneki(135,334,3.2,{paw:.3,dust:1},18); });
-shot('f',function(){ gradient(['#1a1020','#2a1a18'],0,480); rect(0,330,270,150,'#5a3a22'); maneki(135,334,3.2,{paw:1,awake:true,glow:.5},20); });
-shot('g',function(){ pawShot(21.9,false); });
+function shot(fn){ var c=document.createElement('canvas'); c.width=270;c.height=480; c.style.width='270px';c.style.height='480px';c.style.imageRendering='pixelated'; document.body.appendChild(c); setCtx(c.getContext('2d')); fn(); }
+shot(function(){ ramenStreet(6,{lantern:1}); tanuki(135,400,2.4,{eyes:'happy',mouth:'big',arm:'present'},6); ramenBowl(135,356,1.4,1,0,6); weather(6,'rain'); });
+shot(function(){ ramenStreet(9,{lantern:1,neon2x1:1}); tanuki(135,400,2.4,{eyes:'wide',mouth:'big',arm:'wave'},9); walker(196,428,2.2,{umbrella:'#C8452C',coat:'#d8c49a',bob:1,phone:1,dir:-1},9); weather(9,'rain'); });
+shot(function(){ ramenStreet(10.8,{lantern:1}); tanuki(135,400,2.4,{eyes:'sad',mouth:'sad'},10.8); weather(10.8,'rain'); });
+shot(function(){ ramenStreet(13,{lantern:.6,day:.8,sunA:1,dust:.6,snow:1}); tanuki(135,400,2.4,{eyes:'old',mouth:'sad',beard:.7,age:.8,cane:1,hunch:1},13); weather(13,'snow'); });
+shot(function(){ ramenStreet(16,{lantern:.5,dust:1}); tanuki(135,400,2.4,{beard:1,age:1,cane:1,hunch:1,stone:1},16); pigeon(139,300,3,false,16); weather(16,'rain'); });
+shot(function(){ ramenStreet(40,{lantern:1,crowd:1,manekiO:{paw:1,awake:true,wink:true}}); tanuki(135,400,2.4,{eyes:'happy',mouth:'big',arm:'wave'},40); weather(40,'rain',.6); });
 </script></body></html>

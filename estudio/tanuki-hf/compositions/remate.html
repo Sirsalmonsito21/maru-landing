@@ -6,12 +6,12 @@
       <style>
         @font-face { font-family: "DotGothic16"; src: url("assets/fonts/DotGothic16-Regular.ttf"); }
         #root { position: absolute; inset: 0; overflow: hidden; background: #0b0f1a; font-family: "DotGothic16", monospace; color: #fff6ee; }
-        #r-cam { position: absolute; inset: 0; transform-origin: 820px 1120px; }
+        #r-cam { position: absolute; inset: 0; transform-origin: 852px 1150px; }
         #r-px { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; image-rendering: pixelated; }
         .ol { text-shadow: 5px 0 0 #1a1422, -5px 0 0 #1a1422, 0 5px 0 #1a1422, 0 -5px 0 #1a1422, 5px 5px 0 #1a1422, -5px 5px 0 #1a1422, 5px -5px 0 #1a1422, -5px -5px 0 #1a1422, 8px 10px 0 #1a1422; }
         #r-bub { position: absolute; left: 80px; right: 150px; top: 640px; padding: 22px 28px; background: #fff6ee; color: #1a1422; font-size: 58px; text-align: center; border: 6px solid #1a1422; border-radius: 26px; opacity: 0; }
         #r-irr { position: absolute; left: 40px; right: 130px; top: 250px; text-align: center; font-size: 118px; line-height: 1; color: #f2d27a; opacity: 0; }
-        #r-glow { position: absolute; left: 820px; top: 1100px; width: 80px; height: 80px; margin: -40px 0 0 -40px; border-radius: 50%; background: radial-gradient(circle, #fff 0%, #fff3b8 30%, rgba(242,210,122,0) 70%); }
+        #r-glow { position: absolute; left: 852px; top: 1130px; width: 80px; height: 80px; margin: -40px 0 0 -40px; border-radius: 50%; background: radial-gradient(circle, #fff 0%, #fff3b8 30%, rgba(242,210,122,0) 70%); }
         #r-flash { position: absolute; inset: 0; background: #fff6ee; opacity: 0; }
       </style>
       <div id="root" data-composition-id="remate" data-width="1080" data-height="1920" data-duration="3.3">
@@ -336,85 +336,102 @@ function mixHex(a, b, k) {
   for (var i = 0; i < 3; i++) { var v = Math.round(A[i] + (B[i] - A[i]) * k).toString(16); r += v.length < 2 ? "0" + v : v; }
   return r;
 }
-var TN = { out: "#1a1210", fur: "#8a6440", sh: "#664729", hl: "#ab8559", mask: "#2e211a", belly: "#ecdcbf", bellySh: "#cdb592",
-  apron: "#eef0f2", apronSh: "#c9ced6", band: "#f4f1ea", eye: "#fff6e0" };
-var TN_OLD = { fur: "#9a948c", sh: "#77716a", hl: "#b9b3aa", mask: "#4a4540", belly: "#e6e2dc", bellySh: "#c8c2ba" };
-var TN_STONE = { out: "#2a2a2e", fur: "#8d8d93", sh: "#6b6b72", hl: "#aeaeb4", mask: "#5a5a61", belly: "#a4a4aa", bellySh: "#88888e",
-  apron: "#9a9aa0", apronSh: "#7d7d84", band: "#a8a8ae", eye: "#8d8d93" };
+var TN = { out: "#24160f", fur: "#9a6d45", sh: "#74502f", hl: "#bb8c5e", dark: "#4a3120", darkHl: "#6a4a32", mask: "#5a3b26", cream: "#f3e4c8", creamSh: "#d9c29c",
+  coat: "#27365e", coatSh: "#1b2645", coatHl: "#3a4f86", trim: "#f4efe4", obi: "#C8452C", leaf: "#5fa04a", leafSh: "#3d7a32", eye: "#1a0e08" };
+var TN_OLD = { fur: "#a39b91", sh: "#7f776e", hl: "#c4bdb4", dark: "#5e5750", darkHl: "#7a726a", mask: "#6e665e", cream: "#f2efea", creamSh: "#d6d0c8" };
+var TN_STONE = { out: "#2c2c31", fur: "#8f8f96", sh: "#6d6d74", hl: "#b0b0b7", dark: "#66666d", darkHl: "#7d7d84", mask: "#77777e", cream: "#a9a9b0", creamSh: "#8e8e95",
+  coat: "#7e7e86", coatSh: "#66666e", coatHl: "#9a9aa2", trim: "#a4a4ac", obi: "#86868e", leaf: "#8a8a92", leafSh: "#6a6a72", eye: "#56565d" };
 
-/* Tanuki de pie. (cx, base) = pies. o: eyes, mouth, arm ("down"|"wave"|"up"|"present"), beard 0..1, age 0..1, stone 0..1, cane, hunch */
+/* Don Tanuki chibi. (cx, base) = pies. o: eyes, mouth, arm, armK, beard, age, stone, cane, hunch, cracks */
 function tanuki(cx, base, k, o, t) {
   o = o || {};
-  var age = o.age || 0, st = o.stone || 0, hunch = (o.hunch || 0);
+  var age = o.age || 0, st = o.stone || 0, hunch = o.hunch || 0, ag = clamp(age * 1.4 - .2);
   var C = {};
-  ["fur", "sh", "hl", "mask", "belly", "bellySh"].forEach(function (n) { C[n] = mixHex(mixHex(TN[n], TN_OLD[n], clamp(age * 1.4 - .2)), TN_STONE[n], st); });
-  ["out", "apron", "apronSh", "band", "eye"].forEach(function (n) { C[n] = mixHex(TN[n], TN_STONE[n], st); });
+  Object.keys(TN).forEach(function (n) { var c = TN_OLD[n] ? mixHex(TN[n], TN_OLD[n], ag) : TN[n]; C[n] = mixHex(c, TN_STONE[n] || c, st); });
   var X = function (v) { return cx + v * k; }, Y = function (v) { return base + v * k; };
-  var hy = hunch * 4, hxs = hunch * 2;
-  // cola rayada
-  for (var i = 5; i >= 0; i--) blob(X(12 + i * 2.2), Y(-7 - i * 2.6), 4.3 * k, 4.3 * k, i % 2 ? C.mask : C.fur, C.out);
-  // piernas
-  blob(X(-7), Y(-3), 5 * k, 4 * k, C.fur, C.out, C.sh); blob(X(7), Y(-3), 5 * k, 4 * k, C.fur, C.out, C.sh);
-  var arm = function (side, hx, hy2) { limb(X(side * 12), Y(-27 + hy), X(hx), Y(hy2), 3.2 * k, C.fur, C.out); blob(X(hx), Y(hy2), 3.8 * k, 3.6 * k, C.mask, C.out); };
+  var hy = hunch * 3, bob = o.bob ? Math.sin(t * 8) * .6 : 0;
+  // cola esponjosa rayada
+  for (var i = 5; i >= 0; i--) blob(X(10 + i * 1.9), Y(-6 - i * 2.2), (4.2 - i * .2) * k, (4.2 - i * .2) * k, i % 2 ? C.dark : C.fur, C.out, i % 2 ? null : C.sh);
+  // patitas oscuras
+  blob(X(-5.5), Y(-2.6), 4.2 * k, 3.2 * k, C.dark, C.out, null, C.darkHl); blob(X(5.5), Y(-2.6), 4.2 * k, 3.2 * k, C.dark, C.out, null, C.darkHl);
+  var BY = -13 + hy * .3 + bob;
+  // cuerpo + panza
+  blob(X(0), Y(BY), 11 * k, 11.5 * k, C.fur, C.out, C.sh, C.hl);
+  blob(X(0), Y(BY + 2), 6.5 * k, 7.5 * k, C.cream, null, C.creamSh);
+  // happi (chaqueta) abierta
+  quad([X(-10.5), Y(BY - 8), X(-3.5), Y(BY - 9), X(-4.5), Y(BY + 9), X(-10), Y(BY + 7)], C.coat);
+  quad([X(10.5), Y(BY - 8), X(3.5), Y(BY - 9), X(4.5), Y(BY + 9), X(10), Y(BY + 7)], C.coatSh);
+  quad([X(-4.6), Y(BY - 9), X(-3.2), Y(BY - 9), X(-3.9), Y(BY + 9), X(-5.2), Y(BY + 9)], C.trim);
+  quad([X(4.6), Y(BY - 9), X(3.2), Y(BY - 9), X(3.9), Y(BY + 9), X(5.2), Y(BY + 9)], C.trim);
+  rect(X(-10.5), Y(BY + 3), 21 * k, 2.2 * k, C.obi); rect(X(-10.5), Y(BY + 3), 21 * k, .7 * k, mixHex(C.obi, "#ffffff", .25));
+  blob(X(-7.2), Y(BY - 3), 1.6 * k, 1.6 * k, st ? C.coatHl : "#f4efe4", null); if (!st) blob(X(-7.2), Y(BY - 3), .8 * k, .8 * k, "#C8452C", null);
+  // brazos
+  var arm = function (side, hx, hy2) { limb(X(side * 8.5), Y(BY - 6), X(hx), Y(hy2), 2.6 * k, C.coat, C.out); blob(X(hx), Y(hy2), 2.8 * k, 2.6 * k, C.dark, C.out, null, C.darkHl); };
   var mode = o.arm || "down", ak = o.armK === undefined ? 1 : o.armK;
-  var R = [15, -12];
-  if (mode === "wave") R = [lerp(15, 18, ak), lerp(-12, -46, ak) + Math.sin(t * 16) * 2 * ak];
-  if (mode === "up") R = [lerp(15, 17, ak), lerp(-12, -46, ak)];
-  if (mode === "flip") R = [lerp(15, -20, ak), lerp(-12, -24, ak)];
-  if (mode === "present") R = [11, -22];
-  if (o.cane) R = [16, -16];
-  arm(-1, mode === "present" ? -11 : -15, mode === "present" ? -22 : -12 + hunch * 2);
-  // cuerpo y panza
-  blob(X(0), Y(-18 + hy * .5), 15 * k, 15 * k, C.fur, C.out, C.sh, C.hl);
-  blob(X(0), Y(-15 + hy * .5), 10 * k, 11 * k, C.belly, null, C.bellySh);
-  // delantal
-  rect(X(-9), Y(-25 + hy * .5), 18 * k, 21 * k, C.apron); rect(X(-9), Y(-7 + hy * .5), 18 * k, 3 * k, C.apronSh);
-  line(X(-6), Y(-25 + hy * .5), X(-3), Y(-30 + hy), C.apronSh, Math.max(1, k * .7)); line(X(6), Y(-25 + hy * .5), X(3), Y(-30 + hy), C.apronSh, Math.max(1, k * .7));
-  if (!st) { rect(X(-3), Y(-18 + hy * .5), 6 * k, 5 * k, "#C8452C"); rect(X(-1.5), Y(-17 + hy * .5), 3 * k, 3 * k, "#fff6ee"); }
-  arm(1, R[0], R[1]);
-  if (o.cane) { line(X(16), Y(-16), X(18), Y(0), mixHex("#5a3a22", "#6a6a70", st), Math.max(1, k * .9)); line(X(16), Y(-16), X(12), Y(-18), mixHex("#5a3a22", "#6a6a70", st), Math.max(1, k * .9)); }
-  // cabeza
-  var HX = cx + hxs * k, HY = base + (-40 + hy) * k;
+  var R = [11.5, BY + 4], Lh = [-11.5, BY + 4];
+  if (mode === "wave") R = [lerp(11.5, 13.5, ak), lerp(BY + 4, -38, ak) + Math.sin(t * 16) * 2.2 * ak];
+  if (mode === "up") R = [lerp(11.5, 12.5, ak), lerp(BY + 4, -38, ak)];
+  if (mode === "present") { R = [5, BY - 3]; Lh = [-5, BY - 3]; }
+  if (o.cane) R = [12.5, BY + 1];
+  if (o.cane) { var cc = mixHex("#6a4428", "#6d6d74", st); line(X(13), Y(BY + 1), X(14.5), Y(0), cc, Math.max(1, k * .8)); blob(X(12), Y(BY - .5), 1.8 * k, 1.4 * k, null, cc); }
+  arm(-1, Lh[0], Lh[1]); arm(1, R[0], R[1]);
+  // ===== cabeza grande =====
+  var HX = cx + hunch * 1.5 * k, HY = base + (-35 + hy + bob) * k;
   var Hx = function (v) { return HX + v * k; }, Hy = function (v) { return HY + v * k; };
-  blob(Hx(-9), Hy(-10), 4 * k, 4 * k, C.fur, C.out); blob(Hx(-9), Hy(-9.5), 2 * k, 2 * k, C.mask, null);
-  blob(Hx(9), Hy(-10), 4 * k, 4 * k, C.fur, C.out); blob(Hx(9), Hy(-9.5), 2 * k, 2 * k, C.mask, null);
-  blob(Hx(0), Hy(0), 13 * k, 11.5 * k, C.fur, C.out, C.sh, C.hl);
-  blob(Hx(-8), Hy(5), 5 * k, 3.5 * k, C.belly, null); blob(Hx(8), Hy(5), 5 * k, 3.5 * k, C.belly, null);
-  blob(Hx(-5), Hy(-1), 5 * k, 3.4 * k, C.mask, null); blob(Hx(5), Hy(-1), 5 * k, 3.4 * k, C.mask, null);
-  blob(Hx(0), Hy(5), 5 * k, 3.6 * k, C.belly, null);
-  blob(Hx(0), Hy(3), 2.2 * k, 1.6 * k, C.out, null);
-  // ojos
-  var e = o.eyes || "normal", K = C.out, w = Math.max(1, k * .75);
-  var eye = function (side) {
-    var ex = side * 5, ey = -1;
-    if (st > .6 || e === "stone") { line(Hx(ex - 2), Hy(ey), Hx(ex + 2), Hy(ey), C.sh, w); return; }
-    if (e === "normal" || e === "hopeful") { blob(Hx(ex), Hy(ey), (e === "hopeful" ? 2.2 : 1.6) * k, (e === "hopeful" ? 2.4 : 1.8) * k, C.eye, null); px(Hx(ex - .5), Hy(ey - .6), "#ffffff"); blob(Hx(ex + .3), Hy(ey + .3), .8 * k, 1 * k, "#120a08", null); }
-    if (e === "happy") { line(Hx(ex - 2), Hy(ey + 1), Hx(ex), Hy(ey - 1), C.eye, w); line(Hx(ex), Hy(ey - 1), Hx(ex + 2), Hy(ey + 1), C.eye, w); }
-    if (e === "sad") { blob(Hx(ex), Hy(ey + .5), 1.3 * k, 1.3 * k, C.eye, null); line(Hx(ex - 2.5), Hy(ey - 2.8 + side * .8), Hx(ex + 2.5), Hy(ey - 2.8 - side * .8), C.eye, w); }
-    if (e === "closed" || e === "old") { line(Hx(ex - 2), Hy(ey + .3), Hx(ex + 2), Hy(ey + .3), C.eye, w); }
-    if (e === "wide") { blob(Hx(ex), Hy(ey), 2.6 * k, 2.8 * k, "#fffaf0", null); blob(Hx(ex), Hy(ey + .4), 1 * k, 1.2 * k, "#120a08", null); }
+  blob(Hx(-10), Hy(-10), 4.6 * k, 4.6 * k, C.dark, C.out, null, C.darkHl); blob(Hx(-10), Hy(-9.5), 2.2 * k, 2.2 * k, C.creamSh, null);
+  blob(Hx(10), Hy(-10), 4.6 * k, 4.6 * k, C.dark, C.out, null, C.darkHl); blob(Hx(10), Hy(-9.5), 2.2 * k, 2.2 * k, C.creamSh, null);
+  blob(Hx(0), Hy(0), 15 * k, 12.6 * k, C.fur, C.out, C.sh, C.hl);
+  blob(Hx(-9.5), Hy(4.5), 5.2 * k, 4 * k, C.cream, null); blob(Hx(9.5), Hy(4.5), 5.2 * k, 4 * k, C.cream, null);
+  blob(Hx(0), Hy(5.5), 7.5 * k, 5 * k, C.cream, null, C.creamSh);
+  // antifaz del tanuki (lágrimas hacia afuera)
+  [-1, 1].forEach(function (s) { blob(Hx(s * 6), Hy(.3), 5 * k, 4 * k, C.mask, null); blob(Hx(s * 8.4), Hy(2.8), 2.8 * k, 2.4 * k, C.mask, null); });
+  // ojos grandes y brillantes
+  var e = o.eyes || "normal", K = C.out, w = Math.max(1, k * .7);
+  var eye = function (s) {
+    var ex = s * 5.8, ey = .2;
+    if (st > .6) { line(Hx(ex - 2.2), Hy(ey + .4), Hx(ex + 2.2), Hy(ey + .4), C.sh, w); return; }
+    if (e === "normal" || e === "hopeful" || e === "wide") {
+      var rx = e === "wide" ? 3.3 : e === "hopeful" ? 3 : 2.6, ry = e === "wide" ? 3.8 : e === "hopeful" ? 3.5 : 3.1;
+      blob(Hx(ex), Hy(ey), rx * k, ry * k, C.eye, null);
+      blob(Hx(ex - rx * .35), Hy(ey - ry * .4), rx * .42 * k, ry * .36 * k, "#ffffff", null);
+      px(Hx(ex + rx * .4), Hy(ey + ry * .45), "#ffffff");
+      if (e === "hopeful") px(Hx(ex + rx * .1), Hy(ey + ry * .1), "#9fd0ff");
+    }
+    if (e === "happy") { line(Hx(ex - 2.4), Hy(ey + 1), Hx(ex), Hy(ey - 1.4), K, w); line(Hx(ex), Hy(ey - 1.4), Hx(ex + 2.4), Hy(ey + 1), K, w); }
+    if (e === "sad") { blob(Hx(ex), Hy(ey + .6), 2.2 * k, 2.6 * k, C.eye, null); blob(Hx(ex - .7), Hy(ey - .2), .9 * k, .9 * k, "#ffffff", null); rect(Hx(ex - 2.6), Hy(ey + 3), 5.2 * k, .9 * k, "#8fd0ff");
+      line(Hx(ex - 2.4 * s), Hy(ey - 4.2), Hx(ex + 2 * s), Hy(ey - 3.2), K, w); }
+    if (e === "closed" || e === "old") { line(Hx(ex - 2.2), Hy(ey + .2), Hx(ex), Hy(ey + 1.3), K, w); line(Hx(ex), Hy(ey + 1.3), Hx(ex + 2.2), Hy(ey + .2), K, w); }
   };
   eye(-1); eye(1);
-  var m = o.mouth || "flat";
-  if (m === "smile") { line(Hx(-3), Hy(7), Hx(0), Hy(8.6), K, w); line(Hx(0), Hy(8.6), Hx(3), Hy(7), K, w); }
-  if (m === "big") { blob(Hx(0), Hy(8), 3.4 * k, 2.4 * k, "#7a2a22", K); rect(Hx(-2), Hy(6.4), 4 * k, 1 * k, "#fff6ee"); }
-  if (m === "flat") line(Hx(-2), Hy(7.6), Hx(2), Hy(7.6), K, w);
-  if (m === "sad") { line(Hx(-3), Hy(8.6), Hx(0), Hy(7.2), K, w); line(Hx(0), Hy(7.2), Hx(3), Hy(8.6), K, w); }
-  if (m === "o") blob(Hx(0), Hy(8), 1.6 * k, 1.8 * k, "#7a2a22", K);
-  // arrugas
-  if (age > .45) { var wk = mixHex(C.sh, C.out, .3); line(Hx(-4), Hy(-6), Hx(4), Hy(-6), wk, 1); if (age > .6) { line(Hx(-10), Hy(1), Hx(-8), Hy(3), wk, 1); line(Hx(10), Hy(1), Hx(8), Hy(3), wk, 1); } }
-  // barba (crece)
+  // nariz y boquita
+  blob(Hx(0), Hy(3.6), 2.2 * k, 1.5 * k, C.out, null); px(Hx(-.6), Hy(3.1), "#8a6a5a");
+  var m = o.mouth || "smile";
+  if (m === "smile") { line(Hx(-2.6), Hy(6), Hx(-1.2), Hy(7), K, w); line(Hx(-1.2), Hy(7), Hx(0), Hy(6), K, w); line(Hx(0), Hy(6), Hx(1.2), Hy(7), K, w); line(Hx(1.2), Hy(7), Hx(2.6), Hy(6), K, w); }
+  if (m === "big") { blob(Hx(0), Hy(7.2), 3 * k, 2.4 * k, "#8a2a2a", K); blob(Hx(0), Hy(8.2), 1.8 * k, 1 * k, "#e87a7a", null); }
+  if (m === "flat") line(Hx(-1.6), Hy(6.6), Hx(1.6), Hy(6.6), K, w);
+  if (m === "sad") { line(Hx(-2.2), Hy(7.4), Hx(0), Hy(6.2), K, w); line(Hx(0), Hy(6.2), Hx(2.2), Hy(7.4), K, w); }
+  if (m === "o") blob(Hx(0), Hy(7), 1.4 * k, 1.7 * k, "#8a2a2a", K);
+  if (!st && age < .5) { g.save(); g.globalAlpha = .55; blob(Hx(-10), Hy(4.4), 2.4 * k, 1.3 * k, "#f08a8a", null); blob(Hx(10), Hy(4.4), 2.4 * k, 1.3 * k, "#f08a8a", null); g.restore(); }
+  // vejez: cejas largas, lentes y barba ondulada
+  if (age > .35) {
+    var bw = mixHex("#e6e0d6", "#9e9ea5", st);
+    [-1, 1].forEach(function (s) { var L = 2 + clamp(age * 1.5 - .5) * 4; for (var q = 0; q < L; q++) rect(Hx(s * (3.4 + q * .9)), Hy(-4.4 + q * .55), 1.2 * k, 1.1 * k, bw); });
+    if (age > .55) [-1, 1].forEach(function (s) { blob(Hx(s * 5.8), Hy(.4), 3.6 * k, 3.4 * k, null, mixHex("#c9a44a", "#8a8a90", st)); });
+    if (age > .55) line(Hx(-2.2), Hy(.2), Hx(2.2), Hy(.2), mixHex("#c9a44a", "#8a8a90", st), 1);
+  }
   var b = o.beard || 0;
   if (b > 0) {
-    var L = 3 + b * 38, bc = mixHex(mixHex("#d9c6a6", "#f2f2f2", clamp(age * 1.6 - .3)), "#b4b4ba", st), bs = mixHex(mixHex("#b39c78", "#cfcfd4", clamp(age * 1.6 - .3)), "#94949a", st);
-    for (var r = 0; r < L; r++) { var ww = (7 - r / L * 4.5) * k, yy = Hy(8 + r); rect(HX - ww, yy, ww * 2, k + 1, r % 5 === 0 ? bs : bc); }
-    rect(HX - (7 - 4.5) * k, Hy(8 + L), (7 - 4.5) * 2 * k, k, C.out);
+    var L2 = 2 + b * 30, bc = mixHex(mixHex("#e8d7b8", "#f4f4f2", clamp(age * 1.6 - .3)), "#b2b2b8", st), bs = mixHex(mixHex("#c8b08a", "#d2d2d6", clamp(age * 1.6 - .3)), "#8e8e95", st);
+    for (var r = 0; r < L2; r++) { var f = r / L2, ww = (6.5 * Math.pow(1 - f, .6) + .6) * k, sx = Math.sin(r * .35 + t * 2) * 1.2 * k * f, yy = Hy(7 + r * .95);
+      rect(HX - ww + sx - 1, yy, ww * 2 + 2, k + 1, C.out); rect(HX - ww + sx, yy, ww * 2, k + 1, bc); rect(HX - ww + sx, yy, ww * .5, k + 1, bs); if (r % 4 === 2) rect(HX + sx - ww * .2, yy, ww * .35, 1, bs); }
+    blob(Hx(0), Hy(7.4), 6.8 * k, 3 * k, bc, null);
   }
-  // hachimaki
-  rect(Hx(-12.5), Hy(-9), 25 * k, 3 * k, C.band); rect(Hx(-12.5), Hy(-7), 25 * k, 1 * k, mixHex("#cfc8bc", "#88888e", st));
-  if (!st) blob(Hx(0), Hy(-7.6), 1.6 * k, 1.4 * k, "#C8452C", null);
-  tri(Hx(12), Hy(-8), Hx(17), Hy(-12), Hx(16), Hy(-6), C.band); tri(Hx(12), Hy(-8), Hx(18), Hy(-4), Hx(15), Hy(-2), C.band);
-  if (o.cracks) { var ck = o.cracks, cc = "#3a3a40"; line(Hx(-2), Hy(-10), Hx(-4), Hy(-2), cc, 1); if (ck > .3) line(Hx(-4), Hy(-2), Hx(1), Hy(4), cc, 1); if (ck > .5) line(X(-6), Y(-30), X(4), Y(-16), cc, 1); if (ck > .7) line(X(4), Y(-16), X(-2), Y(-4), cc, 1); }
+  // hojita en la cabeza (el símbolo del tanuki)
+  var lx = Hx(2.5), ly = Hy(-12.6), lr = Math.sin(t * 2.5) * .08;
+  g.save(); g.translate(lx, ly); g.rotate(-.5 + lr);
+  var LK = k; blob(0, -3 * LK, 3 * LK, 4.6 * LK, C.leaf, C.out, C.leafSh); line(0, 1.2 * LK, 0, -7 * LK, C.leafSh, Math.max(1, LK * .5)); rect(-.3 * LK, 1 * LK, .8 * LK, 2.4 * LK, C.leafSh);
+  g.restore();
+  if (o.cracks) { var ck = o.cracks, cr = "#3a3a42"; line(Hx(-3), Hy(-11), Hx(-5), Hy(-3), cr, 1); if (ck > .3) line(Hx(-5), Hy(-3), Hx(0), Hy(3), cr, 1); if (ck > .5) line(X(-6), Y(BY - 8), X(3), Y(BY + 4), cr, 1); if (ck > .7) line(X(3), Y(BY + 4), X(-2), Y(-2), cr, 1); if (ck > .85) line(Hx(8), Hy(-8), Hx(12), Hy(2), cr, 1); }
 }
 
 /* Maru maneki-neko sentada. o: paw 0..1 (patita arriba), dust 0..1, awake bool, glow 0..1, wink */
@@ -482,91 +499,157 @@ function pigeon(x, y, k, fly, t) {
   if (fly) { var f = Math.sin(t * 40) * 4; tri(X(-1), Y(-1), X(-6), Y(-5 - f), X(2), Y(-2), "#8c94a4"); } else { rect(X(-1), Y(3), 1, 2 * k, "#e0a060"); rect(X(1), Y(3), 1, 2 * k, "#e0a060"); }
 }
 
-/* ===== LA CALLE DEL RAMEN ===== */
-var NIGHT = ["#070914", "#0d1026", "#171338", "#241545", "#2e1a4e"];
+/* ===== LA CALLE DEL RAMEN (v2: local con vida) ===== */
+var NIGHT = ["#060812", "#0b1024", "#141536", "#211846", "#2c1c4e"];
 var DAY = ["#6aa6d8", "#8cbfe2", "#b4d6ec", "#d8e8f2", "#eef2f4"];
 function skyAt(env) {
   var d = env.day || 0;
   if (d <= 0) return NIGHT;
   return NIGHT.map(function (c, i) { return mixHex(c, DAY[i], d); });
 }
-/* env: day 0..1, lantern 0..1, season "", dust 0..1, oy (grúa), bowl, steam, rainK */
+function glowRect(x, y, w, h, c, a) { g.save(); g.globalAlpha = a; rect(x, y, w, h, c); g.restore(); }
+function glowBlob(x, y, r, c, a) { g.save(); g.globalAlpha = a; blob(x, y, r, r, c, null); g.globalAlpha = a * .5; blob(x, y, r * 1.8, r * 1.6, c, null); g.restore(); }
+function glyph(x, y, s, c, n) { // pseudo-kanji en bloques
+  var h = hash(n + 1), h2 = hash(n + 2);
+  rect(x, y + s * .2, s, Math.max(1, s * .15), c); rect(x + s * .42, y, Math.max(1, s * .16), s, c);
+  if (h > .5) rect(x, y + s * .7, s, Math.max(1, s * .15), c); else rect(x + s * .1, y + s * .55, s * .8, Math.max(1, s * .14), c);
+  if (h2 > .5) rect(x + s * .1, y + s * .35, Math.max(1, s * .14), s * .5, c); else rect(x + s * .75, y + s * .35, Math.max(1, s * .14), s * .5, c);
+}
+/* env: day, lantern 0..1, neon2x1, sunA, dust, snow, oy, maneki(false), manekiO */
 function ramenStreet(t, env) {
   env = env || {};
-  var oy = env.oy || 0, d = env.day || 0;
+  var oy = env.oy || 0, d = env.day || 0, dust = env.dust || 0, ln = env.lantern === undefined ? 1 : env.lantern, night = 1 - d;
+  var warm = ln * (1 - dust * .75);
   g.setTransform(1, 0, 0, 1, 0, 0);
-  gradient(skyAt(env), 0, PH);
+  if (!env.shopOnly) gradient(skyAt(env), 0, PH);
   g.setTransform(1, 0, 0, 1, 0, Math.round(oy));
-  // sol / luna
+  if (!env.shopOnly) {
   if (env.sunA !== undefined) {
-    var a = env.sunA, sx = 135 + Math.cos(a) * 150, sy = 150 - Math.sin(a) * 140;
-    if (d > .4) { blob(sx, sy, 12, 12, "#fff2b0", null); g.save(); g.globalAlpha = .25; blob(sx, sy, 22, 22, "#fff2b0", null); g.restore(); }
-    else { blob(sx, sy, 9, 9, "#eef0ff", null); blob(sx + 4, sy - 2, 7, 7, skyAt(env)[1], null); }
+    var a = env.sunA, sx = 135 + Math.cos(a) * 150, sy = 120 - Math.sin(a) * 150;
+    if (d > .4) glowBlob(sx, sy, 11, "#fff2b0", .9); else { blob(sx, sy, 8, 8, "#eef0ff", null); blob(sx + 4, sy - 2, 7, 7, skyAt(env)[1], null); }
   }
-  // edificios lejanos con neón (llegan muy arriba para la grúa)
-  for (var i = 0; i < 9; i++) {
-    var bx = i * 31 - 8, bh = 230 + hash(i + 3) * 220, top = 200 - bh, bw = 30;
-    rect(bx, top, bw, bh + 10, mixHex(i % 2 ? "#12142a" : "#0f1124", "#6a7a90", d * .7));
-    for (var r = 0; r < bh / 10; r++) for (var c = 0; c < 3; c++) if (hash(i * 17 + r * 3 + c) > .7) rect(bx + 4 + c * 8, top + 6 + r * 10, 4, 5, d > .5 ? "#5a6a80" : ((Math.floor(t * 1.5 + r + c) % 13) ? "#e8c46a" : "#6a5a3a"));
-    if (i % 3 === 1) { var ny = top + 20 + hash(i) * 60, nc = ["#ff4f9a", "#4fe0ff", "#ffd24f"][i % 3 === 1 ? Math.floor(hash(i + 1) * 3) : 0];
-      g.save(); g.globalAlpha = .25 * (1 - d); rect(bx + 6, ny - 3, 18, 56, nc); g.restore(); rect(bx + 9, ny, 12, 50, mixHex(nc, "#333344", d)); for (var q = 0; q < 4; q++) rect(bx + 11, ny + 4 + q * 12, 8, 7, mixHex("#fff6ee", nc, .4)); }
+  // estrellas y torre de Tokio al fondo
+  for (var s0 = 0; s0 < 40; s0++) if (night > .5 && (Math.sin(t * 2 + s0) + 1) > .6) px(hash(s0) * PW, -280 + hash(s0 + 9) * 300, "#cfd6ff");
+  var tx = 196, ty = -40;
+  var tc = mixHex("#c8452c", "#8a4a3a", d);
+  tri(tx - 16, 150, tx + 16, 150, tx, ty, "#1a1426"); line(tx - 14, 150, tx, ty, tc, 1); line(tx + 14, 150, tx, ty, tc, 1);
+  for (var tb = 0; tb < 7; tb++) { var yy = ty + 20 + tb * 18, ww = (yy - ty) / 190 * 16; line(tx - ww, yy, tx + ww, yy, tc, 1); }
+  rect(tx - 7, 60, 14, 4, tc); rect(tx - 4, 20, 8, 3, tc); if (Math.floor(t * 2) % 2) px(tx, ty - 1, "#ff6a5a");
+  // skyline lejano
+  for (var i = 0; i < 10; i++) {
+    var bx = i * 29 - 10, bh = 180 + hash(i + 3) * 200, top = 190 - bh, bw = 28;
+    rect(bx, top, bw, bh + 10, mixHex(i % 2 ? "#10132a" : "#0c0f22", "#6a7a90", d * .7));
+    for (var r = 0; r < bh / 11; r++) for (var c = 0; c < 3; c++) if (hash(i * 17 + r * 3 + c) > .78) rect(bx + 4 + c * 8, top + 6 + r * 11, 4, 5, d > .5 ? "#5a6a80" : ((Math.floor(t * 1.5 + r + c) % 13) ? "#d8b46a" : "#5a4a34"));
+    if (i % 3 === 1) { var ny = top + 24 + hash(i) * 50, nc = ["#ff4f9a", "#4fe0ff", "#ffd24f"][Math.floor(hash(i + 1) * 3)];
+      glowRect(bx + 6, ny - 3, 18, 58, nc, .22 * night); rect(bx + 9, ny, 12, 52, mixHex(nc, "#333344", d)); for (var q = 0; q < 4; q++) glyph(bx + 11, ny + 4 + q * 12, 8, mixHex("#fff6ee", nc, .3), i * 7 + q); }
   }
-  // local vecino izquierdo (2x1)
-  rect(0, 190, 40, 210, "#16121e"); rect(0, 190, 40, 4, "#2a2436");
+  // cables de luz
+  for (var cw = 0; cw < 2; cw++) for (var xx = 0; xx < PW; xx++) { var cy = 118 + cw * 9 + Math.pow((xx - 135) / 135, 2) * -14 + 14; px(xx, cy, "#05060c"); }
+  rect(252, 90, 4, 110, "#0a0b14"); rect(244, 98, 20, 3, "#0a0b14");
+  // ===== vecino izquierdo (2x1) + máquina expendedora =====
+  rect(0, 150, 42, 250, "#15111f"); rect(0, 150, 42, 3, "#2a2436");
   var nOn = env.neon2x1 || 0;
-  g.save(); g.globalAlpha = .12 + .35 * nOn; rect(2, 222, 34, 60, "#ff3f8e"); g.restore();
-  rect(6, 226, 26, 52, nOn > .5 ? "#ff5fa4" : "#4a2234"); rect(9, 229, 20, 46, nOn > .5 ? "#ffd0e6" : "#2e1a26");
-  // edificio derecho
-  rect(230, 180, 40, 220, "#14131f"); for (var w2 = 0; w2 < 5; w2++) rect(238, 196 + w2 * 34, 22, 18, (w2 + Math.floor(t)) % 4 ? "#2a2238" : "#8a6a3a");
-  // ===== puesto de ramen =====
-  var dust = env.dust || 0;
-  rect(40, 196, 190, 204, mixHex("#3a2418", "#4a4038", dust * .6));
-  for (var p = 0; p < 12; p++) rect(40, 200 + p * 17, 190, 1, "#2e1c12");
+  glowRect(2, 176, 36, 92, "#ff3f8e", (.08 + .3 * nOn) * night + .02);
+  rect(8, 180, 24, 84, nOn > .5 ? "#ff5fa4" : "#3a1a2c"); rect(11, 183, 18, 78, nOn > .5 ? "#ffd0e6" : "#261420");
+  // máquina expendedora
+  var vx = 6, vy = 316;
+  glowRect(0, 400, 50, 30, "#8fd0ff", .12 * night);
+  rect(vx, vy, 30, 84, "#1a1c26"); rect(vx + 1, vy + 1, 28, 82, "#dfe6ef"); rect(vx + 3, vy + 4, 24, 44, "#9fd8ff");
+  for (var br = 0; br < 3; br++) for (var bc2 = 0; bc2 < 4; bc2++) { rect(vx + 5 + bc2 * 6, vy + 8 + br * 13, 3, 8, ["#e85a4a", "#f2c14e", "#5fb86a", "#4a8ae0"][(bc2 + br) % 4]); rect(vx + 5 + bc2 * 6, vy + 17 + br * 13, 3, 1, "#2a2a3a"); }
+  rect(vx + 3, vy + 52, 24, 6, "#2a2e3a"); rect(vx + 20, vy + 62, 6, 10, "#2a2e3a"); rect(vx + 3, vy + 74, 24, 6, "#1a1c26");
+  glowRect(vx - 2, vy - 2, 34, 50, "#bfe8ff", .1 * night);
+  }
+  // ===== el local de Tanuki (2 pisos) =====
+  // piso de arriba
+  rect(40, 104, 200, 96, mixHex("#2a2234", "#3a3440", dust * .5));
+  for (var bm = 0; bm < 4; bm++) rect(40 + bm * 66, 104, 3, 96, "#1c1624");
+  rect(40, 104, 200, 3, "#1c1624");
+  rect(64, 126, 56, 46, "#1c1624"); rect(66, 128, 52, 42, d > .5 ? "#8aa4c0" : mixHex("#f2b86a", "#4a3e36", dust));
+  for (var bl = 0; bl < 6; bl++) rect(66, 129 + bl * 7, 52, 1, "#c8904a");
+  blob(80, 162, 7, 9, "#2a4a2a", null); rect(78, 164, 4, 6, "#4a3020");
+  rect(130, 126, 56, 46, "#1c1624"); rect(132, 128, 52, 42, d > .5 ? "#8aa4c0" : "#24203a");
+  // cartel vertical luminoso
+  var sgOn = night * (1 - dust * .6);
+  glowRect(208, 84, 30, 126, "#ff4a2a", .25 * sgOn);
+  rect(212, 88, 22, 118, "#b8261a"); rect(214, 90, 18, 114, "#d8382a");
+  for (var gq = 0; gq < 5; gq++) glyph(217, 95 + gq * 21, 12, "#fff6ee", 50 + gq);
+  // ducto con vapor
+  rect(190, 150, 6, 50, "#3a3a46"); rect(188, 146, 10, 6, "#4a4a56");
+  for (var sp = 0; sp < 4; sp++) { var ph = (t * .7 + sp * .25) % 1; g.save(); g.globalAlpha = (1 - ph) * .35 * (1 - dust); blob(193 + Math.sin(t * 2 + sp) * 3, 142 - ph * 40, 3 + ph * 6, 3 + ph * 5, "#e8e8f0", null); g.restore(); }
   // alero de tejas
-  quad([30, 170, 240, 170, 232, 198, 38, 198], "#1c1a24"); for (var tl2 = 0; tl2 < 14; tl2++) rect(34 + tl2 * 15, 172, 1, 24, "#2c2a36");
-  rect(30, 196, 210, 4, "#C8452C"); rect(30, 200, 210, 2, "#7a2418");
-  if (env.snow) { rect(30, 166, 210, 5, "#f4f6fa"); rect(34, 164, 200, 2, "#ffffff"); }
-  // cartel superior (kanji estilizado)
-  rect(92, 176, 86, 18, "#f0e6d0"); rect(94, 178, 82, 14, "#e2d6bc");
-  [[100, 180], [122, 180], [144, 180], [164, 180]].forEach(function (c2, j) { rect(c2[0], c2[1] + 1, 8, 2, "#2a1a14"); rect(c2[0] + 3, c2[1], 2, 10, "#2a1a14"); if (j % 2) rect(c2[0], c2[1] + 7, 8, 2, "#2a1a14"); else rect(c2[0] + 1, c2[1] + 5, 6, 2, "#C8452C"); });
-  // puerta: interior cálido
-  rect(90, 214, 90, 186, mixHex("#6a4428", "#2a221c", clamp(dust * 1.2)));
-  g.save(); g.globalAlpha = .35 * (1 - dust); gradient(["#f2b46a", "#b87a3a"], 214, 300, 90, 180); g.restore();
-  // mostrador/ventana derecha con el maneki pequeño
-  rect(186, 234, 38, 60, "#2a1c14"); rect(188, 236, 34, 56, mixHex("#e8a860", "#3a342e", clamp(dust * 1.2)));
-  if (env.maneki !== false) maneki(205, 290, .75, env.manekiO || { paw: .8, dust: dust, awake: false }, t);
-  rect(186, 290, 38, 6, "#4a3020");
-  // noren (cortina roja)
-  var sway = Math.sin(t * 2) * 1.2;
-  for (var nn = 0; nn < 3; nn++) { var nx = 92 + nn * 30; quad([nx, 214, nx + 28, 214, nx + 28 + sway, 250, nx + sway, 250], mixHex("#b83a26", "#6a4a44", dust * .7)); rect(nx + 10 + sway * .5, 226, 8, 8, "#fff6ee"); rect(nx + 12 + sway * .5, 228, 4, 4, "#C8452C"); }
-  rect(88, 210, 94, 5, "#2a1810");
-  // farol rojo (chochin)
-  var ln = env.lantern || 0, lx = 66, ly = 236;
-  line(lx, 202, lx, 216, "#1a1210", 1);
-  if (ln > 0) { g.save(); g.globalAlpha = .28 * ln; blob(lx, ly, 30, 30, "#ff6a3a", null); g.globalAlpha = .18 * ln; blob(lx, ly, 48, 44, "#ff4a2a", null); g.restore(); }
-  blob(lx, ly, 11, 15, mixHex("#5a1a14", "#e8442c", ln), "#1a1210", mixHex("#3a100c", "#b02a1a", ln), mixHex("#6a2a1a", "#ff8a5a", ln));
-  for (var lr = -2; lr <= 2; lr++) rect(lx - 10, ly + lr * 5, 20, 1, mixHex("#3a100c", "#a0281a", ln));
-  rect(lx - 6, 220, 12, 3, "#1a1210"); rect(lx - 6, 250, 12, 3, "#1a1210");
-  if (ln > .5) { rect(lx - 2, ly - 5, 4, 10, "#2a0a08"); rect(lx - 4, ly - 1, 8, 2, "#2a0a08"); }
+  quad([32, 196, 248, 196, 242, 216, 38, 216], "#1a1c2a");
+  for (var tl2 = 0; tl2 < 18; tl2++) { rect(36 + tl2 * 12, 198, 10, 3, "#2c3044"); rect(36 + tl2 * 12, 204, 10, 2, "#23263a"); }
+  rect(32, 214, 216, 3, mixHex("#8a6a3a", "#4a4a4a", dust));
+  if (env.snow) { rect(30, 190, 220, 6, "#f2f5fa"); rect(34, 188, 210, 2, "#ffffff"); rect(40, 100, 200, 5, "#f2f5fa"); }
+  // guirnalda de farolitos
+  for (var lx2 = 48; lx2 <= 232; lx2++) px(lx2, 222 + Math.sin((lx2 - 48) / 184 * Math.PI) * 5, "#0a0808");
+  for (var lf = 0; lf < 8; lf++) { var fx = 56 + lf * 25, fy = 226 + Math.sin((fx - 48) / 184 * Math.PI) * 5, fo = warm * (.85 + .15 * Math.sin(t * 3 + lf));
+    if (fo > .05) glowBlob(fx, fy, 5, "#ff6a3a", .22 * fo); blob(fx, fy, 3, 4, mixHex("#4a1a14", "#f0503a", fo), "#1a0a08", null, mixHex("#6a2a1a", "#ffb08a", fo)); }
+  // postes de madera
+  [42, 84, 190, 236].forEach(function (p) { rect(p - 2, 216, 5, 184, mixHex("#4a2c1a", "#4a4440", dust * .5)); rect(p - 2, 216, 2, 184, mixHex("#6a4428", "#5a5450", dust * .5)); });
+  // pared baja lateral
+  rect(44, 216, 38, 184, mixHex("#3a2418", "#403830", dust * .6)); for (var pl = 0; pl < 11; pl++) rect(44, 222 + pl * 16, 38, 1, "#2a180e");
+  // puertas shoji iluminadas
+  var sh = warm, paper = mixHex(mixHex("#3a3026", "#f6d9a0", sh), "#c8d0dc", d * .6);
+  rect(87, 234, 101, 166, "#3a2414"); rect(89, 236, 97, 164, paper);
+  if (sh > .1) glowRect(80, 232, 115, 170, "#ffcf7a", .12 * sh);
+  for (var gx = 0; gx < 8; gx++) rect(89 + gx * 12.2, 236, 1, 164, "#6a4a2a");
+  for (var gy = 0; gy < 12; gy++) rect(89, 236 + gy * 14, 97, 1, "#6a4a2a");
+  rect(136, 236, 3, 164, "#3a2414"); rect(89, 360, 97, 40, mixHex("#4a2c1a", "#4a4440", dust * .5));
+  // sombras de clientes dentro (solo si hay gente)
+  if (env.crowd) for (var cs = 0; cs < 3; cs++) { blob(104 + cs * 30, 300, 7, 8, "#8a6a44", null); rect(97 + cs * 30, 306, 14, 40, "#8a6a44"); }
+  // noren azul con el círculo de Maru
+  var sway = Math.sin(t * 2) * 1.2, nc2 = mixHex("#1f2c54", "#4a4a56", dust * .6);
+  for (var nn = 0; nn < 3; nn++) { var nx = 89 + nn * 33; quad([nx, 232, nx + 31, 232, nx + 31 + sway, 272, nx + sway, 272], nc2); rect(nx, 232, 31, 3, "#141c3a"); }
+  blob(138 + sway * .5, 250, 9, 9, "#f4efe4", null); blob(138 + sway * .5, 250, 5, 5, nc2, null); blob(138 + sway * .5, 250, 2, 2, "#C8452C", null);
+  rect(85, 228, 105, 5, "#2a1810");
+  // vitrina con sampuru y el maneki
+  rect(193, 244, 40, 76, "#2a1a10"); rect(195, 246, 36, 72, d > .5 ? "#aac0d0" : mixHex("#f2c888", "#3e3832", dust));
+  rect(195, 286, 36, 3, "#8a6a4a");
+  ramenBowl(204, 282, .55, 0, dust, t); ramenBowl(223, 282, .55, 0, dust, t);
+  if (env.maneki !== false) maneki(213, 316, .7, env.manekiO || { paw: .8, dust: dust, awake: false }, t);
+  // farol grande (chochin)
+  var lx = 63, ly = 262;
+  line(lx, 218, lx, 242, "#1a1210", 1);
+  if (ln > 0) { g.save(); g.globalAlpha = .22 * ln; blob(lx, ly, 26, 28, "#ff6a3a", null); g.globalAlpha = .12 * ln; blob(lx, ly, 44, 42, "#ff4a2a", null); g.restore(); }
+  blob(lx, ly, 12, 17, mixHex("#5a1a14", "#e8442c", ln), "#1a1210", mixHex("#3a100c", "#b02a1a", ln), mixHex("#6a2a1a", "#ff8a5a", ln));
+  for (var lr = -3; lr <= 3; lr++) rect(lx - 11, ly + lr * 5, 22, 1, mixHex("#3a100c", "#a0281a", ln));
+  rect(lx - 7, 244, 14, 3, "#1a1210"); rect(lx - 7, 278, 14, 3, "#1a1210");
+  glyph(lx - 5, ly - 8, 10, ln > .5 ? "#2a0a08" : "#1a0806", 99);
+  // pizarra de menú (A-frame)
+  quad([200, 400, 206, 356, 226, 356, 232, 400], "#3a2414"); rect(205, 360, 22, 30, "#1f3a2c");
+  blob(216, 370, 6, 3, null, "#e8e4d8"); rect(210, 371, 12, 3, "#e8e4d8"); rect(208, 380, 16, 1, "#c8c4b8"); rect(208, 384, 11, 1, "#c8c4b8");
+  // macetas y cajas
+  rect(48, 380, 14, 20, "#6a3a24"); for (var lv = 0; lv < 7; lv++) line(55, 380, 48 + lv * 2.4, 356 + (lv % 3) * 4, "#3f7a3a", 1);
+  rect(66, 386, 16, 14, "#8a6a3a"); rect(66, 386, 16, 2, "#a8844a");
   // telarañas y polvo
   if (dust > 0) {
-    g.save(); g.globalAlpha = dust;
-    for (var s2 = 0; s2 < 6; s2++) { line(90, 214 + s2 * 5, 90 + s2 * 5, 214, "#c8c8d0", 1); line(180, 214 + s2 * 5, 180 - s2 * 5, 214, "#c8c8d0", 1); }
-    line(90, 214, 118, 242, "#c8c8d0", 1); line(180, 214, 152, 242, "#c8c8d0", 1);
+    g.save(); g.globalAlpha = dust * .9;
+    for (var s2 = 0; s2 < 6; s2++) { line(89, 236 + s2 * 5, 89 + s2 * 5, 236, "#c8c8d0", 1); line(186, 236 + s2 * 5, 186 - s2 * 5, 236, "#c8c8d0", 1); }
+    line(89, 236, 117, 264, "#c8c8d0", 1); line(186, 236, 158, 264, "#c8c8d0", 1);
+    g.globalAlpha = dust * .25; rect(40, 104, 200, 296, "#6a6258");
     g.restore();
   }
-  // suelo mojado y reflejos
-  rect(0, 400, PW, 80, mixHex("#0c0d16", "#5a6070", d * .6));
-  rect(0, 400, PW, 3, "#2a2a3a");
-  if (env.snow) { rect(0, 398, PW, 6, "#e8ecf4"); }
-  g.save(); g.globalAlpha = .35 * (1 - d * .7);
-  if (ln > 0) for (var rf = 0; rf < 30; rf++) rect(lx - 8 + Math.sin(t * 3 + rf) * 2, 404 + rf * 2, 16, 1, rf % 2 ? "#ff5a3a" : "#8a2a1a");
-  for (var rf2 = 0; rf2 < 24; rf2++) rect(12 + Math.sin(t * 2 + rf2) * 2, 404 + rf2 * 3, 14, 1, nOn > .5 ? "#ff5fa4" : "#3a1a2a");
-  for (var rf3 = 0; rf3 < 26; rf3++) rect(100 + Math.sin(t * 2.4 + rf3) * 2, 404 + rf3 * 2, 70, 1, rf3 % 3 ? "#5a3a24" : "#a8743e");
+  if (env.shopOnly) { g.setTransform(1, 0, 0, 1, 0, 0); return; }
+  // edificio derecho
+  rect(240, 160, 30, 240, "#14131f"); for (var w2 = 0; w2 < 5; w2++) rect(246, 176 + w2 * 34, 18, 16, (w2 + Math.floor(t)) % 4 ? "#241f34" : "#7a5a3a");
+  rect(244, 330, 20, 14, "#3a3c48"); rect(246, 332, 16, 10, "#2a2c36");
+  // vereda y pista mojada
+  rect(0, 400, PW, 8, mixHex("#1a1a26", "#6a7080", d * .6)); rect(0, 400, PW, 1, "#3a3a4a");
+  rect(0, 408, PW, 72, mixHex("#0a0c16", "#5a6070", d * .6));
+  if (env.snow) { rect(0, 398, PW, 10, "#e8ecf4"); }
+  if (sh > .1) { g.save(); g.globalAlpha = .18 * sh; tri(88, 400, 188, 400, 230, 480, "#ffcf7a"); tri(88, 400, 40, 480, 230, 480, "#ffcf7a"); g.restore(); }
+  g.save(); g.globalAlpha = .5 * (1 - d * .7);
+  for (var rf = 0; rf < 30; rf++) { var wob = Math.sin(t * 3 + rf * .7) * 2; rect(lx - 9 + wob, 410 + rf * 2, 18, 1, rf % 2 ? "#ff5a3a" : "#8a2a1a"); }
+  for (var rf3 = 0; rf3 < 30; rf3++) { var wob3 = Math.sin(t * 2.4 + rf3) * 2; if (sh > .1) rect(92 + wob3, 410 + rf3 * 2, 92, 1, rf3 % 3 ? mixHex("#5a4024", "#f6d9a0", sh * .7) : "#a8743e"); }
+  for (var rf2 = 0; rf2 < 26; rf2++) rect(9 + Math.sin(t * 2 + rf2) * 2, 410 + rf2 * 2.5, 22, 1, "#6aa8d8");
+  for (var rf4 = 0; rf4 < 22; rf4++) rect(212 + Math.sin(t * 2.2 + rf4) * 2, 410 + rf4 * 3, 20, 1, "#d8382a");
+  if (nOn > .5) for (var rf5 = 0; rf5 < 20; rf5++) rect(10 + Math.sin(t * 2 + rf5) * 2, 440 + rf5 * 2, 20, 1, "#ff5fa4");
   g.restore();
-  for (var pd = 0; pd < 5; pd++) { var pxx = 20 + pd * 52, pr = (t * 1.3 + pd * .37) % 1; g.save(); g.globalAlpha = (1 - pr) * .6; blob(pxx, 440 + (pd % 2) * 16, 2 + pr * 10, 1 + pr * 3, null, "#8a9ac0"); g.restore(); }
+  for (var pd = 0; pd < 6; pd++) { var pxx = 18 + pd * 46, pr = (t * 1.3 + pd * .37) % 1; g.save(); g.globalAlpha = (1 - pr) * .55; blob(pxx, 446 + (pd % 2) * 18, 2 + pr * 10, 1 + pr * 3, null, "#8a9ac0"); g.restore(); }
   g.setTransform(1, 0, 0, 1, 0, 0);
 }
+
 /* Clima encima de todo (lluvia, hojas, nieve, sakura) */
 function weather(t, kind, amt) {
   amt = amt === undefined ? 1 : amt;
@@ -598,17 +681,17 @@ function pawShot(T, down) {
           var T = t + OFF;
           setCtx(ctx); g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, PW, PH);
           var young = T >= 39.733, wink = T >= 41.383;
-          ramenStreet(T, { lantern: 1, dust: young ? 0 : 1,
+          ramenStreet(T, { lantern: 1, dust: young ? 0 : 1, crowd: young,
             manekiO: { paw: wink ? .6 + .4 * Math.abs(Math.sin((T - 41.383) * 9)) : .8, awake: true, wink: wink, glow: T < 39.3 ? .9 : .3 } });
           // cola de clientes
           if (young) QUEUE.forEach(function (q, i) { var k = outQ(pk(T, 39.733 + i * .12, .4)); walker(lerp(300, 212 + i * 16, k), 424 + (i % 2) * 6, 2.0, { umbrella: q[0], coat: q[1], dir: -1, still: k >= 1, seed: i + 9 }, T); });
           if (!young) {
-            tanuki(135, 400, 2.4, { beard: 1, age: 1, cane: true, hunch: 1, stone: 1, cracks: pk(T, 39.183, .5) }, T);
-            pigeon(139, 274, 3, false, T);
+            tanuki(135, 400, 2.4, { beard: .55, age: 1, cane: true, hunch: 1, stone: 1, cracks: pk(T, 39.183, .5) }, T);
+            pigeon(131, 272, 2.8, false, T);
           } else {
             var jump = Math.sin(pk(T, 39.733, .35) * Math.PI) * 14, cheer = T >= 40.833;
             tanuki(135, 400 - jump, 2.4, { eyes: cheer ? "happy" : "wide", mouth: "big", arm: cheer ? "wave" : "up", armK: 1 }, T);
-            var pk2 = pk(T, 39.733, .9); pigeon(lerp(139, 300, pk2), lerp(273, 80, pk2), 2.6, true, T);
+            var pk2 = pk(T, 39.733, .9); pigeon(lerp(131, 300, pk2), lerp(272, 80, pk2), 2.8, true, T);
             for (var i = 0; i < 26; i++) { var sk = pk(T, 39.733, .7), a = hash(i) * 6.283, v = 40 + hash(i + 3) * 70;
               if (sk < 1) rect(135 + Math.cos(a) * v * sk, 330 + Math.sin(a) * v * sk + sk * sk * 60, 4, 3, i % 2 ? "#8d8d93" : "#6b6b72"); }
             if (T >= 40.283) walker(lerp(-40, 88, outQ(pk(T, 40.283, .45))), 430, 2.2, { umbrella: "#C8452C", coat: "#d8c49a", bob: 1, dir: 1, still: T >= 40.733, seed: 3 }, T);
