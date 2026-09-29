@@ -1,0 +1,220 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Montserrat"; font-weight: 900; src: url("assets/fonts/Montserrat-Black.ttf"); }
+        @font-face { font-family: "Segoe UI Emoji"; src: local("Segoe UI Emoji"); }
+        @font-face { font-family: "Zen Kaku Gothic New"; font-weight: 500; src: url("assets/fonts/ZenKakuGothicNew-Medium.ttf"); }
+        @font-face { font-family: "Zen Kaku Gothic New"; font-weight: 700; src: url("assets/fonts/ZenKakuGothicNew-Bold.ttf"); }
+        @font-face { font-family: "Tenor Sans"; src: url("assets/fonts/TenorSans-Regular.ttf"); }
+        #root { position: absolute; inset: 0; overflow: hidden; background: #0B0D12; font-family: "Zen Kaku Gothic New", "Segoe UI Emoji", sans-serif; color: #F4F1EA; }
+        #ch-bg { position: absolute; inset: 0; background: linear-gradient(180deg, #0E1220 0%, #0B0D12 100%); }
+        #ch-day { position: absolute; inset: 0; background: linear-gradient(180deg, #34405e 0%, #7d6f7a 55%, #c9a383 100%); opacity: 0; }
+        #ch-glow { position: absolute; left: 50%; top: 45%; width: 1200px; height: 1200px; margin: -600px 0 0 -600px; border-radius: 50%; background: radial-gradient(circle, rgba(120,140,200,.14), transparent 60%); }
+        #ch-cam { position: absolute; inset: 0; transform-origin: 540px 700px; }
+        /* reloj tipográfico */
+        #ch-clock { position: absolute; left: 0; right: 0; top: 150px; display: flex; flex-direction: column; align-items: center; opacity: 0; }
+        #ch-digits { display: flex; align-items: center; font-family: "Zen Kaku Gothic New", sans-serif; font-weight: 500; font-size: 150px; line-height: 150px; font-variant-numeric: tabular-nums; letter-spacing: .02em; color: #F4F1EA; }
+        .mask { height: 150px; overflow: hidden; }
+        .strip div { height: 150px; }
+        #ch-colon { margin: 0 2px 14px; opacity: .8; }
+        #ch-ampm { margin-top: 6px; font-size: 30px; letter-spacing: .3em; color: #B8BCC6; }
+        #ch-prog { margin-top: 18px; width: 420px; height: 3px; background: rgba(244,241,234,.14); border-radius: 2px; overflow: hidden; }
+        #ch-progf { width: 100%; height: 100%; background: #F4F1EA; transform-origin: 0 50%; transform: scaleX(0); }
+        /* celular */
+        #ch-phone { position: absolute; left: 190px; top: 430px; width: 700px; height: 1090px; border-radius: 64px; background: #11141C; border: 2px solid rgba(244,241,234,.10); box-shadow: 0 40px 120px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.05); overflow: hidden; }
+        #ch-sb { position: absolute; left: 44px; right: 44px; top: 22px; height: 40px; display: flex; justify-content: space-between; align-items: center; font-size: 28px; font-weight: 700; color: #F4F1EA; }
+        #ch-sbi { display: flex; gap: 10px; align-items: center; }
+        #ch-sbi i { display: block; width: 6px; background: #F4F1EA; border-radius: 2px; }
+        #ch-bat { width: 44px; height: 20px; border: 2px solid #F4F1EA; border-radius: 6px; position: relative; }
+        #ch-bat b { position: absolute; left: 3px; top: 3px; bottom: 3px; width: 26px; background: #F4F1EA; border-radius: 2px; }
+        #ch-head { position: absolute; left: 0; right: 0; top: 76px; height: 120px; display: flex; align-items: center; gap: 22px; padding: 0 34px; border-bottom: 1px solid rgba(244,241,234,.08); }
+        #ch-av { width: 80px; height: 80px; border-radius: 50%; background: #23262E; display: grid; place-items: center; font-family: "Tenor Sans", serif; font-size: 32px; color: #F4F1EA; border: 1px solid rgba(244,241,234,.15); }
+        #ch-name { font-size: 36px; font-weight: 700; }
+        #ch-st { margin-top: 4px; font-size: 26px; color: #8A8F9C; display: flex; align-items: center; gap: 10px; }
+        #ch-dot { width: 14px; height: 14px; border-radius: 50%; background: #3FD68B; display: none; box-shadow: 0 0 12px rgba(63,214,139,.6); }
+        #ch-view { position: absolute; left: 0; right: 0; top: 198px; bottom: 112px; overflow: hidden; }
+        .list { position: absolute; left: 0; right: 0; bottom: 0; padding: 0 30px 6px; display: flex; flex-direction: column; justify-content: flex-end; }
+        .row { height: 0; overflow: hidden; display: flex; flex-direction: column; flex: none; }
+        .r-in { align-items: flex-start; } .r-out { align-items: flex-end; }
+        .b { max-width: 500px; padding: 22px 26px 16px; border-radius: 30px; font-size: 34px; line-height: 1.28; margin-bottom: 20px; opacity: 0; box-shadow: 0 8px 24px rgba(0,0,0,.25); }
+        .b .t { display: block; text-align: right; font-size: 20px; margin-top: 6px; opacity: .55; }
+        .in { align-self: flex-start; background: #F4F1EA; color: #15171d; border-bottom-left-radius: 8px; transform-origin: 0% 100%; }
+        .out { align-self: flex-end; background: #23262E; color: #F4F1EA; border-bottom-right-radius: 8px; transform-origin: 100% 100%; border: 1px solid rgba(244,241,234,.06); }
+        .typ { padding: 24px 26px; }
+        .typ i { display: inline-block; width: 13px; height: 13px; margin: 0 4px; border-radius: 50%; background: currentColor; opacity: .6; }
+        .pay { margin-top: 14px; padding: 18px 20px; border-radius: 20px; background: #F4F1EA; color: #15171d; }
+        .pay small { display: block; font-size: 22px; color: #6a6e78; }
+        .pay b { display: block; font-size: 38px; margin: 2px 0 12px; }
+        .pay span { display: block; text-align: center; padding: 12px; border-radius: 14px; background: #15171d; color: #F4F1EA; font-size: 26px; font-weight: 700; }
+        #ch-input { position: absolute; left: 26px; right: 26px; bottom: 26px; height: 66px; border-radius: 33px; background: #1b1e27; display: flex; align-items: center; padding: 0 28px; font-size: 26px; color: #6a6e78; }
+        /* sello y contador */
+        #ch-stamp { position: absolute; left: 50%; top: 840px; width: 640px; margin-left: -320px; padding: 22px 0; text-align: center; border: 8px solid #C8452C; border-radius: 18px; color: #C8452C; background: rgba(11,13,18,.72); font-family: "Montserrat", sans-serif; font-weight: 900; font-size: 62px; letter-spacing: .02em; white-space: nowrap; opacity: 0; }
+        #ch-minus { position: absolute; left: 0; right: 0; top: 1000px; text-align: center; font-family: "Montserrat", sans-serif; font-weight: 900; font-size: 70px; color: #C8452C; opacity: 0; }
+        #ch-plus { position: absolute; left: 560px; top: 1130px; font-size: 44px; font-weight: 700; color: #F4F1EA; opacity: 0; }
+        /* texto cinético y giro */
+        #ch-scrim { position: absolute; inset: 0; background: rgba(8,9,13,.9); opacity: 0; }
+        .kin { position: absolute; left: 70px; right: 140px; top: 0; bottom: 0; display: flex; flex-wrap: wrap; align-content: center; justify-content: center; gap: 0 26px; text-align: center; font-family: "Montserrat", sans-serif; font-weight: 900; font-size: 104px; line-height: 1.05; color: #F4F1EA; letter-spacing: -.02em; }
+        .kin span { display: inline-block; opacity: 0; }
+        #ch-giro { position: absolute; left: 90px; right: 150px; top: 0; bottom: 0; display: grid; place-items: center; text-align: center; font-size: 64px; font-weight: 700; line-height: 1.25; color: #F4F1EA; opacity: 0; }
+        /* rewind */
+        #ch-scan { position: absolute; inset: 0; background: repeating-linear-gradient(180deg, rgba(244,241,234,.07) 0 2px, transparent 2px 7px); opacity: 0; }
+        #ch-rwtag { position: absolute; left: 70px; top: 392px; font-family: "Montserrat", sans-serif; font-weight: 900; font-size: 44px; color: #F4F1EA; opacity: 0; letter-spacing: .08em; }
+        #ch-flash { position: absolute; inset: 0; background: #F4F1EA; opacity: 0; }
+      </style>
+      <div id="root" data-composition-id="chat" data-width="1080" data-height="1920" data-duration="31.1">
+        <div id="ch-bg"></div><div id="ch-day"></div><div id="ch-glow"></div>
+        <div id="ch-cam">
+          <div id="ch-phone">
+            <div id="ch-sb"><span id="ch-sbt">23:47</span><span id="ch-sbi"><i style="height:10px"></i><i style="height:15px"></i><i style="height:20px"></i><span id="ch-bat"><b></b></span></span></div>
+            <div id="ch-head"><div id="ch-av">CN</div><div><div id="ch-name">Casa Nómade</div><div id="ch-st"><span id="ch-dot"></span><span id="ch-stt">últ. vez 21:30</span></div></div></div>
+            <div id="ch-view">
+              <div class="list" id="ch-A">
+                <div class="row r-in" id="r-a1"><div class="b in" id="a1">Hola! ¿todavía tienen la casaca negra en talla M? La necesito para mañana 🙏<span class="t">23:47</span></div></div>
+                <div class="row r-out" id="r-a2"><div class="b out" id="a2">¡Hola! Sí tenemos 😊<span class="t">07:12</span></div></div>
+                <div class="row r-in" id="r-a-typ"><div class="b in typ" id="a-typ"><i></i><i></i><i></i></div></div>
+                <div class="row r-in" id="r-a3"><div class="b in" id="a3">Ya la compré en otra tienda, gracias 🙂<span class="t">07:15</span></div></div>
+              </div>
+              <div class="list" id="ch-B">
+                <div class="row r-in" id="r-b1"><div class="b in" id="b1">Hola! ¿todavía tienen la casaca negra en talla M? La necesito para mañana 🙏<span class="t">23:47</span></div></div>
+                <div class="row r-out" id="r-b-typ"><div class="b out typ" id="b-typ"><i></i><i></i><i></i></div></div>
+                <div class="row r-out" id="r-b2"><div class="b out" id="b2">¡Hola! Sí, nos queda la última en M 😉 Si la pides ahora, te llega mañana antes de las 12. ¿Te la separo?<span class="t">23:47</span></div></div>
+                <div class="row r-in" id="r-b3"><div class="b in" id="b3">¡Sí porfa! ¿Cómo pago?<span class="t">23:48</span></div></div>
+                <div class="row r-out" id="r-b4"><div class="b out" id="b4">Te dejo el link aquí 👇 Apenas pagues, la separo a tu nombre ✨<div class="pay"><small>Casa Nómade · pago seguro</small><b>S/ 189.00</b><span>Pagar ahora</span></div><span class="t">23:48</span></div></div>
+                <div class="row r-in" id="r-b5"><div class="b in" id="b5">Listo, pagado ✅<span class="t">23:49</span></div></div>
+                <div class="row r-out" id="r-b6"><div class="b out" id="b6">¡Gracias, Camila! Sale mañana a primera hora 📦<span class="t">23:49</span></div></div>
+              </div>
+            </div>
+            <div id="ch-input">Escribe un mensaje…</div>
+          </div>
+        </div>
+        <div id="ch-clock">
+          <div id="ch-digits">
+            <div class="mask"><div class="strip" id="st-h"></div></div><span id="ch-colon">:</span>
+            <div class="mask"><div class="strip" id="st-m10"></div></div><div class="mask"><div class="strip" id="st-m1"></div></div>
+          </div>
+          <div id="ch-ampm">P. M.</div>
+          <div id="ch-prog"><div id="ch-progf"></div></div>
+        </div>
+        <div id="ch-stamp">VENTA PERDIDA</div>
+        <div id="ch-minus">– S/ 189</div>
+        <div id="ch-plus">+ S/ 189</div>
+        <div id="ch-scan"></div>
+        <div id="ch-rwtag">◀◀ REWIND</div>
+        <div id="ch-scrim"></div>
+        <div class="kin" id="ch-k1"><span>No</span><span>perdiste</span><span>por</span><span>tu</span><span>producto.</span></div>
+        <div class="kin" id="ch-k2"><span>Perdiste</span><span>por</span><span>llegar</span><span style="color:#C8452C">tarde.</span></div>
+        <div id="ch-giro">¿Y si tu tienda nunca llegara tarde?</div>
+        <div id="ch-flash"></div>
+      </div>
+      <script>
+        (function () {
+        var OFF = 3.2, at = function (T) { return +(T - OFF).toFixed(3); };
+        var $ = function (id) { return document.getElementById(id); };
+        // tiras del reloj (odómetro)
+        var HOURS = ["23", "00", "01", "02", "03", "04", "05", "06", "07"];
+        $("st-h").innerHTML = HOURS.map(function (h) { return "<div>" + h + "</div>"; }).join("");
+        $("st-m10").innerHTML = [0, 1, 2, 3, 4, 5, 0].map(function (d) { return "<div>" + d + "</div>"; }).join("");
+        $("st-m1").innerHTML = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map(function (d) { return "<div>" + d + "</div>"; }).join("");
+        var DH = 150, clockT = { e: 0 };
+        function setClock(e) {
+          var tm = 23 * 60 + 47 + e, whole = Math.floor(e), fr = e - whole, tmi = 23 * 60 + 47 + whole;
+          var minute = tmi % 60, hIdx = Math.floor((tmi - 23 * 60) / 60);
+          var m1 = minute % 10 + fr, m10 = Math.floor(minute / 10) + (minute % 10 === 9 ? fr : 0), hp = hIdx + (minute === 59 ? fr : 0);
+          $("st-m1").style.transform = "translateY(" + (-m1 * DH) + "px)";
+          $("st-m10").style.transform = "translateY(" + (-m10 * DH) + "px)";
+          $("st-h").style.transform = "translateY(" + (-Math.min(hp, 8) * DH) + "px)";
+          var hh = HOURS[Math.min(hIdx, 8)], mm = String(minute).padStart(2, "0");
+          $("ch-sbt").textContent = hh + ":" + mm;
+          $("ch-ampm").textContent = hIdx >= 1 ? "A. M." : "P. M.";
+        }
+        setClock(0);
+        var E_END = 7 * 60 + 12 + 13; // 23:47 → 07:12 = 445 min
+
+        function build() {
+          var tl = gsap.timeline({ paused: true });
+          var viewH = $("ch-view").clientHeight;
+          var bottomOf = function (id) { var el = $(id); return el.offsetTop + el.offsetHeight; };
+          var scrollTo = function (list, id) { return Math.min(0, viewH - bottomOf(id) - 24); };
+          var pop = function (id, T) { tl.fromTo("#r-" + id, { height: 0 }, { height: "auto", duration: .45, ease: "power2.out", immediateRender: false }, at(T)); tl.fromTo("#" + id, { opacity: 0, scale: .92, y: 16 }, { opacity: 1, scale: 1, y: 0, duration: .38, ease: "back.out(1.6)" }, at(T + .05)); };
+          var drop = function (id, T) { tl.to("#" + id, { opacity: 0, scale: .9, duration: .2, ease: "power2.in" }, at(T)); tl.to("#r-" + id, { height: 0, duration: .3, ease: "power2.inOut" }, at(T + .1)); };
+          var scroll = function () {};
+          var typing = function (id, T0, T1) {
+            tl.fromTo("#r-" + id, { height: 0 }, { height: "auto", duration: .3, ease: "power2.out", immediateRender: false }, at(T0));
+            tl.fromTo("#" + id, { opacity: 0, scale: .9 }, { opacity: 1, scale: 1, duration: .25, ease: "power2.out" }, at(T0));
+            tl.fromTo("#" + id + " i", { y: 0 }, { y: -8, duration: .18, stagger: .09, repeat: Math.max(1, Math.round((T1 - T0) / .36) * 2 - 1), yoyo: true, ease: "sine.inOut" }, at(T0 + .1));
+            tl.to("#" + id, { opacity: 0, duration: .12 }, at(T1 - .12)); tl.to("#r-" + id, { height: 0, duration: .12, ease: "none" }, at(T1 - .06));
+          };
+          
+          gsap.set("#ch-B", { opacity: 0 });
+          // ===== 2 · PROBLEMA =====
+          tl.fromTo("#ch-phone", { opacity: 0, y: 260, rotation: 3 }, { opacity: 1, y: 0, rotation: 0, duration: .7, ease: "expo.out" }, at(3.2));
+          pop("a1", 3.8);
+          tl.fromTo("#ch-cam", { scale: 1 }, { scale: 1.1, duration: .5, ease: "power2.inOut" }, at(6.8));
+          tl.fromTo("#ch-stt", { color: "#8A8F9C" }, { color: "#F4F1EA", duration: .3, ease: "none" }, at(6.8));
+          // el tiempo pasa
+          tl.to("#ch-cam", { scale: .9, y: 120, duration: .6, ease: "power2.inOut" }, at(7.3));
+          tl.fromTo("#ch-clock", { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: .4, ease: "power2.out" }, at(7.3));
+          tl.fromTo(clockT, { e: 0 }, { e: E_END, duration: 1.5, ease: "power2.inOut", onUpdate: function () { setClock(clockT.e); } }, at(7.4));
+          tl.fromTo("#ch-progf", { scaleX: 0 }, { scaleX: 1, duration: 1.5, ease: "power2.inOut" }, at(7.4));
+          tl.fromTo("#ch-day", { opacity: 0 }, { opacity: 1, duration: 1.5, ease: "power1.inOut" }, at(7.4));
+          tl.to("#ch-clock", { opacity: 0, y: -20, duration: .3, ease: "power2.in" }, at(9.0));
+          tl.to("#ch-cam", { scale: 1, y: 0, duration: .5, ease: "power2.out" }, at(9.0));
+          pop("a2", 9.0);
+          typing("a-typ", 10.4, 11.2);
+          pop("a3", 11.2); scroll("ch-A", "a3", 11.2);
+          // venta perdida
+          tl.fromTo("#ch-stamp", { opacity: 0, scale: 2.2, rotation: -4 }, { opacity: 1, scale: 1, rotation: -8, duration: .22, ease: "power4.in" }, at(13.0));
+          tl.fromTo("#ch-cam", { x: -10 }, { x: 10, duration: .045, repeat: 5, yoyo: true, ease: "none", immediateRender: false }, at(13.22));
+          tl.set("#ch-cam", { x: 0 }, at(13.5));
+          tl.fromTo("#ch-minus", { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: .3, ease: "power2.out" }, at(13.35));
+          // texto cinético
+          tl.fromTo("#ch-scrim", { opacity: 0 }, { opacity: 1, duration: .35, ease: "none" }, at(14.8));
+          tl.fromTo("#ch-k1 span", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: .35, stagger: .12, ease: "expo.out" }, at(14.85));
+          tl.to("#ch-k1", { opacity: 0, duration: .15 }, at(16.3));
+          tl.fromTo("#ch-k2 span", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: .35, stagger: .14, ease: "expo.out" }, at(16.4));
+          tl.to("#ch-k2", { opacity: 0, duration: .15 }, at(18.05));
+          // ===== 3 · GIRO + REWIND =====
+          tl.fromTo("#ch-giro", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .45, ease: "power2.out" }, at(18.2));
+          tl.to("#ch-giro", { opacity: 0, duration: .2 }, at(19.6));
+          tl.to("#ch-scrim", { opacity: 0, duration: .3, ease: "none" }, at(19.75));
+          tl.fromTo("#ch-scan", { opacity: 0 }, { opacity: 1, duration: .15, ease: "none" }, at(19.8));
+          tl.fromTo("#ch-rwtag", { opacity: 0 }, { opacity: 1, duration: .15, ease: "none" }, at(19.8));
+          tl.fromTo("#ch-rwtag", { opacity: 1 }, { opacity: .35, duration: .2, repeat: 3, yoyo: true, ease: "none", immediateRender: false }, at(20.0));
+          tl.fromTo("#ch-cam", { x: -5 }, { x: 5, duration: .06, repeat: 15, yoyo: true, ease: "none", immediateRender: false }, at(19.85));
+          tl.set("#ch-cam", { x: 0 }, at(21.6));
+          tl.to(["#ch-stamp", "#ch-minus"], { opacity: 0, scale: 1.3, duration: .25, ease: "power2.in" }, at(19.9));
+          drop("a3", 20.15); drop("a2", 20.5);
+          tl.to("#ch-clock", { opacity: 1, y: 0, duration: .25 }, at(19.95));
+          tl.fromTo(clockT, { e: E_END }, { e: 0, duration: 1.2, ease: "power2.inOut", immediateRender: false, onUpdate: function () { setClock(clockT.e); } }, at(20.05));
+          tl.fromTo("#ch-progf", { scaleX: 1 }, { scaleX: 0, duration: 1.2, ease: "power2.inOut", immediateRender: false }, at(20.05));
+          tl.to("#ch-day", { opacity: 0, duration: 1.2, ease: "power1.inOut" }, at(20.05));
+          tl.to("#ch-clock", { opacity: 0, duration: .25 }, at(21.3));
+          tl.to(["#ch-scan", "#ch-rwtag"], { opacity: 0, duration: .2 }, at(21.4));
+          tl.fromTo("#ch-flash", { opacity: .25 }, { opacity: 0, duration: .25, ease: "none", immediateRender: false }, at(21.6));
+          tl.set("#ch-flash", { opacity: 0 }, 0);
+          // ===== 4 · SOLUCIÓN =====
+          tl.set("#ch-A", { opacity: 0 }, at(21.6)); tl.set("#ch-B", { opacity: 1 }, at(21.6)); tl.set("#r-b1", { height: "auto" }, at(21.6)); tl.set("#b1", { opacity: 1 }, at(21.6));
+          tl.set("#ch-stt", { textContent: "en línea", color: "#F4F1EA" }, at(21.6)); tl.set("#ch-dot", { display: "block" }, at(21.6));
+          tl.fromTo("#ch-dot", { scale: 0 }, { scale: 1, duration: .35, ease: "back.out(3)" }, at(21.7));
+          tl.fromTo("#ch-cam", { scale: 1 }, { scale: 1.04, duration: 12.5, ease: "none" }, at(21.8));
+          typing("b-typ", 23.0, 23.6);
+          pop("b2", 23.6); scroll("ch-B", "b2", 23.6);
+          pop("b3", 27.0); scroll("ch-B", "b3", 27.0);
+          pop("b4", 28.4); scroll("ch-B", "b4", 28.4);
+          tl.fromTo("#b4 .pay", { boxShadow: "0 0 0 0 rgba(244,241,234,0)" }, { boxShadow: "0 0 0 8px rgba(244,241,234,.18)", duration: .4, repeat: 1, yoyo: true, ease: "sine.inOut" }, at(29.0));
+          pop("b5", 31.0); scroll("ch-B", "b5", 31.0);
+          tl.fromTo("#ch-plus", { opacity: 0, y: 0 }, { opacity: 1, y: -60, duration: .6, ease: "power2.out" }, at(31.2));
+          tl.to("#ch-plus", { opacity: 0, y: -100, duration: .4, ease: "power2.in" }, at(31.9));
+          pop("b6", 32.3); scroll("ch-B", "b6", 32.3);
+          tl.to("#ch-cam", { opacity: 0, duration: .3, ease: "none" }, at(34.0));
+          window.__timelines["chat"] = tl;
+        }
+        Promise.all(['500 34px "Zen Kaku Gothic New"', '700 34px "Zen Kaku Gothic New"', '32px "Tenor Sans"'].map(function (f) { return document.fonts.load(f); })).then(function () { return document.fonts.ready; }).then(build, build);
+        })();
+      </script>
+    </template>
+  </body>
+</html>

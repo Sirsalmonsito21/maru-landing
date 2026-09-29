@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Montserrat"; font-weight: 900; src: url("assets/fonts/Montserrat-Black.ttf"); }
+        #root { position: absolute; inset: 0; overflow: hidden; background: #0B0D12; }
+        #k-bg { position: absolute; inset: 0; background: radial-gradient(70% 50% at 50% 50%, #131826 0%, #0B0D12 70%); }
+        .k-s { position: absolute; left: 60px; right: 130px; top: 0; bottom: 0; display: grid; align-content: center; justify-items: center; opacity: 0; }
+        .k-s div { font-family: "Montserrat", sans-serif; font-weight: 900; color: #F4F1EA; line-height: .9; letter-spacing: -.03em; white-space: nowrap; }
+        .k-s .red { color: #C8452C; }
+      </style>
+      <div id="root" data-composition-id="hook" data-width="1080" data-height="1920" data-duration="3.2">
+        <div id="k-bg"></div>
+        <div class="k-s" id="k-s1" style="opacity:1"><div style="font-size:330px">POR</div><div style="font-size:330px">NO</div></div>
+        <div class="k-s" id="k-s2"><div style="font-size:148px">RESPONDER</div><div style="font-size:160px">A TIEMPO</div></div>
+        <div class="k-s" id="k-s3"><div style="font-size:118px">LE VENDISTE</div><div style="font-size:118px">A TU</div><div class="red" id="k-comp" style="font-size:112px">COMPETENCIA</div></div>
+      </div>
+      <script>
+        (function () {
+        var tl = gsap.timeline({ paused: true });
+        tl.fromTo("#k-s1", { scale: 1.08 }, { scale: 1, duration: .9, ease: "power3.out" }, 0);
+        tl.set("#k-s1", { opacity: 0 }, 1.0);
+        tl.fromTo("#k-s2", { opacity: 0, scale: 1.12 }, { opacity: 1, scale: 1, duration: .35, ease: "expo.out" }, 1.0);
+        tl.set("#k-s2", { opacity: 0 }, 2.0);
+        tl.fromTo("#k-s3", { opacity: 0, scale: 1.1 }, { opacity: 1, scale: 1, duration: .35, ease: "expo.out" }, 2.0);
+        tl.fromTo("#k-comp", { scale: 1.6, opacity: 0 }, { scale: 1, opacity: 1, duration: .22, ease: "power4.in", immediateRender: false }, 2.3);
+        tl.fromTo("#k-s3", { x: -6 }, { x: 6, duration: .04, repeat: 3, yoyo: true, ease: "none", immediateRender: false }, 2.52);
+        tl.to("#k-s3", { opacity: 0, scale: .96, duration: .18, ease: "power2.in" }, 3.02);
+        window.__timelines["hook"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

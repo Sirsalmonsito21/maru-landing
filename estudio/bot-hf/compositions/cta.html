@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Montserrat"; font-weight: 900; src: url("assets/fonts/Montserrat-Black.ttf"); }
+        @font-face { font-family: "Zen Kaku Gothic New"; font-weight: 500; src: url("assets/fonts/ZenKakuGothicNew-Medium.ttf"); }
+        @font-face { font-family: "Zen Kaku Gothic New"; font-weight: 700; src: url("assets/fonts/ZenKakuGothicNew-Bold.ttf"); }
+        @font-face { font-family: "Tenor Sans"; src: url("assets/fonts/TenorSans-Regular.ttf"); }
+        #root { position: absolute; inset: 0; overflow: hidden; background: #0B0D12; font-family: "Zen Kaku Gothic New", sans-serif; }
+        #c-bg { position: absolute; inset: 0; background: radial-gradient(70% 45% at 50% 42%, #171d2e 0%, #0B0D12 72%); }
+        #c-bub { position: absolute; left: 50%; top: 430px; width: 360px; height: 220px; margin-left: -180px; }
+        #c-bubshape { position: absolute; inset: 0; border-radius: 60px 60px 60px 14px; background: #23262E; border: 2px solid rgba(244,241,234,.12); box-shadow: 0 30px 80px rgba(0,0,0,.5); }
+        #c-bubtxt { position: absolute; inset: 0; display: grid; place-items: center; font-family: "Montserrat", sans-serif; font-weight: 900; font-size: 110px; color: #F4F1EA; letter-spacing: .02em; }
+        #c-cur { display: inline-block; width: 8px; height: 90px; background: #F4F1EA; margin-left: 6px; vertical-align: middle; }
+        #c-icon { position: absolute; left: 50%; top: 430px; width: 220px; height: 220px; margin-left: -110px; opacity: 0; }
+        #c-title { position: absolute; left: 60px; right: 130px; top: 760px; text-align: center; font-family: "Montserrat", sans-serif; font-weight: 900; font-size: 116px; line-height: .95; color: #F4F1EA; letter-spacing: -.02em; opacity: 0; }
+        #c-title span { color: #C8452C; }
+        #c-sub { position: absolute; left: 60px; right: 130px; top: 1030px; text-align: center; font-size: 44px; font-weight: 500; color: #B8BCC6; opacity: 0; }
+        #c-arrow { position: absolute; left: 790px; top: 1180px; width: 120px; height: 160px; opacity: 0; }
+        #c-brand { position: absolute; left: 0; right: 0; top: 1400px; display: flex; justify-content: center; align-items: center; gap: 18px; opacity: 0; }
+        #c-brand img { width: 70px; height: 70px; border-radius: 12px; }
+        #c-brand span { font-family: "Tenor Sans", serif; font-size: 54px; letter-spacing: .2em; color: #F4F1EA; }
+      </style>
+      <div id="root" data-composition-id="cta" data-width="1080" data-height="1920" data-duration="4">
+        <div id="c-bg"></div>
+        <div id="c-bub"><div id="c-bubshape"></div><div id="c-bubtxt"><span id="c-typed"></span><span id="c-cur"></span></div></div>
+        <svg id="c-icon" viewBox="0 0 100 100"><path d="M50 12c-22 0-40 15-40 34 0 10 5 19 13 25l-3 15 16-9c4 1 9 2 14 2 22 0 40-15 40-33S72 12 50 12z" fill="#C8452C"/><circle cx="34" cy="46" r="5" fill="#F4F1EA"/><circle cx="50" cy="46" r="5" fill="#F4F1EA"/><circle cx="66" cy="46" r="5" fill="#F4F1EA"/></svg>
+        <div id="c-title">COMENTA<br /><span>"BOT"</span></div>
+        <div id="c-sub">y te muestro cómo quedaría en tu negocio</div>
+        <svg id="c-arrow" viewBox="0 0 60 80"><path d="M10 6 C 36 18, 44 40, 40 66" fill="none" stroke="#F4F1EA" stroke-width="6" stroke-linecap="round"/><path d="M26 58 L 40 72 L 52 54" fill="none" stroke="#F4F1EA" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div id="c-brand"><img src="assets/img/sello-maru.png" alt="" /><span>MARU</span></div>
+      </div>
+      <script>
+        (function () {
+        var tl = gsap.timeline({ paused: true });
+        var typed = document.getElementById("c-typed"), w = { n: 0 };
+        tl.fromTo("#c-bub", { opacity: 0, scale: .8, y: 40 }, { opacity: 1, scale: 1, y: 0, duration: .4, ease: "back.out(1.8)" }, 0);
+        tl.fromTo(w, { n: 0 }, { n: 3, duration: .6, ease: "none", onUpdate: function () { typed.textContent = "BOT".slice(0, Math.round(w.n)); } }, .35);
+        tl.to("#c-cur", { opacity: 0, duration: .1 }, 1.0);
+        tl.to("#c-bub", { scale: .6, opacity: 0, duration: .3, ease: "power3.in" }, 1.15);
+        tl.fromTo("#c-icon", { opacity: 0, scale: .5, rotation: -12 }, { opacity: 1, scale: 1, rotation: 0, duration: .45, ease: "back.out(2.2)" }, 1.35);
+        tl.fromTo("#c-title", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: .45, ease: "expo.out" }, .5);
+        tl.fromTo("#c-sub", { opacity: 0 }, { opacity: 1, duration: .4, ease: "none" }, 1.0);
+        tl.fromTo("#c-arrow", { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: .35, ease: "expo.out" }, 1.4);
+        tl.fromTo("#c-arrow", { y: 0 }, { y: 18, duration: .4, repeat: 4, yoyo: true, ease: "sine.inOut", immediateRender: false }, 1.8);
+        tl.fromTo("#c-icon", { scale: 1 }, { scale: 1.06, duration: .5, repeat: 3, yoyo: true, ease: "sine.inOut", immediateRender: false }, 1.85);
+        tl.fromTo("#c-brand", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .4, ease: "power2.out" }, 1.6);
+        window.__timelines["cta"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

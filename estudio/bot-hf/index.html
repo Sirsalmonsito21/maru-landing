@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1080, height=1920">
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #0B0D12; }
+      #root { position: relative; width: 100%; height: 100%; overflow: hidden; background: #0B0D12; }
+      #grain { position: absolute; inset: 0; pointer-events: none; z-index: 50; overflow: hidden; }
+      @keyframes hf-grain-noise { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(-5%, 5%); } 50% { transform: translate(5%, -5%); } 75% { transform: translate(-5%, -5%); } }
+      #grain div { position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; opacity: .05;
+        background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        animation: hf-grain-noise .5s steps(1) 94; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="47" data-width="1080" data-height="1920">
+      <div id="hook" data-composition-id="hook" data-composition-src="compositions/hook.html" data-start="0" data-duration="3.2" data-track-index="1" data-width="1080" data-height="1920"></div>
+      <div id="chat" data-composition-id="chat" data-composition-src="compositions/chat.html" data-start="3.2" data-duration="31.1" data-track-index="2" data-width="1080" data-height="1920"></div>
+      <div id="noche" data-composition-id="noche" data-composition-src="compositions/noche.html" data-start="34.3" data-duration="5.3" data-track-index="3" data-width="1080" data-height="1920"></div>
+      <div id="mensaje" data-composition-id="mensaje" data-composition-src="compositions/mensaje.html" data-start="39.6" data-duration="3.4" data-track-index="4" data-width="1080" data-height="1920"></div>
+      <div id="cta" data-composition-id="cta" data-composition-src="compositions/cta.html" data-start="43" data-duration="4" data-track-index="5" data-width="1080" data-height="1920"></div>
+      <div id="grain"><div></div></div>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

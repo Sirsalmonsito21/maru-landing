@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Montserrat"; font-weight: 900; src: url("assets/fonts/Montserrat-Black.ttf"); }
+        @font-face { font-family: "Segoe UI Emoji"; src: local("Segoe UI Emoji"); }
+        @font-face { font-family: "Zen Kaku Gothic New"; font-weight: 500; src: url("assets/fonts/ZenKakuGothicNew-Medium.ttf"); }
+        @font-face { font-family: "Zen Kaku Gothic New"; font-weight: 700; src: url("assets/fonts/ZenKakuGothicNew-Bold.ttf"); }
+        #root { position: absolute; inset: 0; overflow: hidden; background: #0B0D12; font-family: "Zen Kaku Gothic New", "Segoe UI Emoji", sans-serif; color: #F4F1EA; }
+        #n-scene { position: absolute; inset: 0; transform-origin: 540px 1200px; }
+        #n-bg { position: absolute; inset: 0; background: linear-gradient(180deg, #0c1122 0%, #121830 60%, #0b0d14 100%); }
+        #n-dawn { position: absolute; inset: 0; background: linear-gradient(180deg, #3a4466 0%, #8a6f76 55%, #d8a67e 100%); opacity: 0; }
+        #n-win { position: absolute; left: 330px; top: 360px; width: 420px; height: 520px; border-radius: 10px; background: linear-gradient(180deg, #16203c, #1f2a4a); border: 10px solid #1a1f2c; overflow: hidden; }
+        #n-windawn { position: absolute; inset: 0; background: linear-gradient(180deg, #ffd9a8, #f3a877 70%, #e08a6a); opacity: 0; }
+        #n-moon { position: absolute; left: 250px; top: 80px; width: 90px; height: 90px; border-radius: 50%; background: #e9ecf6; box-shadow: 0 0 60px rgba(233,236,246,.35); }
+        #n-moonc { position: absolute; left: 272px; top: 66px; width: 90px; height: 90px; border-radius: 50%; background: #1a2442; }
+        .n-star { position: absolute; width: 4px; height: 4px; border-radius: 50%; background: #dfe4f4; }
+        #n-sun { position: absolute; left: 160px; top: 330px; width: 120px; height: 120px; border-radius: 50%; background: #fff2d6; box-shadow: 0 0 100px rgba(255,230,180,.8); opacity: 0; }
+        #n-bar { position: absolute; left: 330px; top: 610px; width: 420px; height: 10px; background: #1a1f2c; }
+        #n-barv { position: absolute; left: 535px; top: 360px; width: 10px; height: 520px; background: #1a1f2c; }
+        .n-cur { position: absolute; top: 330px; width: 90px; height: 600px; background: linear-gradient(90deg, #2a2f3e, #363c4e, #2a2f3e); }
+        #n-bed { position: absolute; left: -40px; top: 1080px; width: 900px; height: 360px; }
+        #n-bedf { position: absolute; left: 0; top: 120px; width: 100%; height: 240px; border-radius: 28px; background: #1c2130; }
+        #n-duvet { position: absolute; left: 30px; top: 60px; width: 860px; height: 160px; border-radius: 80px 40px 30px 30px; background: linear-gradient(180deg, #3a4156, #2c3244); }
+        #n-pillow { position: absolute; left: 50px; top: 20px; width: 240px; height: 90px; border-radius: 45px; background: #3c4a78; }
+        #n-stand { position: absolute; left: 740px; top: 1180px; width: 210px; height: 260px; border-radius: 16px; background: #1f2432; }
+        #n-phone { position: absolute; left: 790px; top: 1152px; width: 110px; height: 28px; border-radius: 10px; background: #0d0f15; border: 2px solid #2d3242; }
+        #n-lamp { position: absolute; left: 800px; top: 1030px; width: 90px; height: 120px; }
+        #n-zz { position: absolute; left: 250px; top: 980px; font-size: 54px; color: #b8c2e0; opacity: .0; font-weight: 700; letter-spacing: .2em; }
+        #n-notifs { position: absolute; left: 90px; right: 150px; top: 190px; display: flex; flex-direction: column; gap: 16px; }
+        .n-n { display: flex; align-items: center; gap: 18px; padding: 18px 22px; border-radius: 26px; background: rgba(28,32,44,.82); border: 1px solid rgba(244,241,234,.12); box-shadow: 0 16px 40px rgba(0,0,0,.35); opacity: 0; }
+        .n-n i { font-style: normal; width: 58px; height: 58px; border-radius: 16px; background: #23262E; display: grid; place-items: center; font-size: 30px; }
+        .n-n b { flex: 1; font-size: 36px; font-weight: 700; }
+        .n-n small { font-size: 22px; color: #8A8F9C; }
+        #n-sum { position: absolute; left: 110px; right: 170px; top: 560px; padding: 44px 44px 36px; border-radius: 36px; background: rgba(16,18,26,.86); border: 1px solid rgba(244,241,234,.14); box-shadow: 0 30px 90px rgba(0,0,0,.5); opacity: 0; }
+        #n-sum h3 { margin: 0 0 24px; font-size: 34px; font-weight: 700; color: #B8BCC6; letter-spacing: .04em; }
+        .n-r { display: flex; justify-content: space-between; align-items: baseline; padding: 16px 0; border-top: 1px solid rgba(244,241,234,.1); }
+        .n-r span { font-size: 36px; color: #D6D8DE; }
+        .n-r b { font-family: "Montserrat", sans-serif; font-weight: 900; font-size: 64px; font-variant-numeric: tabular-nums; }
+      </style>
+      <div id="root" data-composition-id="noche" data-width="1080" data-height="1920" data-duration="5.3">
+        <div id="n-scene">
+          <div id="n-bg"></div><div id="n-dawn"></div>
+          <div class="n-cur" style="left:250px"></div><div class="n-cur" style="left:740px"></div>
+          <div id="n-win">
+            <div class="n-star" style="left:40px;top:60px"></div><div class="n-star" style="left:130px;top:150px"></div><div class="n-star" style="left:80px;top:300px"></div><div class="n-star" style="left:330px;top:260px"></div>
+            <div id="n-moon"></div><div id="n-moonc"></div>
+            <div id="n-windawn"></div><div id="n-sun"></div>
+          </div>
+          <div id="n-bar"></div><div id="n-barv"></div>
+          <div id="n-bed"><div id="n-bedf"></div><div id="n-pillow"></div><div id="n-duvet"></div></div>
+          <div id="n-stand"></div>
+          <svg id="n-lamp" viewBox="0 0 90 120"><path d="M20 10 L70 10 L84 60 L6 60 Z" fill="#3a3f52"/><rect x="41" y="60" width="8" height="46" fill="#2a2f3e"/><rect x="22" y="104" width="46" height="10" rx="4" fill="#2a2f3e"/></svg>
+          <div id="n-phone"></div>
+          <div id="n-zz">z z z</div>
+        </div>
+        <div id="n-notifs">
+          <div class="n-n"><i>🛍️</i><b>Venta · S/ 189</b><small>ahora</small></div>
+          <div class="n-n"><i>🛍️</i><b>Venta · S/ 95</b><small>ahora</small></div>
+          <div class="n-n"><i>💬</i><b>Pregunta respondida</b><small>ahora</small></div>
+          <div class="n-n"><i>🛍️</i><b>Venta · S/ 240</b><small>ahora</small></div>
+          <div class="n-n"><i>🛍️</i><b>Venta · S/ 129</b><small>ahora</small></div>
+        </div>
+        <div id="n-sum">
+          <h3>MIENTRAS DORMÍAS</h3>
+          <div class="n-r"><span>Ventas</span><b id="n-v1">0</b></div>
+          <div class="n-r"><span>Ingresos</span><b>S/ <span id="n-v2" style="font-size:inherit;color:inherit">0</span></b></div>
+          <div class="n-r"><span>Clientes atendidos</span><b id="n-v3">0</b></div>
+        </div>
+      </div>
+      <script>
+        (function () {
+        var tl = gsap.timeline({ paused: true });
+        var OFF = 34.3, at = function (T) { return +(T - OFF).toFixed(3); };
+        tl.fromTo("#n-scene", { opacity: 0, scale: 1.08 }, { opacity: 1, scale: 1, duration: 1.2, ease: "power2.out" }, 0);
+        tl.fromTo("#n-zz", { opacity: 0, y: 10 }, { opacity: .7, y: -14, duration: 1.4, ease: "sine.out" }, at(34.8));
+        tl.to("#n-zz", { opacity: 0, duration: .4 }, at(37.0));
+        // notificaciones que caen suaves
+        document.querySelectorAll("#n-notifs .n-n").forEach(function (el, i) { tl.fromTo(el, { opacity: 0, y: -40, scale: .96 }, { opacity: 1, y: 0, scale: 1, duration: .4, ease: "power3.out" }, at(35.2 + i * .45)); });
+        tl.fromTo("#n-phone", { boxShadow: "0 0 0 0 rgba(160,200,255,0)" }, { boxShadow: "0 0 30px 6px rgba(160,200,255,.35)", duration: .22, repeat: 9, yoyo: true, ease: "sine.inOut" }, at(35.2));
+        // amanecer + resumen
+        tl.to("#n-notifs", { opacity: 0, y: -30, duration: .3, ease: "power2.in" }, at(37.0));
+        tl.to("#n-dawn", { opacity: 1, duration: 1.2, ease: "power1.inOut" }, at(37.0));
+        tl.to("#n-windawn", { opacity: 1, duration: 1.2, ease: "power1.inOut" }, at(37.0));
+        tl.fromTo("#n-sun", { opacity: 0, y: 80 }, { opacity: 1, y: 0, duration: 1.4, ease: "power2.out" }, at(37.1));
+        tl.to(["#n-moon", "#n-moonc"], { opacity: 0, duration: .8 }, at(37.0));
+        tl.fromTo("#n-sum", { opacity: 0, y: 40, scale: .96 }, { opacity: 1, y: 0, scale: 1, duration: .5, ease: "expo.out" }, at(37.2));
+        var cnt = { a: 0, b: 0, c: 0 };
+        tl.fromTo(cnt, { a: 0, b: 0, c: 0 }, { a: 7, b: 1240, c: 23, duration: 1.3, ease: "power2.out", onUpdate: function () {
+          document.getElementById("n-v1").textContent = Math.round(cnt.a); document.getElementById("n-v2").textContent = Math.round(cnt.b).toLocaleString("en-US"); document.getElementById("n-v3").textContent = Math.round(cnt.c); } }, at(37.4));
+        window.__timelines["noche"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

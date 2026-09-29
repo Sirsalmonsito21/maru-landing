@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Montserrat"; font-weight: 900; src: url("assets/fonts/Montserrat-Black.ttf"); }
+        #root { position: absolute; inset: 0; overflow: hidden; background: #0B0D12; }
+        #m-bg { position: absolute; inset: 0; background: radial-gradient(70% 50% at 50% 50%, #151a2a 0%, #0B0D12 70%); }
+        .m-s { position: absolute; left: 70px; right: 140px; top: 0; bottom: 0; display: grid; align-content: center; justify-items: center; text-align: center; opacity: 0; }
+        .m-s div { font-family: "Montserrat", sans-serif; font-weight: 900; color: #F4F1EA; line-height: .95; letter-spacing: -.03em; white-space: nowrap; }
+        .m-s .red { color: #C8452C; }
+      </style>
+      <div id="root" data-composition-id="mensaje" data-width="1080" data-height="1920" data-duration="3.4">
+        <div id="m-bg"></div>
+        <div class="m-s" id="m-1"><div style="font-size:150px">TU TIENDA</div><div style="font-size:150px">NO CIERRA.</div></div>
+        <div class="m-s" id="m-2"><div style="font-size:150px">TÚ SÍ</div><div style="font-size:150px">PUEDES</div><div class="red" id="m-red" style="font-size:132px">DESCANSAR.</div></div>
+      </div>
+      <script>
+        (function () {
+        var tl = gsap.timeline({ paused: true });
+        tl.fromTo("#m-1 div", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: .45, stagger: .14, ease: "expo.out" }, 0);
+        tl.set("#m-1", { opacity: 1 }, 0);
+        tl.to("#m-1", { opacity: 0, y: -40, duration: .25, ease: "power2.in" }, 1.4);
+        tl.set("#m-2", { opacity: 1 }, 1.6);
+        tl.fromTo("#m-2 div", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: .45, stagger: .14, ease: "expo.out" }, 1.6);
+        tl.fromTo("#m-red", { scale: 1.15 }, { scale: 1, duration: .5, ease: "expo.out", immediateRender: false }, 1.9);
+        window.__timelines["mensaje"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>
