@@ -119,6 +119,8 @@
       "composer.sub": "Consultoría gratis",
       "composer.input": "Mensaje",
       "foot.tag": "Automatización e IA para pymes · Lima, Perú",
+      "foot.privacy": "Privacidad",
+      "foot.terms": "Términos",
     },
     pains: {
       whatsapp: { label: "Responder los mismos mensajes de WhatsApp", short: "WhatsApp", title: "Un asistente que responde por ti", con: "Un bot en tu WhatsApp Business responde al instante, a cualquier hora, y te pasa solo las conversaciones que necesitan a una persona.", svc: "Bots de WhatsApp", tool: "WhatsApp Business", msg: "responder los mismos mensajes de WhatsApp" },
@@ -298,6 +300,8 @@
       "composer.sub": "Free consultation",
       "composer.input": "Message",
       "foot.tag": "Automation and AI for small businesses · Lima, Peru",
+      "foot.privacy": "Privacy",
+      "foot.terms": "Terms",
     },
     pains: {
       whatsapp: { label: "Answering the same WhatsApp messages", short: "WhatsApp", title: "An assistant that answers for you", con: "A bot on your WhatsApp Business replies instantly, at any hour, and only hands you the conversations that need a person.", svc: "WhatsApp bots", tool: "WhatsApp Business", msg: "answering the same WhatsApp messages" },

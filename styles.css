@@ -903,7 +903,10 @@ nav { margin-left: auto; }
 .foot-in { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; padding-block: 32px; font-size: .9063rem; }
 .foot .brand-seal { width: 30px; height: 30px; font-size: 1.05rem; }
 .foot .brand-word { color: #F3EDE2; font-size: 1.15rem; }
-.foot-small { margin-left: auto; display: inline-flex; align-items: center; gap: 12px; }
+.foot-legal { margin-left: auto; display: flex; gap: 18px; }
+.foot-legal a { color: inherit; text-underline-offset: 3px; }
+.foot-legal a:hover { color: #F3EDE2; }
+.foot-small { display: inline-flex; align-items: center; gap: 12px; }
 .foot .hanko { --beni: #E0654A; width: 26px; height: 26px; font-size: .9rem; border-radius: 6px; }
 
 /* Rendimiento: secciones lejanas no se pintan hasta acercarse */
@@ -978,6 +981,7 @@ nav { margin-left: auto; }
   .stage-bar { padding-left: 14px; }
   .btn-sm span { display: none; }
   .btn-sm { padding: 10px; }
+  .foot-legal { margin-left: 0; }
   .foot-small { margin-left: 0; }
   .close h2 { font-size: 2.4rem; }
 }
